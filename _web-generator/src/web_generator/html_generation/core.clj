@@ -7,5 +7,4 @@
 
 (load "common")
 (load "work_experience")
-
-(println (hiccup/html5 (head-html "lemon" "juice")))
+(load "index")

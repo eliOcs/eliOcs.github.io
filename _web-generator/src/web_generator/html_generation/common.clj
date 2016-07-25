@@ -1,3 +1,10 @@
+(defn escape-multiline-text
+  [string]
+  (loop [[first-line & rest] (clojure.string/split string #"\n") result []]
+    (if (empty? rest)
+      (conj result first-line)
+      (recur rest (conj result first-line [:br])))))
+
 (defn head-html
   [title description]
   [:head

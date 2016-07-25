@@ -25,8 +25,13 @@
 
 (defn- company-name-&-description-html
   [company-name company-description]
-  [:p.company-description (list [:span.company-name company-name])
-       (str ". " company-description)])
+  (into
+    [:p.company-description [:span.company-name company-name]]
+    (escape-multiline-text (str ". " company-description))))
+
+(defn- experience-html
+  [experience]
+  (into [:p.experience] (escape-multiline-text experience)))
 
 (defn- tools-html
   [tools]
@@ -37,13 +42,13 @@
   [work-experience-entry]
   [:div.job-entry
      [:h2.job-title (:job-title work-experience-entry)]
+     [:p.period (format-period (:period work-experience-entry))]
      (company-name-&-description-html
        (:company-name work-experience-entry)
        (:company-description work-experience-entry))
-     [:p.period (format-period (:period work-experience-entry))]
-     [:p.experience (:experience work-experience-entry)]
+     (experience-html (:experience work-experience-entry))
      (tools-html (:tools work-experience-entry))])
 
 (defn work-experience-html
-  [content]
-  [:section (map work-experience-entry-html content)])
+  [work-experience]
+  [:section (map work-experience-entry-html work-experience)])
