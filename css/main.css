@@ -106,7 +106,12 @@ section {
   border-radius: 5px;
 }
 
+div.job-entry {
+  margin-top: 2em;
+}
+
 h2.job-title {
+  font-size: 1.2em;
   text-transform: uppercase;
   display: inline-block;
   margin: 0;
@@ -129,6 +134,14 @@ p.company-description {
 span.company-name {
   text-transform: uppercase;
   font-weight: bold;
+}
+
+h3.experience-title {
+  font-size: 1em;
+  text-transform: uppercase;
+  font-weight: bold;
+  margin: 0;
+  margin-top: 1em;
 }
 
 p.experience {
