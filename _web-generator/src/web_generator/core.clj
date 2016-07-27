@@ -4,4 +4,4 @@
 
 (defn -main
   [& args]
-  (println (spit "../index2.html" (html-generation/index-html) :append false)))
+  (println (spit "../index.html" (html-generation/index-html) :append false)))
