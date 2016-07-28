@@ -8,7 +8,11 @@
 
 (defn- months-in-period
   [period]
-  (int (Math/ceil (/ (days-in-period period) 30))))
+  (->
+    (days-in-period period)
+    (/ 30)
+    double
+    Math/round))
 
 (defn- format-period-length
   [period]
@@ -64,7 +68,7 @@
 
 (defn- experience-html
   [experience]
-  (if (vector? experience)
+  (if (sequential? experience)
     (apply concat (map experience-with-title-html experience))
     (experience-with-no-title-html experience)))
 
