@@ -106,8 +106,20 @@ section {
   border-radius: 5px;
 }
 
+section > h1 {
+  color: #9ce1ff;
+  margin: 0;
+  text-transform: uppercase;
+  font-size: 2em;
+  font-weight: normal;
+}
+
+div.job-entry:first-of-type {
+  margin-top: 1.5em;
+}
+
 div.job-entry {
-  margin-top: 2em;
+  margin-top: 2.5em;
 }
 
 h2.job-title {
@@ -121,7 +133,7 @@ h2.job-title {
 p.period {
   font-size: 1.2em;
   display: inline-block;
-  color: #6e87bd;
+  color: #659de0;
   margin: 0;
 }
 
@@ -151,18 +163,22 @@ p.experience {
 
 p.tools {
   margin: 0;
-  margin-top: 0.5em;
+}
+
+p.tools > b {
+  margin-right: 0.4em;
 }
 
 span.tool {
-  margin-left: 0.5em;
+  margin-top: 0.4em;
+  margin-right: 0.4em;
   color: #fff;
   display: inline-block;
-  background-color: #6e87bd;
-  padding: 0.2em 0.5em;
+  background-color: #7ea4bd;
+  padding: 0.15em 0.45em;
   border-radius: 5px;
   font-weight: bold;
-  font-size: 0.9em;
+  font-size: 0.85em;
 }
 
 

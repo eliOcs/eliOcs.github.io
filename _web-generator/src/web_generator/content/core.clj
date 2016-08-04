@@ -1,7 +1,7 @@
 (ns web-generator.content.core
   (:require [web-generator.content.parser :as parser]))
 
-(defn filename
+(defn- filename
   [name]
   (str "src/web_generator/content/" name ".yaml"))
 

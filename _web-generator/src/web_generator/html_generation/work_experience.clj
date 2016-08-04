@@ -83,4 +83,6 @@
 
 (defn work-experience-html
   [work-experience]
-  [:section (map work-experience-entry-html work-experience)])
+  (into
+    [:section [:h1 "Experience"]]
+    (map work-experience-entry-html work-experience)))
