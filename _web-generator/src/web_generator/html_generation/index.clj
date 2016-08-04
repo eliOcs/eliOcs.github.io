@@ -5,5 +5,6 @@
       "Elio Capella Sánchez - Resume"
       "An updated summary of my work career")
     [:body
-      (work-experience-html content/work-experience)
-      (education-html content/education)]))
+      (summary-html (:summary content/resume))
+      (work-experience-html (:work-experience content/resume))
+      (education-html (:education content/resume))]))

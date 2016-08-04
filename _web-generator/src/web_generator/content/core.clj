@@ -2,10 +2,22 @@
   (:require [clj-yaml.core :as yaml]))
 
 (defn- filename
+  [name extension]
+  (str "src/web_generator/content/" name "." extension))
+
+(defn- yaml-filename
   [name]
-  (str "src/web_generator/content/" name ".yaml"))
+  (filename name "yaml"))
 
-(def ^:private load-content-file (comp yaml/parse-string slurp filename))
+(defn- txt-filename
+  [name]
+  (filename name "txt"))
 
-(def work-experience (load-content-file "work_experience"))
-(def education (load-content-file "education"))
+(def ^:private load-yaml-file (comp yaml/parse-string slurp yaml-filename))
+
+(def ^:private load-txt-file (comp slurp txt-filename))
+
+(def resume
+  {:summary (load-txt-file "resume/summary")
+   :work-experience (load-yaml-file "resume/work_experience")
+   :education (load-yaml-file "resume/education")})

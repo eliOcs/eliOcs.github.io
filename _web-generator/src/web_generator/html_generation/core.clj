@@ -6,6 +6,7 @@
             [hiccup.page :as hiccup]))
 
 (load "common")
-(load "work_experience")
-(load "education")
+(load "resume/summary")
+(load "resume/work_experience")
+(load "resume/education")
 (load "index")
