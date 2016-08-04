@@ -114,15 +114,15 @@ section > h1 {
   font-weight: normal;
 }
 
-div.job-entry:first-of-type {
+div.education-entry, div.job-entry:first-of-type {
   margin-top: 1.5em;
 }
 
-div.job-entry {
+div.education-entry, div.job-entry {
   margin-top: 2.5em;
 }
 
-h2.job-title {
+h2.degree, h2.job-title {
   font-size: 1.2em;
   text-transform: uppercase;
   display: inline-block;
@@ -137,7 +137,16 @@ p.period {
   margin: 0;
 }
 
+h3.school {
+  font-size: 1em;
+  margin: 0;
+  color: #747b7e;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
 p.company-description {
+  font-size: 1em;
   margin: 0;
   font-style: italic;
   color: #747b7e;
@@ -180,7 +189,6 @@ span.tool {
   font-weight: bold;
   font-size: 0.85em;
 }
-
 
 
 

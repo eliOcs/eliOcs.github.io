@@ -30,14 +30,24 @@
   (let [month-year-format (time-format/formatter "MMMM yyyy")]
     (fn [date] (time-format/unparse month-year-format date))))
 
+(defn parse-date
+  [date]
+  (let [[day month year] (map read-string (clojure.string/split date #"/"))]
+    (time/date-time year month day)))
+
+(defn parse-period
+  [{start :start end :end}]
+  {:start (parse-date start) :end (parse-date end)})
+
 (defn- format-period
-  [{start :start end :end :as period}]
-  (str
-    (format-period-date start)
-    " - "
-    (format-period-date end)
-    ", "
-    (format-period-length period)))
+  [period-string]
+  (let [period (parse-period period-string)]
+    (str
+      (format-period-date (:start period))
+      " - "
+      (format-period-date (:end period))
+      ", "
+      (format-period-length period))))
 
 (defn- company-html
   [{name :name description :description}]

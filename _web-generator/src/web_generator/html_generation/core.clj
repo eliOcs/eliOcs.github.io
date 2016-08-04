@@ -7,4 +7,5 @@
 
 (load "common")
 (load "work_experience")
+(load "education")
 (load "index")
