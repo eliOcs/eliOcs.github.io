@@ -37,7 +37,7 @@
     [:nav
       (set-active-section
         {:home [:a {:href "/"} "Home"]
-         :resume [:a {:href "/resume.html"} "Resume"]
-         :interesting-content [:a {:href "/interesting-content.html"} "Interesting content"]
-         :contact [:a {:href "/contact.html"} "Contact"]}
+         :resume [:a {:href "resume.html"} "Resume"]
+         :interesting-content [:a {:href "interesting-content.html"} "Interesting content"]
+         :contact [:a {:href "contact.html"} "Contact"]}
         active-section)]])
