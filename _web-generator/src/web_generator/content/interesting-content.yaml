@@ -1,0 +1,174 @@
+- type: article
+  title: I hate almost all software
+  author: Ryan Dhal
+  added: 23/8/2016
+  url: http://tinyclouds.org/rant.html
+  comment: >
+    The creator of Node.js rants about software development, I agree we have to
+    open our eyes and start rethinking software development.
+  tags: [Technology Software development]
+
+- type: book
+  title: The Ascent of Man
+  author: Jacob Bronowski
+  added: 17/8/2016
+  url: http://www.goodreads.com/book/show/461104.The_Ascent_of_Man
+  comment: >
+    A fantastic summary of all the inventions and discoveries that have been
+    crucial to build our current lifestyle.
+  tags: [history, science]
+
+- type: book
+  title: Mindset
+  author: Dr. Carol S. Dweck
+  added: 11/8/2016
+  url: https://www.amazon.com/Mindset-Psychology-Success-Carol-Dweck/dp/0345472322
+  comment: >
+    A simple yet powerful strategy to embrace a growth mindset that empowers you
+    to never stop learning, anything can be learned with effort.
+  tags: [Psychology]
+
+- type: documentary
+  title: Amy
+  added: 5/8/2016
+  url: http://www.amy-movie.com/
+  comment: >
+    A very detailed story of Amy. Her depression boosted her creativity but lead
+    her to bad health and self destruction.
+  tags: [Music]
+
+- type: talk
+  title: Inventing on Principle
+  author: Bret Victor
+  added: 29/7/2016
+  url: https://vimeo.com/36579366
+  comment: >
+    Bret shows how to disrupt software development empowering the developer with
+    the current state of the program instead of making the developer play
+    computer.
+  tags: [Technology, Inspiring]
+
+- type: documentary
+  title: We are legion - The Story of the Hacktivists
+  author: Brian Knappenberger
+  added: 27/7/2016
+  url: http://wearelegionthedocumentary.com/
+  comment: >
+    The story of how activism and technology mix and how might the future of
+    activism be as technology continues to conquer every aspect of our lives.
+  tags: [Technology, Activism]
+
+- type: talk
+  title: Happiness - What your mother didn't tell you
+  author: Daniel Gilbert
+  added: 17/7/2016
+  url: https://www.youtube.com/watch?v=N-lMTFPf3NQ
+  comment: >
+    It isn't very usual to apply science to feelings, this talks brings data to
+    try to study what makes us happy.
+  tags: [Psychology]
+
+- type: talk
+  title: Jonathan Blow on Software Quality
+  author: Jonathan Blow
+  added: 11/7/2016
+  url: https://www.youtube.com/watch?v=k56wra39lwA
+  comment: >
+    Share the feeling that we are in the dark ages of software development, web
+    development is a mess and even the most simple projects turn into huge
+    complex balls of code that no one fully understands.
+  tags: [Technology, Software development]
+
+- type: article
+  title: Video Conference: This things suck
+  author: Ben Garney
+  added: 10/7/2016
+  url: https://bengarney.com/2016/06/25/video-conference-part-1-these-things-suck/
+  comment: >
+    Interesting set of articles where Ben explains how he creates his own video
+    conference software explaining the technical details.
+  tags: [Technology]
+
+- type: documentary
+  title: Marxism 101: How Capitalism is Killing Itself
+  author: Dr. Richard Wolff
+  added: 7/7/2016
+  url: https://www.youtube.com/watch?v=6P97r9Ci5Kg
+  comment: >
+    Wolff explains very clearly the flaws in the current economic system and how
+    it's going to destroy itself. Fascinating that Marx found out these flaws
+    200 years ago.
+  tags: [Politics]
+
+- type: talk
+  title: Media for Thinking the Unthinkable
+  author: Bret Victor
+  added: 5/7/2016
+  url: https://vimeo.com/67076984
+  comment: >
+    We are stuck using computers as if they were digital pencil and paper, Bret
+    shares his inspiring vision on how to use computers to bring a new level of
+    thinking.
+  tags: [Technology, Inspiring]
+
+- type: documentary
+  title: (Dis)Honesty: The Truth About Lies
+  author: Dan Ariely
+  added: 27/6/2016
+  url: http://thedishonestyproject.com/film/
+  comment: >
+    Set of experiments that study how much we lie and what factors influence our
+    behaviour when lying.
+  tags: [Psychology]
+
+- type: documentary
+  title: Requiem for the American Dream
+  author: Noam Chomsky
+  added: 8/6/2016
+  url: http://requiemfortheamericandream.com/
+  comment: >
+    Great explanation of the current state of the economic system and how the
+    great bulk of the wealth has ended is in the hands of a few.
+  tags: [Politics]
+
+- type: book
+  title: How to Create a Mind: The Secret of Human Thought Revealed
+  author: Ray Kurzweil
+  added: 13/6/2016
+  url: http://howtocreateamind.com/
+  comment: >
+    Agree with the brain theory that Kurzweil exposes in this book and I'm sure
+    that we will soon find out how to emulate the human intelligence with
+    computers.
+  tags: [Technology, Artificial Intelligence]
+
+- type: book
+  title: Clean Code: A Handbook of Agile Software Craftsmanship
+  author: Robert C. Martin
+  added: 21/4/2016
+  url: https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882
+  comment: >
+    Feel like it's a must read. I've always shared the feeling that code
+    readability eases code maintenance which is the greatest pain point of
+    software development.
+  tags: [Technology, Software development]
+
+- type: book
+  title: The Hard Thing About Hard Things: Building a Business When There Are No Easy Answers
+  author: Ben Horowitz
+  added: 16/4/2016
+  url: https://www.amazon.es/gp/product/B00DQ845EA/ref=oh_aui_d_detailpage_o05_?ie=UTF8&psc=1
+  comment: >
+    Great detailed story of how Horowitz built successful businesses, shares
+    lots of lessons which are of great value.
+  tags: [Startups]
+
+- type: book
+  title: Plato, Not Prozac!: Applying Eternal Wisdom to Everyday Problems
+  author: Lou Marinoff
+  added: 7/2/2016
+  url: https://www.amazon.es/gp/product/B008HSEGH0/ref=oh_aui_d_detailpage_o08_?ie=UTF8&psc=1
+  comment: >
+    Applied philosophy for day to day problems. It's amazing how useful can
+    philosophy be when you are worried for something.
+  tags: [Philosophy, Psychology]

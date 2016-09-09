@@ -21,3 +21,5 @@
   {:summary (load-txt-file "resume/summary")
    :work-experience (load-yaml-file "resume/work_experience")
    :education (load-yaml-file "resume/education")})
+
+(def interesting-content (load-yaml-file "interesting-content"))

@@ -12,4 +12,6 @@
 (load "resume/education")
 (load "resume")
 
+(load "interesting-content")
+
 (load "index")
