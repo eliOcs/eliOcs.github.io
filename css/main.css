@@ -97,12 +97,40 @@ textarea {
 
 body {
   color: #28373d;
+  padding-bottom: 4em;
 }
 
-section {
+section, header {
   max-width: 75ch;
   margin: auto;
   padding: 2em 0 0 0;
+}
+
+header > img {
+  display: inline-block;
+}
+
+header > nav {
+  display: inline-block;
+  margin-left: 2ch;
+}
+
+nav > a {
+  font-size: 1em;
+  margin: 0;
+  margin-left: 2ch;
+  color: #747b7e;
+  text-transform: uppercase;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+nav > a:hover {
+  color: #9ce1ff;
+}
+
+nav > a.active {
+  color: #9ce1ff;
 }
 
 section > h1 {
