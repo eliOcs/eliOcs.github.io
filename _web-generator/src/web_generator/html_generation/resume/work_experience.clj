@@ -65,11 +65,17 @@
     [:p.tools [:b "Tools used:"]]
     (map #(vector :span.tool %) tools)))
 
+(defn- image-html
+  [image]
+  [:a
+   {:href image :target "_blank"}
+   [:img {:src (create-image-thumbnail 100 100 image)}]])
+
 (defn- images-html
   [images]
   (if-not (nil? images)
     [:div.images
-      (map #(vector :a {:href % :target "_blank"} [:img {:src (create-image-thumbnail 100 100 %)}]) images)]))
+      (map image-html images)]))
 
 (defn- experience-entry-html
   [{title :title description :description images :images tools :tools}]

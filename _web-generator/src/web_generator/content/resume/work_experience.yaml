@@ -49,6 +49,13 @@
     - title: Android developer
       description: >
         Replicated the app developed in iPhone.
+      images:
+          - images/histories/android/collections.png
+          - images/histories/android/stories.png
+          - images/histories/android/locked-stories.png
+          - images/histories/android/story-detail.png
+          - images/histories/android/map.png
+          - images/histories/android/profile.png
       tools: [Java, Android Studio, Google Play Services, Git]
 - job-title: Co-founder
 
@@ -111,6 +118,12 @@
     - title: Android developer
       description: >
         Replicated the template app that was done for iPhone in Android.
+      images:
+        - images/kolobee-stage-2/android/menu.png
+        - images/kolobee-stage-2/android/point-list.png
+        - images/kolobee-stage-2/android/map.png
+        - images/kolobee-stage-2/android/point-detail-1.png
+        - images/kolobee-stage-2/android/point-detail-2.png
       tools: [Java, Android Studio, Google Play Services, MapBox, Facebook SDK]
 
 - job-title: Co-founder

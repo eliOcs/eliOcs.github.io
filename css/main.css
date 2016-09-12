@@ -206,7 +206,7 @@ p.experience {
 }
 
 div.images {
-  margin: 0.5em 0;
+  margin: 0;
 }
 
 div.images a {
@@ -214,7 +214,8 @@ div.images a {
   border-color: #747b7e;
   display: inline-block;
   margin:0;
-  margin-right: 2ch;
+  margin-top: 0.5em;
+  margin-right: 0.5em;
 }
 
 div.images a:hover {
@@ -228,6 +229,7 @@ div.images img {
 
 p.tools {
   margin: 0;
+  margin-top: 0.1em;
 }
 
 p.tools > b {
