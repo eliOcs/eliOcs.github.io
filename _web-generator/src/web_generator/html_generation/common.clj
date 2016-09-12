@@ -41,7 +41,7 @@
   {:home "index.html"
    :resume "resume.html"
    :interesting-content "interesting-content.html"
-   :contact "contact.html"})
+   :contact "mailto:me@eliocapella.com"})
 
 (defn navigation-html
   [active-section]
@@ -49,8 +49,8 @@
     [:img {:src "images/logo.svg"}]
     [:nav
       (set-active-section
-        {:home [:a {:href "/"} "Home"]
-         :resume [:a {:href "resume.html"} "Resume"]
-         :interesting-content [:a {:href "interesting-content.html"} "Interesting content"]
-         :contact [:a {:href "contact.html"} "Contact"]}
+        {:home [:a {:href (:home section-links)} "Home"]
+         :resume [:a {:href (:resume section-links)} "Resume"]
+         :interesting-content [:a {:href (:interesting-content section-links)} "Interesting content"]
+         :contact [:a {:href (:contact section-links)} "Contact"]}
         active-section)]])
