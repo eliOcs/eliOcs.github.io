@@ -205,6 +205,27 @@ p.experience {
   margin-top: 0.5em;
 }
 
+div.images {
+  margin: 0.5em 0;
+}
+
+div.images a {
+  border: solid 4px;
+  border-color: #747b7e;
+  display: inline-block;
+  margin:0;
+  margin-right: 2ch;
+}
+
+div.images a:hover {
+  border-color: #9ce1ff;
+}
+
+div.images img {
+  width: 100px;
+  height: 100px;
+}
+
 p.tools {
   margin: 0;
 }

@@ -170,6 +170,11 @@
         took pictures with the app and then the image was uploaded with the
         current user location. A map showed all the content around and users
         could chat with each other.
+      images:
+        - images/kolobee-stage-1/ios/collection-list.jpg
+        - images/kolobee-stage-1/ios/map.jpg
+        - images/kolobee-stage-1/ios/point-detail.jpg
+        - images/kolobee-stage-1/ios/point-list.jpg
       tools: [Objective-C, Xcode, Core Location, Core Data, MapKit, Git]
 
 

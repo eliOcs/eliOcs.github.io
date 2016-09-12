@@ -65,22 +65,25 @@
     [:p.tools [:b "Tools used:"]]
     (map #(vector :span.tool %) tools)))
 
-(defn- experience-with-no-title-html
-  [{description :description tools :tools}]
-  [(experience-description-html description)
-   (tools-html tools)])
+(defn- images-html
+  [images]
+  (if-not (nil? images)
+    [:div.images
+      (map #(vector :a {:href % :target "_blank"} [:img {:src (create-image-thumbnail 100 100 %)}]) images)]))
 
-(defn- experience-with-title-html
-  [{title :title description :description tools :tools}]
-  [[:h3.experience-title title]
+(defn- experience-entry-html
+  [{title :title description :description images :images tools :tools}]
+  [(if-not (nil? title)
+    [:h3.experience-title title])
    (experience-description-html description)
+   (images-html images)
    (tools-html tools)])
 
 (defn- experience-html
   [experience]
   (if (sequential? experience)
-    (apply concat (map experience-with-title-html experience))
-    (experience-with-no-title-html experience)))
+    (apply concat (map experience-entry-html experience))
+    (experience-entry-html experience)))
 
 (defn- work-experience-entry-html
   [work-experience-entry]

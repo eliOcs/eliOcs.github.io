@@ -37,6 +37,23 @@
   [section-links active-section]
   (map #(add-active-class-to-section-link-if-necessary % active-section) section-links))
 
+(defn create-image-thumbnail
+  [height width image]
+  (let [root "../"
+        image-path (str root image)
+        thumbnail (clojure.string/replace image #"^images" "thumbnails")
+        thumbnail-path (str root thumbnail)]
+    (fs/mkdirs (fs/parent thumbnail-path))
+    (sh/with-programs [convert]
+      (convert
+        image-path
+        "-resize" (str width "x" height "^")
+        "-gravity" "Center"
+        "-crop" (str width "x" height "+0+0")
+        "+repage"
+        thumbnail-path))
+    thumbnail))
+
 (def section-links
   {:home "index.html"
    :resume "resume.html"
