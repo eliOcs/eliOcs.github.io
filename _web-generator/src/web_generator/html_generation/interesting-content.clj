@@ -1,8 +1,16 @@
 
 (defn- interesting-content-entry-html
   [interesting-content-entry]
-  [:div.interesting-content-entry
-    [:h2.interesting-content-title (:title interesting-content-entry)]])
+  [:a.interesting-content-entry {:href (interesting-content-entry :url)
+                                 :target "_blank"}
+    [:h2.title (:title interesting-content-entry)]
+    (if (contains? interesting-content-entry :author)
+      [:p.author (interesting-content-entry :author)])
+    [:p.type (interesting-content-entry :type)]
+    [:p.comment (interesting-content-entry :comment)]
+    [:p.tags (map #(vector :span.tag %) (interesting-content-entry :tags))]
+    [:p.added (str "Added on " (interesting-content-entry :added))]])
+
 
 (defn interesting-content-html
   []

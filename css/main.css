@@ -138,9 +138,11 @@ section > h1 {
   color: #9ce1ff;
   margin: 0;
   text-transform: uppercase;
-  font-size: 2em;
+  font-size: 1.7em;
   font-weight: normal;
 }
+
+/* Resume */
 
 p.summary {
   margin: 0;
@@ -224,14 +226,77 @@ span.tool {
 }
 
 
+/* Interesting content */
 
+a.interesting-content-entry:first-of-type {
+  margin-top: 1.5em;
+}
 
+a.interesting-content-entry {
+  margin-top: 2.5em;
+}
 
+a.interesting-content-entry {
+  display: block;
+  text-decoration: none;
+  color:inherit;
+}
 
+a.interesting-content-entry:hover h2.title {
+  color: #9ce1ff
+}
 
+a.interesting-content-entry h2.title {
+  font-size: 1.2em;
+  text-transform: uppercase;
+  display: inline-block;
+  margin: 0;
+  margin-right: 1ch;
+}
 
+a.interesting-content-entry p.author {
+  font-size: 1.2em;
+  display: inline-block;
+  color: #659de0;
+  margin: 0;
+}
 
+a.interesting-content-entry p.type {
+  font-size: 1em;
+  margin: 0;
+  color: #747b7e;
+  text-transform: uppercase;
+  font-weight: bold;
+}
 
+a.interesting-content-entry p.comment {
+  margin: 0;
+  margin-top: 0.5em;
+}
+
+a.interesting-content-entry p.tags {
+  margin: 0;
+}
+
+a.interesting-content-entry span.tag {
+  margin-top: 0.4em;
+  margin-right: 0.4em;
+  color: #fff;
+  display: inline-block;
+  background-color: #7ea4bd;
+  padding: 0.15em 0.45em;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 0.85em;
+}
+
+a.interesting-content-entry p.added {
+  font-size: 1em;
+  margin: 0;
+  margin-top: 0.4em;
+  font-style: italic;
+  color: #747b7e;
+}
 
 /* ==========================================================================
    Helper classes
