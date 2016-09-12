@@ -16,6 +16,13 @@
     (hiccup/include-css "css/normalize.css")
     (hiccup/include-css "css/main.css")])
 
+(def ^:private format-date
+  (let [european-date-format (time-format/formatter "d/M/YYYY")]
+    (fn [date] (time-format/unparse-local-date european-date-format date))))
+
+(def footer-html
+  [:footer [:p (str "Last website update on " (format-date (time/today)))]])
+
 (defn- add-active-class-to-section-link
   [section-link]
   (assoc section-link 1 (into (get section-link 1) {:class "active"})))
@@ -29,6 +36,12 @@
 (defn- set-active-section
   [section-links active-section]
   (map #(add-active-class-to-section-link-if-necessary % active-section) section-links))
+
+(def section-links
+  {:home "index.html"
+   :resume "resume.html"
+   :interesting-content "interesting-content.html"
+   :contact "contact.html"})
 
 (defn navigation-html
   [active-section]

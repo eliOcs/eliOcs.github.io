@@ -8,4 +8,5 @@
       (navigation-html :resume)
       (summary-html (:summary content/resume))
       (work-experience-html (:work-experience content/resume))
-      (education-html (:education content/resume))]))
+      (education-html (:education content/resume))
+      footer-html]))
