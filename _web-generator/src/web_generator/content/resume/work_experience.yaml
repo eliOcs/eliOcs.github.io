@@ -7,9 +7,9 @@
   company:
     name: Histories - Amazing historical facts near you
     description: >
-      In our last startup pivot we developed an app that helps learn the history
-      when walking around your neighbourhood, visiting a new place or if you're
-      feeling curious while sitting on the couch.
+      In our last startup pivot we developed an app that teaches you the history
+      around you when walking around your neighbourhood, visiting a new place or
+      if you're feeling curious while sitting on the couch.
 
       Our app was used by more than 20,000 users each month, included more than
       5,000 location based history articles of Spain and London and received an
@@ -29,19 +29,19 @@
         and behaviour to learn which features made sense and which could be
         discarded. We started to control our software quality with metrics too
         and published to production apps with 99.5% crash-free sessions.
-      tools: [Agile development, SCRUM, Data-driven, Pivotal Tracker, Mixpanel]
+      tools: [Agile development, SCRUM, Data-driven, Pivotal Tracker, Mixpanel, Crashlytics]
 
     - title: Backend developer
       description: >
-        I extended our backend to allow to persist the progress of the users in
-        our apps. The architecture had to handle the requests of thousands of
+        I extended our backend so it could persist the progress of the users in
+        our new app. The architecture had to handle the requests of thousands of
         users (more than 100 request per second), we had no problem handling
         this load due to our scalable architecture.
       tools: [JavaScript, HTTP REST, Linux, NGINX, Node.js, Restify, MongoDB, Git]
 
     - title: iOS developer
       description: >
-        Lots of the effort was dedicated to developed a low-battery consumption
+        Lots of the effort was dedicated to develop a low-battery consumption
         algorithm to unlock content as the user passed through certain
         locations.
       tools: [Swift, Xcode, Core Location, Core Data, MapKit, Git]
@@ -60,8 +60,8 @@
     name: Kolobee - Tourism apps
     description: >
       In our next pivot we created an app builder. This app builder was created
-      to allow city councils and bloggers to easily apps that served as tourist
-      guides. The user will create points on a map with photographs,
+      to allow city councils and bloggers to easily createa apps that served as
+      tourist guides. The user would create points on a map with photographs,
       descriptions, etc. and then an app would be created with that content
       automatically.
 
@@ -88,15 +88,15 @@
     - title: Backend developer
       description: >
         Created a script to automatically create mobile apps. It downloaded the
-        content the user uploaded, it built an offline map and created the apps
-        from the iOS and Android templates. It was a real challenge to compress
-        the offline maps so they didn't take lots of space in the app.
+        content the user had uploaded, built an offline map and created the
+        apps from the iOS and Android templates. It was a real challenge to
+        compress the offline maps so they didn't take lots of space in the apps.
       tools: [Bash, OpenStreetMaps]
 
     - title: Frontend developer
       description: >
-        Modified our previous CMS to allow users to fill the app information
-        and create apps from their content.
+        Modified our previous web based CMS to allow users to fill the app
+        information and create apps from their content.
       tools: [HTML, JavaScript, CSS, LESS, Angular, Git]
 
     - title: iOS developer
@@ -104,7 +104,8 @@
         Created a template app from which all our apps would be generated. The
         app was used as a tourist guide, it contained an offline map with the
         points of interest and each point had images and text. Users could log
-        using their Facebook accounts to share, like or comment points.
+        using their Facebook accounts to share, like or comment the points of
+        interest.
       tools: [Objective-C, Xcode, Core Location, Core Data, MapBox, Facebook SDK, Git]
 
     - title: Android developer
@@ -128,7 +129,7 @@
 
       We developed a working product for the web and iPhone in which more than
       1,000 users signed up but we failed to reach a critical mass of users for
-      the product to add real value.
+      the product to generate real value.
 
   experience:
 
