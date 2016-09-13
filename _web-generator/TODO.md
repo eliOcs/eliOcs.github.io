@@ -1,5 +1,6 @@
 # TODO
 
+- Favicon
 - Add personal picture with the message "Welcome to my personal website" to the home page
 - Add images to the resume
 - Add projects section
