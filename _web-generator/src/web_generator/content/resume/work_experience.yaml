@@ -39,16 +39,11 @@
         this load due to our scalable architecture.
       tools: [JavaScript, HTTP REST, Linux, NGINX, Node.js, Restify, MongoDB, Git]
 
-    - title: iOS developer
+    - title: Android developer
       description: >
         Lots of the effort was dedicated to develop a low-battery consumption
         algorithm to unlock content as the user passed through certain
-        locations.
-      tools: [Swift, Xcode, Core Location, Core Data, MapKit, Git]
-
-    - title: Android developer
-      description: >
-        Replicated the app developed in iPhone.
+        locations even with the application in background.
       images:
           - images/histories/android/collections.png
           - images/histories/android/stories.png
@@ -57,6 +52,11 @@
           - images/histories/android/map.png
           - images/histories/android/profile.png
       tools: [Java, Android Studio, Google Play Services, Git]
+
+    - title: iOS developer
+      description: >
+        Replicated the app developed for Android.
+      tools: [Swift, Xcode, Core Location, Core Data, MapKit, Git]
 - job-title: Co-founder
 
   period:
@@ -106,18 +106,13 @@
         information and create apps from their content.
       tools: [HTML, JavaScript, CSS, LESS, Angular, Git]
 
-    - title: iOS developer
+    - title: Android developer
       description: >
         Created a template app from which all our apps would be generated. The
         app was used as a tourist guide, it contained an offline map with the
         points of interest and each point had images and text. Users could log
         using their Facebook accounts to share, like or comment the points of
         interest.
-      tools: [Objective-C, Xcode, Core Location, Core Data, MapBox, Facebook SDK, Git]
-
-    - title: Android developer
-      description: >
-        Replicated the template app that was done for iPhone in Android.
       images:
         - images/kolobee-stage-2/android/menu.png
         - images/kolobee-stage-2/android/point-list.png
@@ -125,6 +120,11 @@
         - images/kolobee-stage-2/android/point-detail-1.png
         - images/kolobee-stage-2/android/point-detail-2.png
       tools: [Java, Android Studio, Google Play Services, MapBox, Facebook SDK]
+
+    - title: iOS developer
+      description: >
+        Replicated the template app developed for Android.
+      tools: [Objective-C, Xcode, Core Location, Core Data, MapBox, Facebook SDK, Git]
 
 - job-title: Co-founder
 
@@ -175,6 +175,13 @@
         Created a dynamic web app that allowed users to upload images while
         interacting with a map to localize them which proved to be a great
         learning experience.
+      images:
+        - images/kolobee-stage-1/web/collection-list-1.png
+        - images/kolobee-stage-1/web/collection-list-2.png
+        - images/kolobee-stage-1/web/collection-map.png
+        - images/kolobee-stage-1/web/point-detail.png
+        - images/kolobee-stage-1/web/create-point-1.png
+        - images/kolobee-stage-1/web/create-point-2.png
       tools: [HTML, JavaScript, CSS, LESS, AJAX, Node.js, Express, Bootstrap, Backbone, jQuery, Google Maps, Git]
 
     - title: iOS developer
