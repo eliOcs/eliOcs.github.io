@@ -1,7 +1,17 @@
 - degree: Machine Learning
   school: Coursera
   period: "2016"
+  description: >
+    Andrew Ng a recognized machine learning researcher taught me the history and
+    basics of machine learning. Focusing on logistic regression and neural nets
+    in the course we applied this algorithms to real world problems.
 
 - degree: Bachelor's and Master's Degree, Computer Science
   school: Universidad Autónoma de Madrid
   period: 2004 - 2009
+  description: >
+    Lots of knowledge was condensed in these years which covered both the 
+    most technical and abstract parts of computer science. Learning algorithms
+    and data structures, programming in low-level and high-level languages,
+    developing hardware and web pages, or learning about operating systems,
+    compilers and networks.
