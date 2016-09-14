@@ -13,6 +13,7 @@
     [:meta {:name "viewport" :content "width=device-width, initial-scale=1"}]
     [:title title]
     [:meta {:name "description" :content description}]
+    [:link {:href "/favicon.ico" :rel "icon"}]
     (hiccup/include-css "css/normalize.css")
     (hiccup/include-css "css/main.css")])
 
