@@ -44,11 +44,13 @@
         image-path (str root image)
         thumbnail (clojure.string/replace image #"^images" "thumbnails")
         thumbnail-path (str root thumbnail)]
+    ;;(if-not (fs/exists? thumbnail-path)
+    ;;  (do
     (fs/mkdirs (fs/parent thumbnail-path))
     (sh/with-programs [convert]
       (convert
         image-path
-        "-resize" (str width "x" height "^")
+        "-thumbnail" (str width "x" height "^")
         "-gravity" "Center"
         "-crop" (str width "x" height "+0+0")
         "+repage"
