@@ -96,7 +96,7 @@ textarea {
    ========================================================================== */
 
 body {
-  color: #28373d;
+  color: #1B2A30;
   padding-bottom: 1em;
 }
 
@@ -120,7 +120,7 @@ nav > a {
   font-size: 1em;
   margin: 0;
   margin-left: 2ch;
-  color: #747b7e;
+  color: #676E71;
   text-transform: uppercase;
   font-weight: bold;
   text-decoration: none;
@@ -175,7 +175,7 @@ p.period {
 h3.school {
   font-size: 1em;
   margin: 0;
-  color: #747b7e;
+  color: #676E71;
   text-transform: uppercase;
   font-weight: bold;
 }
@@ -184,7 +184,7 @@ p.company-description {
   font-size: 1em;
   margin: 0;
   font-style: italic;
-  color: #747b7e;
+  color: #676E71;
 }
 
 span.company-name {
@@ -211,7 +211,7 @@ div.images {
 
 div.images a {
   border: solid 4px;
-  border-color: #747b7e;
+  border-color: #676E71;
   display: inline-block;
   margin:0;
   margin-top: 0.5em;
@@ -287,7 +287,7 @@ a.interesting-content-entry p.author {
 a.interesting-content-entry p.type {
   font-size: 1em;
   margin: 0;
-  color: #747b7e;
+  color: #676E71;
   text-transform: uppercase;
   font-weight: bold;
 }
@@ -318,7 +318,7 @@ a.interesting-content-entry p.added {
   margin: 0;
   margin-top: 0.4em;
   font-style: italic;
-  color: #747b7e;
+  color: #676E71;
 }
 
 /* Home */
@@ -328,7 +328,7 @@ section.home-interesting-content a.continue-reading,
   font-size: 1em;
   margin: 0;
   margin-top: 1em;
-  color: #747b7e;
+  color: #676E71;
   text-transform: uppercase;
   font-weight: bold;
   text-decoration: none;
