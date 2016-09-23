@@ -36,7 +36,7 @@
       description: >
         I extended our backend so it could persist the progress of the users in
         our new app. The architecture had to handle the requests of thousands of
-        users (more than 100 request per second), we had no problem handling
+        users (more than 100 requests per second), we had no problem handling
         this load due to our scalable architecture.
       tools: [JavaScript, HTTP REST, Linux, NGINX, Node.js, Restify, MongoDB, Git]
 
