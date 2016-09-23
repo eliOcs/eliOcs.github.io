@@ -136,10 +136,10 @@
   company:
     name: Kolobee - Interesting things nearby
     description: >
-      In this first stage our startup Kolobee we developed a location based
-      social network. People collaborated in interest groups to locate things
-      they liked on a map. For example a group could spot and locate: cool
-      graffitis, vegan restaurants or fishing spots.
+      In this first stage our startup developed a location based social network.
+      People collaborated in interest groups to locate things they liked on a
+      map. For example a group could spot and locate: cool graffitis, vegan
+      restaurants or fishing spots.
 
       We developed a working product for the web and iPhone in which more than
       1,000 users signed up but we failed to reach a critical mass of users for
@@ -174,8 +174,8 @@
     - title: Frontend developer
       description: >
         Created a dynamic web app that allowed users to upload images while
-        interacting with a map to localize them which proved to be a great
-        learning experience.
+        interacting with a map to localize them which proved to be a challenge
+        and a great learning experience.
       images:
         - images/kolobee-stage-1/web/collection-list-1.png
         - images/kolobee-stage-1/web/collection-list-2.png
@@ -218,7 +218,7 @@
         platform. Lot of effort was put to improve the quality of the software
         creating tests and refactoring code.
 
-        I created an aspect-programming framework to parse and serialize xml to
+        I created an aspect-programming framework to parse and serialize XML to
         considerably reduce the code needed develop new data structures.
 
         Lead the development of a service to automate the deployment of the app
