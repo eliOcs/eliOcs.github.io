@@ -1,3 +1,13 @@
+- type: book
+  title: Algorithms to live by
+  author: Brian Christian & Tom Griffiths
+  added: 25/11/2016
+  url: http://algorithmstoliveby.com
+  comment: >
+    Great book to improve your decisions. Contains a summary of mathematicians
+    inventions that we can use to solve our day to day problems.
+  tags: [Math]
+
 - type: article
   title: I hate almost all software
   author: Ryan Dhal
