@@ -1,3 +1,13 @@
+- type: talk
+  title: Spec-ulation
+  author: Rich Hickey
+  added: 2/12/2016
+  url: https://www.youtube.com/watch?v=oyLBGkS5ICk
+  comment: >
+    The founder of Clojure ashames the developer community yet again explaining
+    why software versioning is completely broken.
+  tags: [Technology, Software development]
+
 - type: book
   title: Algorithms to live by
   author: Brian Christian & Tom Griffiths
