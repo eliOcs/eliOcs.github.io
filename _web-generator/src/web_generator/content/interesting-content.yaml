@@ -1,3 +1,14 @@
+- type: book
+  title: Grit
+  author: Angela Duckworth
+  added: 21/12/2016
+  url: https://www.amazon.com/Grit-Passion-Perseverance-Angela-Duckworth/dp/1501111108
+  comment: >
+    Angela has studied that talent is a myth not an excuse. Everything can be
+    learned and exceptional people differ from you only in the amount of hard
+    work they've put in.
+  tags: [Psychology]
+
 - type: talk
   title: Spec-ulation
   author: Rich Hickey
