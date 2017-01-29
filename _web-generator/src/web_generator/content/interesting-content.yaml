@@ -1,13 +1,13 @@
 - type: book
-  title: Grit
-  author: Angela Duckworth
-  added: 21/12/2016
-  url: https://www.amazon.com/Grit-Passion-Perseverance-Angela-Duckworth/dp/1501111108
+  title: Misbehaving
+  author: Richard H. Thaler
+  added: 29/1/2017
+  url: https://www.amazon.com/Misbehaving-Behavioral-Economics-Richard-Thaler/dp/039335279X
   comment: >
-    Angela has studied that talent is a myth not an excuse. Everything can be
-    learned and exceptional people differ from you only in the amount of hard
-    work they've put in.
-  tags: [Psychology]
+    Richard explains how his research has proved that the premises on which
+    economic theory rest are flawed. We've been taught economics and believed it
+    blindly but thankfully this book opened my eyes.
+  tags: [Economics, Psychology]
 
 - type: talk
   title: Spec-ulation
