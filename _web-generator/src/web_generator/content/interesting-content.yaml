@@ -1,3 +1,16 @@
+- type: book
+  title: "Sapiens: A Brief History of Humankind"
+  author: Yuval Noah Harari
+  added: 22/8/2017
+  url: https://www.amazon.com/Sapiens-Humankind-Yuval-Noah-Harari/dp/0062316095
+  comment: >
+    Having an overview of the human history is essential to understand why and
+    how we reached to our present. Yuval explains how religion, economics and
+    law are just myths we have inveted to be able to collaborate in large
+    numbers. This myths exist only in our collective imagination and therefore
+    can be shaped to improve our future. Will definitely read this book again.
+  tags: [History]
+
 - type: talk
   title: The surprisingly logical minds of babies
   author: Laura Schulz
@@ -7,6 +20,7 @@
     Simple intelligence experiments with babies show the inner workings of our
     minds.
   tags: [Cognitive Science]
+
 - type: book
   title: Misbehaving
   author: Richard H. Thaler
