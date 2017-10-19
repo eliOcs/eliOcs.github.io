@@ -1,4 +1,15 @@
 - type: book
+  title: Thinking, Fast and Slow
+  author: Daniel Kahneman 
+  added: 19/10/2017
+  url: https://www.amazon.com/Thinking-Fast-Slow-Daniel-Kahneman/dp/0374533555 
+  comment: >
+    We like to think of our selves as rational beings but Dr. Kahneman found 
+    after research that our mind has lots of quirks that can lead to irrational
+    behaviour. Best way to try avoid them is to know them in the first place. 
+  tags: [Psychology]
+
+- type: book
   title: "Sapiens: A Brief History of Humankind"
   author: Yuval Noah Harari
   added: 22/8/2017
@@ -19,7 +30,7 @@
   comment: >
     Simple intelligence experiments with babies show the inner workings of our
     minds.
-  tags: [Cognitive Science]
+  tags: [Psychology]
 
 - type: book
   title: Misbehaving
