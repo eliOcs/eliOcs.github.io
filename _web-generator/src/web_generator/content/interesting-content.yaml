@@ -1,3 +1,26 @@
+- type: book
+  title: Never Split the Difference
+  author: Chris Voss
+  added: 05/06/2018
+  url: https://www.amazon.com/Never-Split-Difference-Negotiating-Depended/dp/0062407805/
+  comment: >
+    The emotional part of our brain plays a huge part in negotiating. Chris
+    Voss, a former FBI hostage negotiator, explains how to improve your
+    negotiating by focusing on listening and learning about the counterpart when
+    negotiating.
+  tags: [Psychology]
+
+- type: video
+  title: How the Economic Machine Works
+  author: Ray Dalio
+  added: 05/06/2018
+  url: https://www.bridgewater.com/research-library/how-the-economic-machine-works/
+  comment: >
+    I've been always surprise how little we know about how the economy works,
+    this video those a great job explaining in a very basic way how credit
+    created cycles in the economy and how they can be predicted.
+  tags: [Economics]
+
 - type: talk
   title: Agile Project Management with Kanban
   author: Eric Brechner
