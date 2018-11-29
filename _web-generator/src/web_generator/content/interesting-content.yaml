@@ -1,7 +1,7 @@
 - type: talk
   title: Thinking in Data
   author: Stuart Sierra
-  added: 18/08/2018
+  added: 21/09/2018
   url: https://www.infoq.com/presentations/Thinking-in-Data
   comment: >
     After many experiences with object oriented programming I agree that
@@ -14,7 +14,7 @@
 - type: talk
   title: Effective Programs
   author: Rich Hickey
-  added: 18/09/2018
+  added: 18/08/2018
   url: https://www.youtube.com/watch?v=2V1FtfBDsLU
   comment: >
     In as constant discussion about the importance of types and correctness in
