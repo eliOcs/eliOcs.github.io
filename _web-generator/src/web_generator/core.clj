@@ -1,6 +1,5 @@
 (ns web-generator.core
-  (:require [web-generator.html-generation.core :as html-generation])
-  (:gen-class))
+  (:require [web-generator.html-generation.core :as html-generation]))
 
 (defn -main
   [& args]
