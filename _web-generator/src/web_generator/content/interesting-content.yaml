@@ -1,3 +1,29 @@
+- type: talk
+  title: Thinking in Data
+  author: Stuart Sierra
+  added: 18/08/2018
+  url: https://www.infoq.com/presentations/Thinking-in-Data
+  comment: >
+    After many experiences with object oriented programming I agree that
+    developers often get tangled up into defining the correct objects and their
+    relations and loose focus of the actual problem they are solving. If you
+    step back and understand that software is mainly about transforming data
+    you can focus on solving the problem and remove a lot of overhead.
+  tags: [Software development]
+
+- type: talk
+  title: Effective Programs
+  author: Rich Hickey
+  added: 18/09/2018
+  url: https://www.youtube.com/watch?v=2V1FtfBDsLU
+  comment: >
+    In as constant discussion about the importance of types and correctness in
+    software development, Rich states that it is more important for a program
+    to be effective than to proof that a program is correct. Most programs that
+    are developed need to actually solve problems in the real world and that is
+    the most important thing.
+  tags: [Software development]
+
 - type: book
   title: Never Split the Difference
   author: Chris Voss
