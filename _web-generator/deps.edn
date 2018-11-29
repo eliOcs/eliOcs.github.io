@@ -1,0 +1,11 @@
+{
+  :paths ["src"]
+  :deps
+  {
+    clj-yaml {:mvn/version "0.4.0"}
+    hiccup {:mvn/version "1.0.5"}
+    clj-time {:mvn/version "0.12.0"}
+    me.raynes/conch {:mvn/version "0.8.0"}
+    me.raynes/fs {:mvn/version "1.4.6"}
+  }
+}
