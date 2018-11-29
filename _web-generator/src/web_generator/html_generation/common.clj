@@ -58,9 +58,9 @@
     thumbnail))
 
 (def section-links
-  {:home "index.html"
-   :resume "resume.html"
-   :interesting-content "interesting-content.html"
+  {:home "index"
+   :resume "resume"
+   :interesting-content "interesting-content"
    :contact "mailto:me@eliocapella.com"})
 
 (defn navigation-html
