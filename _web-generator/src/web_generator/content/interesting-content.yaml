@@ -1,7 +1,7 @@
 - type: talk
   title: Thinking in Data
   author: Stuart Sierra
-  added: 21/09/2018
+  added: 21/9/2018
   url: https://www.infoq.com/presentations/Thinking-in-Data
   comment: >
     After many experiences with object oriented programming I agree that
@@ -14,7 +14,7 @@
 - type: talk
   title: Effective Programs
   author: Rich Hickey
-  added: 18/08/2018
+  added: 18/8/2018
   url: https://www.youtube.com/watch?v=2V1FtfBDsLU
   comment: >
     In as constant discussion about the importance of types and correctness in
@@ -27,7 +27,7 @@
 - type: book
   title: Never Split the Difference
   author: Chris Voss
-  added: 05/06/2018
+  added: 5/6/2018
   url: https://www.amazon.com/Never-Split-Difference-Negotiating-Depended/dp/0062407805/
   comment: >
     The emotional part of our brain plays a huge part in negotiating. Chris
@@ -39,7 +39,7 @@
 - type: video
   title: How the Economic Machine Works
   author: Ray Dalio
-  added: 05/06/2018
+  added: 5/6/2018
   url: https://www.bridgewater.com/research-library/how-the-economic-machine-works/
   comment: >
     I've been always surprise how little we know about how the economy works,
@@ -50,7 +50,7 @@
 - type: talk
   title: Agile Project Management with Kanban
   author: Eric Brechner
-  added: 30/04/2018
+  added: 30/4/2018
   url: https://www.youtube.com/watch?v=CD0y-aU1sXo
   comment: >
     I feel project management chaos is the most overlooked problem at companies,

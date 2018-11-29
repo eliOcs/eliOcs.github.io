@@ -30,11 +30,6 @@
   (let [month-year-format (time-format/formatter "MMMM yyyy")]
     (fn [date] (time-format/unparse month-year-format date))))
 
-(defn parse-date
-  [date]
-  (let [[day month year] (map read-string (clojure.string/split date #"/"))]
-    (time/date-time year month day)))
-
 (defn parse-period
   [{start :start end :end}]
   {:start (parse-date start) :end (parse-date end)})
