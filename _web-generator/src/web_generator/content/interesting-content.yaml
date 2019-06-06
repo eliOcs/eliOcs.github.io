@@ -1,4 +1,16 @@
 - type: talk
+  title: Solving Problems the Clojure Way
+  author: Rafal Dittwald
+  added: 6/6/2019
+  url: https://www.youtube.com/watch?v=vK1DazRK_a0
+  comment: >
+    Great explaination about the difference between procedural, object 
+    oriented and functional programming. Explaning the tools to minimize and
+    concentrate side effects so most of the code ends up being made up of
+    pure functions which are easy to test and debug.
+  tags: [Software development]
+
+- type: talk
   title: Thinking in Data
   author: Stuart Sierra
   added: 21/9/2018
