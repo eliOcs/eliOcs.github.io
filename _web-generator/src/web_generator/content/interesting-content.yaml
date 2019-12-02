@@ -1,10 +1,23 @@
 - type: talk
+  title: Please don’t mock me
+  author: Justin Searls
+  added: 2/12/2019
+  url: https://www.youtube.com/watch?v=Af4M8GMoxi4
+  comment: >
+    Justin shares his experiences writing tests and describes the common
+    mistakes that developers do when starting to write tests. It is always
+    tricky to coach teams into testing correctly and this talk concentrates so
+    many good points that it is a must watch if you are learning about the
+    topic.
+  tags: [Software development]
+
+- type: talk
   title: Solving Problems the Clojure Way
   author: Rafal Dittwald
   added: 6/6/2019
   url: https://www.youtube.com/watch?v=vK1DazRK_a0
   comment: >
-    Great explaination about the difference between procedural, object 
+    Great explaination about the difference between procedural, object
     oriented and functional programming. Explaning the tools to minimize and
     concentrate side effects so most of the code ends up being made up of
     pure functions which are easy to test and debug.
