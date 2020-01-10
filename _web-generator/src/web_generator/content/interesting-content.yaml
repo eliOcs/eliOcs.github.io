@@ -1,4 +1,14 @@
 - type: talk
+  title: The Hard Parts of Open Source
+  author: Evan Czaplicki
+  added: 10/1/2019
+  url: https://youtu.be/o_4EX4dPppA
+  comment: >
+    The creator of the Elm language shares some interesting analysis on how to
+    make online interactions more constructive and friendly.
+  tags: [Software development, Psychology]
+
+- type: talk
   title: Please don’t mock me
   author: Justin Searls
   added: 2/12/2019
