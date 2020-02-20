@@ -1,7 +1,18 @@
+- type: article
+  title: How I think about solving problems
+  author: Nicholas C. Zakas
+  added: 20/1/2020
+  url: https://youtu.be/o_4EX4dPppA
+  comment: >
+    Nicholas, Author of ESLint and many books on JavaScript, has a very
+    interesting strategy to find  with the most important problems to work on
+    or delegate at the right times.
+  tags: [Leadership]
+
 - type: talk
   title: The Hard Parts of Open Source
   author: Evan Czaplicki
-  added: 10/1/2019
+  added: 10/1/2020
   url: https://youtu.be/o_4EX4dPppA
   comment: >
     The creator of the Elm language shares some interesting analysis on how to
