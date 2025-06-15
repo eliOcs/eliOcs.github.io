@@ -1,7 +1,8 @@
 # TODO
 
-- Add personal picture with the message "Welcome to my personal website" to the home page
-- Add projects section
-- Extend contact section
+- Add blog section
 - Don't regenerate thumbnails
-- Simplify css, maybe generate css from code too and inline it
+- Add consulting 
+- Modernize CSS 
+- Use a different color theme, example: https://github.com/chriskempson/base16-default-schemes/blob/master/eighties.yaml
+- Update logo
