@@ -147,6 +147,7 @@ a div:hover {
 
 a div h2 {
   color: var(--base08);
+  margin-top: 0;
 }
 
 a div:hover h2 {
