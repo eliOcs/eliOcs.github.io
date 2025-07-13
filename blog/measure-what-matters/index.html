@@ -3,51 +3,61 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../style.css" />
     <title>Blog > Measure what matters</title>
   </head>
   <body>
     <h1>Measure what matters</h1>
     <p>
       You can measure RAM and CPU usage or the latency of the database per query
-      to find bottlenecks in your code, but how do you identify your team's
+      to find bottlenecks in your code, but how do you identify your
+      <em>team's</em>
       performance issues?
     </p>
     <p>
       Five years ago I started tracking metrics for my team's performance at
       Filestage. Measuring development productivity has always been
-      controversial. Is it really better to have more commits or more lines of
-      code? We've all heard stories of
+      controversial. Is it really better to more lines of code? We've all heard
+      stories of
       <a
         href="https://www.linux-magazine.com/Online/News/Linux-Sees-Massive-Performance-Increase-from-a-Single-Line-of-Code"
         target="_blank"
         >massive performance improvements when changing a single line of code</a
-      >. And by the way, going fast isn't enough if your app is full of bugs or
-      if customers don't understand how to use it—are we actually delivering any
-      value?
+      >. And by the way, <b>fast isn't enough</b> if your app is full of bugs or
+      if customers don't understand how to use it...
+      <em>are we actually delivering any value?</em>
     </p>
     <p>
-      Before we lose our minds, we have to understand that metrics will never be
-      100 % accurate; they can always be gamed and should be used only as tools
-      to quickly verify the state. If you really want to draw conclusions, you
-      will have to dig deeper and actually talk to people. This doesn't mean
-      they are useless, but they must not cloud our judgment, and our focus
-      should always be on our objectives.
+      Before we lose our minds, we have to understand that
+      <b
+        >metrics will never be 100% accurate representations of our
+        objectives</b
+      >; they can always be gamed and should be used only as tools to quickly
+      verify the state. If you really want to draw conclusions, you will have to
+      dig deeper and actually talk to you team. This doesn't mean they are
+      useless, but they must not cloud our judgment, and our focus should always
+      be on our objectives.
     </p>
     <p>
-      While we're at it, let's also clear one thing up: not every metric has to
-      be quantitative. Interviews and surveys will give you valuable insights,
-      and if your team is small that's often the most efficient approach—start
-      talking to your team members and ask the right questions.
+      While we're at it, let's also clear another thing up:
+      <b>not every metric has to be quantitative</b>. Interviews and surveys
+      will give you valuable insights,
+      <em>if your team is small that's often the most efficient approach</em>.
     </p>
     <p>
-      So what are the objectives of a software development team? Delivering on
-      time and maintaining high quality. But what if the software is delivered
-      on time and has no bugs, yet it doesn't solve any customer problem?
-      Although that is the most important part, we also have to accept the
-      limits of the engineering team's responsibility.
+      So what are the objectives of a software development team?
+      <b>Delivering on time</b> and <b>maintaining high quality</b>. If the
+      software is delivered on time and has no bugs, no one will complain of
+      engineering.
     </p>
     <p>
-      So let's focus on software development—what is out there? When I started
+      So let's focus on software development, what is out there? When I started
       tracking my team, everyone was talking about
       <a href="https://queue.acm.org/detail.cfm?id=3182626" target="_blank"
         >DORA metrics and DevOps</a
@@ -71,12 +81,12 @@
 
     <h2>Satisfaction</h2>
     <p>
-      I'm a firm believer that the best work is done when people are happy and
-      satisfied. Yes, you can squeeze performance with pressure in the short
-      term, but eventually people will burn out and leave—remember to always
-      play the long game. I'm proud that my team consistently scores over 9/10
-      in satisfaction, even after we had to lay off 20 % of the team to avoid
-      bankruptcy at one point.
+      I'm a firm believer that the
+      <b>best work is done when people are happy</b> and satisfied. Yes, you can
+      squeeze performance with pressure in the short term, but eventually people
+      will burn out and leave. <em>Always play the long game</em>. I'm proud
+      that my team consistently scores over 9/10 in satisfaction, even after we
+      had to lay off 20% of the team to avoid bankruptcy at one point.
     </p>
     <p>
       I insist on putting this metric first because it's the foundation of a
@@ -93,10 +103,13 @@
       <a href="https://workleap.com/officevibe" target="_blank">Officevibe</a>.
       Every month I copy the satisfaction and participation values into a
       tracking Google Sheet.
-      <img
-        src="./satisfaction-officevibe.png"
-        alt="Officevibe satisfaction report"
-      />
+      <figure>
+        <img
+          src="./satisfaction-officevibe.png"
+          alt="Officevibe satisfaction report"
+        />
+        <figcaption>Officevibe satisfaction report</figcaption>
+      </figure>
     </p>
 
     <h2>PRs Merged</h2>
@@ -104,29 +117,34 @@
       This is the best measure of speed I've found so far. In our setup, every
       PR that is merged into master is released to production. Each PR must be
       approved by at least one other team member, and reviewers are assigned
-      automatically. All automated CI checks—tests, linting, etc.—must pass
-      before a PR can be merged. Therefore every PR represents a
-      production-ready, completed technical task.<br />
+      automatically. All automated CI checks—tests, linting, etc. must pass
+      before a PR can be merged. Therefore
+      <b>every PR represents a production-ready, completed technical task.</b
+      ><br />
       Yes, like every other metric you could game this one by making absurdly
       small PRs, but what would the rest of the team think? Remember, PRs have
-      to be reviewed. It will encourage small PRs, but if you ask me that's a
-      good thing.
+      to be reviewed.
+      <em>It will encourage small PRs, but if you ask me that's a good thing</em
+      >.
     </p>
     <p>
-      On average, industry benchmarks show you should merge about three PRs per
-      engineer each week (elite teams reach up to five). If you're below that,
-      talk to your engineers and understand their biggest pain points. Are the
-      tests taking too long, or are they too flaky? Is it simply taking a long
-      time for PRs to be reviewed? After fixing the problems you can track your
-      progress and see whether your improvements paid off—this is what it's all
-      about: having a way to measure progress.
+      On average, industry benchmarks show you should merge about
+      <b>3 PRs per engineer each week</b> (elite teams reach up to 5). If you're
+      below that, talk to your engineers and understand their biggest pain
+      points. Are the tests taking too long, or are they too flaky? Is it simply
+      taking a long time for PRs to be reviewed? After fixing the problems you
+      can track your progress and see whether your improvements paid off—this is
+      what it's all about: having a way to measure progress.
     </p>
     <p>
       In practice, this metric is easy to obtain: I query the GitHub API with a
       simple script that counts all PRs merged in the last 30 days and writes
       the number to a Google Sheet.
     </p>
-    <img src="./merged-prs-sheet.png" alt="Merged PRs metric sheet" />
+    <figure>
+      <img src="./merged-prs-sheet.png" alt="Merged PRs metric sheet" />
+      <figcaption>Merged PRs metric sheet</figcaption>
+    </figure>
 
     <h2>Technical Tickets</h2>
     <p>
@@ -135,10 +153,14 @@
       customer who actively uses our product and has been bothered enough to
       contact support about an issue. Most frameworks recommend using
       change-failure rate, but for us it is very rare to need immediate
-      remediation after a deployment, so that metric isn't meaningful. Always
-      choose what is best for your current situation.
+      remediation after a deployment, so that metric isn't meaningful.
+      <b>Don't blindly follow frameworks</b>, Always choose what is best for
+      your current situation .
     </p>
-    <img src="./asana-bug-board.png" alt="Asana technical ticket board" />
+    <figure>
+      <img src="./asana-bug-board.png" alt="Asana technical ticket board" />
+      <figcaption>Asana technical ticket board</figcaption>
+    </figure>
     <p>
       Our company uses Asana, so I use their API to query the technical-tickets
       board and measure how many new tickets have been opened in the last month.
@@ -151,9 +173,9 @@
       In software development, not all of our work directly impacts the
       customer. Many times we refactor code or update a library to maintain our
       codebase, but the product doesn't improve for customers. In an ideal world
-      we would spend 100 % of our time working on new features. Benchmarks are
-      interesting here: elite teams spend around 65 % on new features, while
-      average teams spend about 59 %.
+      we would spend 100% of our time working on new features. Benchmarks are
+      interesting here: <b>elite teams spend 65% on new features</b>, while
+      average teams spend about 59%.
     </p>
     <p>
       To gauge our team's impact, we require PR titles to follow the
@@ -166,34 +188,39 @@
       technical solution, researching, etc., whereas creating a bug fix is
       mostly coding.
     </p>
-    <img
-      src="./conventional-commits.png"
-      alt="conventional commits in the git log"
-    />
+    <figure>
+      <img
+        src="./conventional-commits.png"
+        alt="conventional commits in the git log"
+      />
+      <figcaption>conventional commits in the git log</figcaption>
+    </figure>
 
     <h2>Conclusion</h2>
     <p>
-      Comparing your team with others out there will help you identify the
-      biggest levers for improving your team's performance. Most importantly, it
-      will let you know when you're reaching a point of diminishing returns and
-      when it's time to switch focus.
+      Comparing your team with others out there will help you
+      <b>identify the biggest levers</b> for improving your team's performance.
+      Most importantly, it will let you know when you're reaching a point of
+      diminishing returns and when it's time to switch focus.
     </p>
-    <img
-      src="./all-hands-metrics.png"
-      alt="Slide presenting metrics to the rest of the team"
-    />
+    <figure>
+      <img
+        src="./all-hands-metrics.png"
+        alt="Slide presenting metrics to the rest of the team"
+      />
+      <figcaption>Slide presenting metrics to the rest of the team</figcaption>
+    </figure>
     <p>
       Use metrics to communicate the state of the team to the rest of the
       company; it's easier to tell a story if you can measure and showcase
       progress.
     </p>
     <p>
-      Start simple—you don't need an automated way to gather the data. You can
-      create a quick Google Form or simply ask your team to estimate how many
-      PRs they merge each week, how much time they spend on new features
+      <b>Start simple</b>, you don't need an automated way to gather the data.
+      You can create a quick Google Form or simply ask your team to estimate how
+      many PRs they merge each week, how much time they spend on new features
       compared with fixing bugs, or how they would grade the development
       experience.
     </p>
   </body>
 </html>
-/html>

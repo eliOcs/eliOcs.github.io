@@ -4,11 +4,12 @@
   "description": "Personal website",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "serve ."
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "prettier": "3.6.2"
+    "prettier": "3.6.2",
+    "serve": "14.2.4"
   }
 }
