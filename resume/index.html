@@ -1,0 +1,471 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Literata:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style.css" />
+    <title>Elio Capella Sánchez > Resume</title>
+  </head>
+  <body>
+    <h1>Resume</h1>
+    <img src="/selfie.jpg" alt="Elio Capella Sánchez" class="selfie" />
+    <p>
+      I'm currently the Head of Engineering at
+      <a href="https://filestage.io" target="_blank">Filestage.io</a>. I'm a
+      technology leader and Computer Science Engineer with over 16 years of
+      hands-on experience, consistently coding while guiding software
+      development and driving business growth in startup environments.
+      Passionate about building high-performing teams and leveraging technology
+      to delight customers.
+    </p>
+
+    <h2>Experience</h2>
+    <h3>Founder</h3>
+    <div class="job-header">
+      <img src="./histories-logo.jpeg" alt="Histories" />
+      <span class="job-company"
+        >Histories - Amazing historical facts near you</span
+      >
+    </div>
+    <div class="job-period-location">
+      <span>September 2014 - July 2016, 1 year and 11 months</span>
+      <span>Madrid, Spain</span>
+    </div>
+    <p>
+      In our third and last startup pivot we developed an app that teaches you
+      history when walking around. When you walk by a historical site you will
+      receive a notification with a short article which tells you an interesting
+      story of what happened there. Our app was downloaded 500,000 times and
+      used by more than 100,000 users each month, included more than 5,000
+      geolocated history articles of Spain and London and received an average
+      rating of 4.5 out of 5 from 2,000 reviews.<br />
+      During this time we were granted with 50k€ and we managed to get 1% of the
+      users to pay 6€ on average unfortunately we couldn't reach a large enough
+      user base to create a profitable business.
+    </p>
+
+    <h4>Leadership</h4>
+    <p>
+      In this last stage we were 5 in the team although 2 were working full time
+      on the content. During this stage our main focus was to take a data driven
+      approach when taking decisions. We measured user activity and behaviour to
+      learn which features made sense and which could be discarded. We started
+      to control our software quality with metrics too and published to
+      production apps with 99.5% crash-free sessions.
+    </p>
+    <div class="tools-used">
+      Agile development, SCRUM, Data-driven, Pivotal Tracker, Mixpanel,
+      Crashlytics
+    </div>
+
+    <h4>Backend</h4>
+    <p>
+      I extended our backend so it could persist the progress of the users in
+      our new app. The architecture had to handle the requests of thousands of
+      users (more than 100 requests per second), we had no problem handling this
+      load due to our scalable architecture.
+    </p>
+    <div class="tools-used">
+      JavaScript, HTTP REST, Linux, NGINX, Node.js, Restify, MongoDB, Git
+    </div>
+
+    <h4>Android</h4>
+    <p>
+      Lots of the effort was dedicated to develop a low-battery consumption
+      algorithm to unlock content as the user passed through certain locations
+      even with the application in background.
+    </p>
+    <div class="tools-used">
+      Java, Android Studio, Google Play Services, Git
+    </div>
+
+    <h4>iOS</h4>
+    <p>Replicated the app developed for Android.</p>
+    <div class="tools-used">
+      Swift, Xcode, Core Location, Core Data, MapKit, Git
+    </div>
+
+    <div class="image-gallery">
+      <img
+        src="./histories/collections.png"
+        alt="Screenshot of the iOS app, collection list screen"
+        onclick="openModal(this)"
+      />
+      <img
+        src="./histories/locked-stories.png"
+        alt="Screenshot of the iOS app, locked stories on the map"
+        onclick="openModal(this)"
+      />
+      <img
+        src="./histories/map.png"
+        alt="Screenshot of the iOS app, map screen"
+        onclick="openModal(this)"
+      />
+      <img
+        src="./histories/profile.png"
+        alt="Screenshot of the iOS app, profile screen"
+        onclick="openModal(this)"
+      />
+      <img
+        src="./histories/stories.png"
+        alt="Screenshot of the iOS app, story list screen"
+        onclick="openModal(this)"
+      />
+      <img
+        src="./histories/story-detail.png"
+        alt="Screenshot of the iOS app, story detail screen"
+        onclick="openModal(this)"
+      />
+    </div>
+
+    <h3>Founder</h3>
+    <div class="job-header">
+      <img src="./kolobee-logo.jpeg" alt="Kolobee" />
+      <span class="job-company">Kolobee - Tourism apps</span>
+    </div>
+    <div class="job-period-location">
+      <span>April 2013 - August 2014, 1 year and 5 months</span>
+      <span>Madrid, Spain</span>
+    </div>
+    <p>
+      In our second pivot we created an app builder. This app builder was
+      created to allow city councils and bloggers to easily create apps that
+      served as tourist guides. The user would create points on a map with
+      photographs, descriptions, etc. and then an app would be created with that
+      content automatically.<br />
+      Our most important milestones during this time were: to be granted with
+      206k€ by the Spanish government, to release 200 apps with our app builder
+      and to reach more than 250,000 users. Unfortunately we couldn't convert
+      city councils into paying customers and therefore failed to achieve a
+      successful business model.
+    </p>
+
+    <h4>Leadership</h4>
+    <p>
+      In this second stage we were 4 in our team we had a frontend developer and
+      a graphic designer working with us. Thanks to our previous well thought
+      out architecture we managed to reuse great part of our previous
+      technology.<br />
+      We decided to develop our apps natively even though it meant duplicating
+      the work because at the time no cross-platform development framework
+      allowed us to achieve the product quality we desired.
+    </p>
+    <div class="tools-used">Agile development, SCRUM, Pivotal Tracker</div>
+
+    <h4>Backend</h4>
+    <p>
+      Created a script to automatically create mobile apps. It downloaded the
+      content the user had uploaded, built an offline map and created the apps
+      from the iOS and Android templates. It was a real challenge to compress
+      the offline maps so they didn't take lots of space in the apps.
+    </p>
+    <div class="tools-used">Bash, OpenStreetMaps</div>
+
+    <h4>Browser</h4>
+    <p>
+      Modified our previous web based CMS to allow users to fill the app
+      information and create apps from their content.
+    </p>
+    <div class="tools-used">HTML, JavaScript, CSS, LESS, Angular, Git</div>
+
+    <h4>Android</h4>
+    <p>
+      Created a template app from which all our apps would be generated. The app
+      was used as a tourist guide, it contained an offline map with the points
+      of interest and each point had images and text. Users could log using
+      their Facebook accounts to share, like or comment the points of interest.
+    </p>
+    <div class="tools-used">
+      Java, Android Studio, Google Play Services, MapBox, Facebook SDK
+    </div>
+    <h4>iOS</h4>
+    <p>Replicated the template app developed for Android.</p>
+    <div class="tools-used">
+      Objective-C, Xcode, Core Location, Core Data, MapBox, Facebook SDK, Git
+    </div>
+
+    <div class="image-gallery">
+      <img
+        src="./kolobee-stage-2/android-map.png"
+        alt="Screenshot of the android template app, map screen"
+        onclick="openModal(this)"
+      />
+      <img
+        src="./kolobee-stage-2/android-menu.png"
+        alt="Screenshot of the android template app, menu screen"
+        onclick="openModal(this)"
+      />
+      <img
+        src="./kolobee-stage-2/android-point-detail-1.png"
+        alt="Screenshot of the android template app, detail screen 1/2"
+        onclick="openModal(this)"
+      />
+      <img
+        src="./kolobee-stage-2/android-point-detail-2.png"
+        alt="Screenshot of the android template app, detail screen 2/2"
+        onclick="openModal(this)"
+      />
+      <img
+        src="./kolobee-stage-2/android-point-list.png"
+        alt="Screenshot of the android template app, point list screen"
+        onclick="openModal(this)"
+      />
+    </div>
+
+    <h3>Founder</h3>
+    <div class="job-header">
+      <img src="./kolobee-logo.jpeg" alt="Kolobee" />
+      <span class="job-company">Kolobee - Interesting things nearby</span>
+    </div>
+    <div class="job-period-location">
+      <span>March 2012 - March 2013, 1 year and 1 month</span>
+      <span>Madrid, Spain</span>
+    </div>
+    <p>
+      In this first stage our startup developed a location based social network.
+      People collaborated in interest groups to locate things they liked on a
+      map. For example a group could spot and locate: cool graffitis, vegan
+      restaurants or fishing spots. We developed a working product for the web
+      and iPhone where 1,000 users signed up but we failed to reach a critical
+      mass of users for the product to generate real value.
+    </p>
+
+    <h4>Leadership</h4>
+    <p>
+      During this stage we were 4 in our team, we had a frontend developer and a
+      graphic designer working with us. We successfully managed to ship a high
+      quality product with very little resources and time. But, we did fail to
+      build a simple product (MVP) as we jammed the product with too many
+      features.<br />
+      One of the best decisions we took was to split the platform into multiple
+      services. One that took part of the core business logic providing web
+      services to use it (API) and two other parts: the web client and the iOS
+      app. Another key decision to keep costs down was to use only one
+      programming language in almost all parts of the development which greatly
+      reduced context switching improving our efficiency.
+    </p>
+    <div class="tools-used">Agile development, SCRUM, Pivotal Tracker</div>
+
+    <h4>Backend</h4>
+    <p>
+      Thought out an architecture that would last and would be useful in the
+      long run, the result was an stateless server that could be easily scaled.
+      Offered a REST API to the web a mobile app clients to authenticate, upload
+      content, chat and query content nearby.
+    </p>
+    <div class="tools-used">
+      JavaScript, HTTP REST, Linux, NGINX, Node.js, Restify, MongoDB,
+      ImageMagick, Git
+    </div>
+    <h4>Browser</h4>
+    <p>
+      Created a dynamic web app that allowed users to upload images while
+      interacting with a map to localize them which proved to be a challenge and
+      a great learning experience.
+    </p>
+    <div class="tools-used">
+      HTML, JavaScript, CSS, LESS, AJAX, Node.js, Express, Bootstrap, Backbone,
+      jQuery, Google Maps, Git
+    </div>
+
+    <h4>iOS</h4>
+    <p>
+      Built an app that could do all the functionalities of our web. Users took
+      pictures with the app and then the image was uploaded with the current
+      user location. A map showed all the content around and users could chat
+      with each other.
+    </p>
+    <div class="tools-used">
+      Objective-C, Xcode, Core Location, Core Data, MapKit, Git
+    </div>
+
+    <div class="image-gallery">
+      <img
+        src="./kolobee-stage-1/ios-collection-list.jpg"
+        alt="screenshot of the iOS app, collection list screen"
+        onclick="openModal(this)"
+      />
+      <img
+        src="./kolobee-stage-1/ios-map.jpg"
+        alt="screenshot of the iOS app, map screen"
+        onclick="openModal(this)"
+      />
+      <img
+        src="./kolobee-stage-1/ios-point-detail.jpg"
+        alt="screenshot of the iOS app, point detail screen"
+        onclick="openModal(this)"
+      />
+      <img
+        src="./kolobee-stage-1/ios-point-list.jpg"
+        alt="screenshot of the iOS app, point list screen"
+        onclick="openModal(this)"
+      />
+      <img
+        src="./kolobee-stage-1/web-point-detail.png"
+        alt="screenshot of the browser app, point detail page"
+        onclick="openModal(this)"
+      />
+      <img
+        src="./kolobee-stage-1/web-collection-list-1.png"
+        alt="screenshot of the browser app, collection page 1/2"
+        onclick="openModal(this)"
+      />
+      <img
+        src="./kolobee-stage-1/web-collection-list-2.png"
+        alt="screenshot of the browser app, colletion page 2/2"
+        onclick="openModal(this)"
+      />
+      <img
+        src="./kolobee-stage-1/web-collection-map.png"
+        alt="screenshot of the browser app, collection map"
+        onclick="openModal(this)"
+      />
+      <img
+        src="./kolobee-stage-1/web-create-point-1.png"
+        alt="screenshot of the browser app, create point 1/2"
+        onclick="openModal(this)"
+      />
+      <img
+        src="./kolobee-stage-1/web-create-point-2.png"
+        alt="screenshot of the browser app, create point 2/2"
+        onclick="openModal(this)"
+      />
+    </div>
+
+    <h3>Software developer</h3>
+    <a href="https://www.bbva.com/" target="_blank" class="job-header-link">
+      <div class="job-header">
+        <img src="./bbva-logo.jpeg" alt="BBVA" />
+        <span class="job-company">BBVA - Corporate Investment Banking</span>
+      </div>
+    </a>
+    <div class="job-period-location">
+      <span>October 2009 - March 2012, 2 years and 6 months</span>
+      <span>Madrid, Spain</span>
+    </div>
+    <p>
+      Our team developed and maintained an in house derivatives pricing
+      platform. Lot of effort was put to improve the quality of the software
+      creating tests and refactoring code. I Led the automation of the
+      deployment to production reducing the time. I created an
+      aspect-programming framework to parse and serialize XML to considerably
+      reduce the code needed develop when communicating with the valuation
+      layer.
+    </p>
+    <div class="tools-used">
+      Java, JUnit, J2EE, Oracle database, PowerShell, Subversion
+    </div>
+
+    <h3>Software developer</h3>
+    <a href="https://www.afi.es/" target="_blank" class="job-header-link">
+      <div class="job-header">
+        <img src="./afi-logo.jpeg" alt="Afi" />
+        <span class="job-company"
+          >Afi - finance consultancy and training services</span
+        >
+      </div>
+    </a>
+    <div class="job-period-location">
+      <span>October 2008 - June 2009, 9 months</span>
+      <span>Madrid, Spain</span>
+    </div>
+    <p>
+      Involved in the development and maintenance of a financial web portal, I
+      managed to drastically improve the page loading times. Did a case study to
+      analyze if changing the web portal framework would bring a clear benefit.
+      Applied a new learned technology to create a financial calculator for
+      customers to calculate their loan payments.
+    </p>
+    <div class="tools-used">C#, Python, Django, Adobe Flex, Subversion</div>
+
+    <h2>Education</h2>
+    <div class="education-item">
+      <a
+        href="https://www.coursera.org/account/accomplishments/verify/LM4VXUGZFNFB"
+        target="_blank"
+        ><h3>Machine Learning Course</h3></a
+      >
+      <div class="job-header">
+        <a href="https://online.stanford.edu/" target="_blank">
+          <img src="./stanford-online-logo.png" alt="Stanford Online" />
+        </a>
+        <span class="job-company">Stanford Online</span>
+      </div>
+      <div class="job-period-location">
+        <span>2016</span>
+        <span>Remote</span>
+      </div>
+      <p>
+        Andrew Ng a recognized machine learning researcher taught me the history
+        and basics of machine learning. Focusing on logistic regression and
+        neural nets in the course we applied this algorithms to real world
+        problems.
+      </p>
+    </div>
+
+    <div class="education-item">
+      <h3>Bachelor's and Master's Degree, Computer Science</h3>
+      <a href="https://www.uam.es" target="_blank" class="job-header-link">
+        <div class="job-header">
+          <img src="./uam-logo.svg" alt="Universidad Autónoma de Madrid" />
+          <span class="job-company">Universidad Autónoma de Madrid</span>
+        </div>
+      </a>
+      <div class="job-period-location">
+        <span>2004 - 2009</span>
+        <span>Madrid, Spain</span>
+      </div>
+      <p>
+        Lots of knowledge was condensed in these years which covered both the
+        most technical and abstract parts of computer science. Learning
+        algorithms and data structures, programming in low-level and high-level
+        languages, developing hardware and web pages, or learning about
+        operating systems, compilers and networks.
+      </p>
+    </div>
+
+    <!-- Modal for image viewing -->
+    <div id="imageModal" class="modal">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <div class="modal-content">
+        <img id="modalImage" src="" alt="" />
+      </div>
+    </div>
+
+    <script>
+      function openModal(img) {
+        const modal = document.getElementById("imageModal");
+        const modalImg = document.getElementById("modalImage");
+        modal.style.display = "block";
+        modalImg.src = img.src;
+        modalImg.alt = img.alt;
+      }
+
+      function closeModal() {
+        const modal = document.getElementById("imageModal");
+        modal.style.display = "none";
+      }
+
+      // Close modal when clicking outside the image
+      window.onclick = function (event) {
+        const modal = document.getElementById("imageModal");
+        if (event.target === modal) {
+          closeModal();
+        }
+      };
+
+      // Close modal with Escape key
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+          closeModal();
+        }
+      });
+    </script>
+  </body>
+</html>
