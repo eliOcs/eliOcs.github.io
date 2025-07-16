@@ -59,10 +59,10 @@
       to control our software quality with metrics too and published to
       production apps with 99.5% crash-free sessions.
     </p>
-    <div class="tools-used">
+    <span class="tools-used">
       Agile development, SCRUM, Data-driven, Pivotal Tracker, Mixpanel,
       Crashlytics
-    </div>
+    </span>
 
     <h4>Backend</h4>
     <p>
@@ -434,7 +434,10 @@
     <div id="imageModal" class="modal">
       <span class="close" onclick="closeModal()">&times;</span>
       <div class="modal-content">
-        <img id="modalImage" src="" alt="" />
+        <figure>
+          <img id="modalImage" src="" alt="" />
+          <figcaption id="imageCaption"></figcaption>
+        </figure>
       </div>
     </div>
 
@@ -442,14 +445,18 @@
       function openModal(img) {
         const modal = document.getElementById("imageModal");
         const modalImg = document.getElementById("modalImage");
+        const caption = document.getElementById("imageCaption");
         modal.style.display = "block";
         modalImg.src = img.src;
         modalImg.alt = img.alt;
+        caption.textContent = img.alt;
+        document.body.style.overflow = "hidden";
       }
 
       function closeModal() {
         const modal = document.getElementById("imageModal");
         modal.style.display = "none";
+        document.body.style.overflow = "auto";
       }
 
       // Close modal when clicking outside the image

@@ -173,7 +173,7 @@ a:has(.blog-post-preview):hover {
 
   p {
     font-size: 1rem;
-    text-align: left;
+    text-align: justify;
   }
 
   .selfie {
@@ -255,6 +255,7 @@ h4 {
 
 .tools-used {
   color: var(--base04);
+  margin-top: -0.5rem;
   font-size: 0.9rem;
   font-style: italic;
 }
@@ -302,8 +303,36 @@ h4 {
   max-width: 90%;
   max-height: 90%;
   margin: 5% auto;
-  display: block;
+  display: flex;
+  flex-direction: column;
   border-radius: 8px;
+}
+
+.modal-content figure {
+  margin: 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 90vh;
+}
+
+.modal-content figure img {
+  margin: 0 0 0.5rem 0;
+  flex: 1;
+  min-height: 0;
+  object-fit: contain;
+  max-height: calc(90vh - 3rem);
+}
+
+.modal-content figcaption {
+  color: var(--base04);
+  font-size: 0.9rem;
+  font-style: italic;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  flex-shrink: 0;
 }
 
 .modal img {
@@ -318,7 +347,7 @@ h4 {
   position: absolute;
   top: 15px;
   right: 35px;
-  color: var(--base05);
+  color: var(--base0D);
   font-size: 40px;
   font-weight: bold;
   cursor: pointer;
@@ -328,7 +357,7 @@ h4 {
 }
 
 .close:hover {
-  color: var(--base08);
+  color: var(--base0C);
 }
 
 @keyframes fadeIn {
