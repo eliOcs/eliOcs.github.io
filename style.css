@@ -37,6 +37,32 @@ body {
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem 1rem;
+  position: relative;
+}
+
+/* Home navigation button */
+.home-nav {
+  position: absolute;
+  top: 2.5rem;
+  left: 1rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+  z-index: 100;
+}
+
+.home-nav:hover {
+  transform: scale(1.1);
+}
+
+.home-nav img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  margin: 0;
+  border-radius: 50%;
 }
 
 h1 {
@@ -76,6 +102,10 @@ a:hover {
 a:focus {
   outline: 2px solid var(--base0D);
   outline-offset: 2px;
+}
+
+a:focus:not(:focus-visible) {
+  outline: none;
 }
 
 em {
@@ -163,6 +193,12 @@ a:has(.blog-post-preview):hover {
     padding: 1rem 0.75rem;
   }
 
+  .home-nav {
+    top: 1.5rem;
+    width: 40px;
+    height: 40px;
+  }
+
   h1 {
     font-size: 2rem;
   }
@@ -188,15 +224,26 @@ h3 {
   font-family: "JetBrains Mono", monospace;
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--base0A);
+  color: var(--base09);
   margin: 1.5rem 0 0.5rem 0;
+}
+
+a h3 {
+  color: var(--base09);
+  text-decoration: none;
+}
+
+a:hover h3 {
+  color: var(--base09);
+  text-decoration: underline;
+  text-decoration-color: var(--base09);
 }
 
 h4 {
   font-family: "JetBrains Mono", monospace;
   font-size: 1.125rem;
   font-weight: 600;
-  color: var(--base0B);
+  color: var(--base0E);
   margin: 1rem 0 0.5rem 0;
 }
 
@@ -369,20 +416,11 @@ h4 {
   }
 }
 
-/* Education section styling */
-.education-item {
-  margin-bottom: 2rem;
-}
-
-.education-item h3 {
-  margin-bottom: 0.25rem;
-}
-
 @media (max-width: 768px) {
   .job-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.25rem;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
   }
 
   .image-gallery {
