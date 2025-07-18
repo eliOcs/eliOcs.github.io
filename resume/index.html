@@ -13,10 +13,12 @@
     <title>Elio Capella Sánchez > Resume</title>
   </head>
   <body>
-    <a href="/" class="home-nav">
-      <img src="/selfie.jpg" alt="Go to home page" />
-    </a>
-    <h1>Resume</h1>
+    <div class="page-header">
+      <a href="/" class="home-nav">
+        <img src="/selfie.jpg" alt="Go to home page" />
+      </a>
+      <h1>Resume</h1>
+    </div>
     <p>
       I'm currently the Head of Engineering at
       <a href="https://filestage.io" target="_blank">Filestage.io</a>. I'm a
@@ -80,6 +82,19 @@
       infrastructure to create a new region in the US. Which required carefully
       splitting workloads and sharding our database to ensure data residency
     </p>
+
+    <div class="image-gallery">
+      <img
+        src="./filestage-stage-2/reduction-incomming-bugs.png"
+        alt="Chart showing the reduction of incoming technical tickets"
+        onclick="openModal(this)"
+      />
+      <img
+        src="./filestage-stage-2/satisfaction-history.png"
+        alt="Results of the team satisfaction survey over time"
+        onclick="openModal(this)"
+      />
+    </div>
 
     <h3>Tech Lead</h3>
     <a href="https://www.filestage.io/" target="_blank" class="job-header-link">
