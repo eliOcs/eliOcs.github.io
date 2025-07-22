@@ -1,0 +1,213 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Literata:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style.css" />
+    <title>Blog > Fighting free trial abuse</title>
+  </head>
+  <body>
+    <div class="page-header">
+      <a href="/" class="home-nav">
+        <img src="/selfie.jpg" alt="Go to home page" />
+      </a>
+      <h1>Fighting free trial abuse</h1>
+    </div>
+    <p>
+      Before we started our open trial at
+      <a href="https://www.filestage.io" target="_blank">Filestage</a> I
+      wouldn't have imagined the amount of effort it would take us to fight
+      spammers and other misuse of the platform. We aren't a big brand but still
+      hundreds of bad actors show up in our trial,
+      <em>the internet is wild</em>.<br />
+      It is also the kind of work you don't really want to spend time on,
+      because it doesn't help your real customers, but it is necessary to keep
+      the platform healthy and usable for everyone.
+    </p>
+
+    <h2>Blocked by Chrome</h2>
+    <p>
+      I was on my summer holidays in the middle of the mountains when I got a
+      message from one of our developers, I wasn't expecting good news but this
+      really hit me: "our domain was being blocked by Chrome and no one can
+      access filestage". I immediately browsed from my phone and indeed I was
+      being blocked from accessing our site.
+    </p>
+    <figure>
+      <img
+        src="./blocked-by-chrome.png"
+        alt="Chrome blocking Filestage, this is what our customers saw"
+      />
+      <figcaption>
+        Chrome blocking Filestage, this is what our customers saw...
+      </figcaption>
+    </figure>
+    <p>
+      I ran to my laptop and tried to figure out what was going on. Thankfully
+      inside the google console we got more information that our site was being
+      blocked due to a file hosted in our <code>media.filestage.io</code> domain
+      which is where we host our user uploaded files. We quickly identified the
+      user that uploaded the file and looked at their session, we downloaded the
+      file ourselves it was a zip file that contained an html. That html was
+      used for a phishing attack and the link to the file was present in
+      thousands of emails that were being sent which is why Chrome blocked our
+      site.
+    </p>
+    <p>
+      We researched and found out that the way to get our domain unblocked was
+      to delete the file and submit a request to Google to review our domain.
+      Unfortunately this process can take up to days and we couldn't afford
+      that. We were lucky that our user files were hosted in a different domain
+      than our main app and we learnt that only that subdomain was being
+      blocked. I quickly created a new dns record for our cloudfront
+      distribution and renamed the domain in our code to point to the new
+      <code>media2.filestage.io</code> domain. Pushed the fix to production and
+      it worked, what a relief!
+    </p>
+
+    <h2>Hotlinking prevention</h2>
+    <p>
+      This previous incident wasn't the only case of hotlinking we faced, we
+      also had a user uploaded files to share a tv series. They would upload the
+      files to our platform and then embed them in their blog. Unfortunately the
+      tv series was very popular in India and we had a 10,000 GB of downloads
+      from our CDN during the weekend which cost us a lot of money. By the way,
+      expect being exploited on the weekends for us it has been a recurring
+      trend.
+    </p>
+    <figure>
+      <img
+        src="./hotlinking-india.png"
+        alt="Videos uploaded to Filestage being hotlinked in a blog"
+      />
+      <figcaption>
+        Videos uploaded to Filestage being hotlinked in a blog
+      </figcaption>
+    </figure>
+    <p>
+      By now we were protecting our uploaded files with signed urls but still in
+      this case the user manually refreshed each of the signed urls to keep them
+      working, never underestimate the creativity of spammers. To end this once
+      and for all we added a firewall rule to our CDN to verify the referer and
+      only allow loading the from our site.
+    </p>
+
+    <h2>SPAM</h2>
+    <p>
+      As spam filters improved, spammers looked more and more to send emails
+      from platforms that have good reputation. At the beginning we noticed how
+      spammers would manually create accounts in our platform and try putting
+      links and emails in every text field like the project name, user name,
+      etc. They studied which actions in our platform triggered emails and would
+      check which fields were included in those emails. Once they found a way to
+      send spam from our platform they would create a script to automate the
+      process and send thousands of emails.
+    </p>
+    <figure>
+      <img
+        src="./spam-email-screenshot.png"
+        alt="Spam emails sent from Filestage"
+      />
+      <figcaption>Spam emails sent from Filestage</figcaption>
+    </figure>
+
+    <h2>Blocking IPs</h2>
+    <p>
+      At first we tried the easiest and most basic forms of security, every time
+      we detected someone abusing our site we would block their IP and that
+      would immediately stop the attack. Eventually they started automating the
+      use of random IPs per every account they created, splitting their attacks
+      in batches making it harder to detect and block.
+    </p>
+
+    <h2>Field validation</h2>
+    <p>
+      In our continuous attempts to discourage the use of our platform for spam
+      attacks we made sure we didn't allow links, emails or forbidden words in
+      any of our input fields.
+    </p>
+    <figure>
+      <img
+        src="./field-validation-code.png"
+        alt="Checking for spam in input fields"
+      />
+      <figcaption>Checking for spam in input fields</figcaption>
+    </figure>
+
+    <h2>Disallowing disposable emails</h2>
+    <p>
+      Another pattern we picked up is that normally attackers would use
+      disposable emails. Quickly we added a step in our signup to check the
+      domain of the email, there is a
+      <a
+        href="https://www.npmjs.com/package/disposable-email-domains"
+        target="_blank"
+        >handy package</a
+      >
+      in npm with an up to date list.
+    </p>
+
+    <h2>Verifying emails</h2>
+    <p>
+      To make it a bit harder for them to automate account creation and avoid
+      them using emails they didn't own we added a step to verify the email
+      address. On signup we send an OTP and require it to continue the signup
+      process. Unfortunately this adds friction to account creation for
+      legitimate users and isn't ideal but it did help us reduce the amount of
+      spam accounts created.
+    </p>
+
+    <h2>Recaptcha</h2>
+    <p>
+      Due to the automated nature of their attacks we tried
+      <a
+        href="https://developers.google.com/recaptcha/docs/invisible"
+        target="_blank"
+        >Google Invisible Recaptcha</a
+      >, we protected all the endpoints that could be potentially used in an
+      attack. How this version of Recaptcha works is that you would generate a
+      code in the frontend that would be required and verified in the backend,
+      once verified Google would return the probability of that request being a
+      bot or not. This worked for a while but eventually they started doing all
+      attacks manually to avoid being detected by Recaptcha as bots.
+    </p>
+
+    <h2>Rate limiting</h2>
+    <p>
+      At last we had no alternative but to add strict rate limits in our trial.
+      We developed an in-house rate limiting solution which allows us to set limits
+      per operation type and per user. For example, we can limit how many
+      collaborators a user can invite to a project or how many times a file can
+      be shared. In this way a spammer could send a few emails per account
+      created.
+    </p>
+    <p>
+      Like I said, still spammers could create multiple accounts, so we also added rate
+      limits to certain actions regardless of the user or IP. For example, we know
+      that it is strange to have more than 200 accounts created per hour so if
+      this happens we disable account creation for a while.
+    </p>
+    <p>
+      Our rate limit implementation is very basic, on every action that we want
+      to rate limit we add an entry to our database with the ip, user id and
+      timestamp. To check the rate limit we do a basic count query to retrieve
+      the number of entries in the rate limit time window. If the count is above
+      the limit we return an error and don't allow the action to be performed.
+    </p>
+
+    <h2>Conclusion</h2>
+    <p>
+      After all these years of cat and mouse, the rate limits have been proven to
+      be the most useful tool. We've even removed most of our other security
+      measures like the Recaptcha because there are always false positives which
+      impact legitimate users. To try and avoid disrupting our real users we only
+      apply our security measures to the free and trial users.
+    </p>
+  </body>
+</html>
