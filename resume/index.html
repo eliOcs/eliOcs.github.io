@@ -11,22 +11,34 @@
     />
     <link rel="stylesheet" href="/style.css" />
     <title>Elio Capella Sánchez > Resume</title>
-    <meta name="description" content="Resume of Elio Capella Sánchez - Head of Engineering at Filestage.io with over 16 years of experience in software development, team leadership, and startup environments." />
+    <meta
+      name="description"
+      content="Resume of Elio Capella Sánchez - Head of Engineering at Filestage.io with over 16 years of experience in software development, team leadership, and startup environments."
+    />
     <meta name="author" content="Elio Capella Sánchez" />
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://eliocapella.com/resume/" />
     <meta property="og:title" content="Elio Capella Sánchez - Resume" />
-    <meta property="og:description" content="Resume of Elio Capella Sánchez - Head of Engineering at Filestage.io with over 16 years of experience in software development, team leadership, and startup environments." />
+    <meta
+      property="og:description"
+      content="Resume of Elio Capella Sánchez - Head of Engineering at Filestage.io with over 16 years of experience in software development, team leadership, and startup environments."
+    />
     <meta property="og:image" content="https://eliocapella.com/selfie.jpg" />
-    
+
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://eliocapella.com/resume/" />
     <meta property="twitter:title" content="Elio Capella Sánchez - Resume" />
-    <meta property="twitter:description" content="Resume of Elio Capella Sánchez - Head of Engineering at Filestage.io with over 16 years of experience in software development, team leadership, and startup environments." />
-    <meta property="twitter:image" content="https://eliocapella.com/selfie.jpg" />
+    <meta
+      property="twitter:description"
+      content="Resume of Elio Capella Sánchez - Head of Engineering at Filestage.io with over 16 years of experience in software development, team leadership, and startup environments."
+    />
+    <meta
+      property="twitter:image"
+      content="https://eliocapella.com/selfie.jpg"
+    />
   </head>
   <body>
     <div class="page-header">
@@ -557,6 +569,18 @@
     <!-- Modal for image viewing -->
     <div id="imageModal" class="modal">
       <span class="close" onclick="closeModal()">&times;</span>
+      <span
+        class="nav-arrow nav-arrow-left"
+        id="prevButton"
+        onclick="showPreviousImage()"
+        >&lt;</span
+      >
+      <span
+        class="nav-arrow nav-arrow-right"
+        id="nextButton"
+        onclick="showNextImage()"
+        >&gt;</span
+      >
       <div class="modal-content">
         <figure>
           <img id="modalImage" src="" alt="" />
@@ -569,60 +593,68 @@
       let currentImg = null;
       let touchStartX = 0;
       let touchEndX = 0;
-      
+
       const modal = document.getElementById("imageModal");
       const modalImg = document.getElementById("modalImage");
       const caption = document.getElementById("imageCaption");
+      const prevButton = document.getElementById("prevButton");
+      const nextButton = document.getElementById("nextButton");
 
       function openModal(img) {
         currentImg = img;
-        modal.style.display = "block";
+        modal.style.display = "flex";
         modalImg.src = img.src;
         modalImg.alt = img.alt;
         caption.textContent = img.alt;
         document.body.style.overflow = "hidden";
-        
+
+        updateNavigationButtons();
+
         // Add event listeners
         document.addEventListener("keydown", handleKeydown);
-        modal.addEventListener('touchstart', handleTouchStart, { passive: true });
-        modal.addEventListener('touchend', handleTouchEnd, { passive: true });
-        window.addEventListener('click', handleWindowClick);
+        modal.addEventListener("touchstart", handleTouchStart, {
+          passive: true,
+        });
+        modal.addEventListener("touchend", handleTouchEnd, { passive: true });
+        window.addEventListener("click", handleWindowClick);
       }
 
       function closeModal() {
         modal.style.display = "none";
         document.body.style.overflow = "auto";
         currentImg = null;
-        
+
         // Remove event listeners
         document.removeEventListener("keydown", handleKeydown);
-        modal.removeEventListener('touchstart', handleTouchStart);
-        modal.removeEventListener('touchend', handleTouchEnd);
-        window.removeEventListener('click', handleWindowClick);
+        modal.removeEventListener("touchstart", handleTouchStart);
+        modal.removeEventListener("touchend", handleTouchEnd);
+        window.removeEventListener("click", handleWindowClick);
+      }
+
+      function showImage(img) {
+        if (!img) return closeModal();
+        currentImg = img;
+        modalImg.src = img.src;
+        modalImg.alt = img.alt;
+        caption.textContent = img.alt;
+
+        updateNavigationButtons();
       }
 
       function showNextImage() {
-        const nextImg = currentImg.nextElementSibling;
-        if (nextImg) {
-          currentImg = nextImg;
-          modalImg.src = nextImg.src;
-          modalImg.alt = nextImg.alt;
-          caption.textContent = nextImg.alt;
-        } else {
-          closeModal();
-        }
+        showImage(currentImg.nextElementSibling);
       }
 
       function showPreviousImage() {
-        const prevImg = currentImg.previousElementSibling;
-        if (prevImg) {
-          currentImg = prevImg;
-          modalImg.src = prevImg.src;
-          modalImg.alt = prevImg.alt;
-          caption.textContent = prevImg.alt;
-        } else {
-          closeModal();
-        }
+        showImage(currentImg.previousElementSibling);
+      }
+
+      function updateNavigationButtons() {
+        const hasNext = currentImg.nextElementSibling;
+        const hasPrev = currentImg.previousElementSibling;
+
+        nextButton.style.display = hasNext ? "block" : "none";
+        prevButton.style.display = hasPrev ? "block" : "none";
       }
 
       function handleTouchStart(e) {
@@ -637,7 +669,7 @@
       function handleSwipe() {
         const swipeThreshold = 50;
         const swipeDistance = touchEndX - touchStartX;
-        
+
         if (Math.abs(swipeDistance) > swipeThreshold) {
           if (swipeDistance > 0) {
             // Swipe right - previous image
@@ -656,7 +688,7 @@
       }
 
       function handleKeydown(event) {
-        switch(event.key) {
+        switch (event.key) {
           case "Escape":
             closeModal();
             break;
