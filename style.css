@@ -76,9 +76,15 @@ h1 {
   font-size: 2.5rem;
   font-weight: 700;
   color: var(--base08);
-  margin: 0 0 1.5rem 0;
+  margin: 0 0 0.5rem 0;
   text-align: center;
   padding: 0 4rem;
+}
+
+.contact-info {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
 }
 
 h2 {
@@ -236,6 +242,17 @@ h3 {
   margin: 1.5rem 0 0.5rem 0;
 }
 
+ul {
+  font-size: 1.125rem;
+  padding-left: 2rem;
+  margin: 1rem 0;
+}
+
+li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
 a h3 {
   color: var(--base09);
   text-decoration: none;
@@ -245,14 +262,6 @@ a:hover h3 {
   color: var(--base09);
   text-decoration: underline;
   text-decoration-color: var(--base09);
-}
-
-h4 {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--base0E);
-  margin: 1rem 0 0.5rem 0;
 }
 
 .job-header {
@@ -289,9 +298,14 @@ h4 {
 
 .job-company {
   font-size: 1.125rem;
-  font-weight: 600;
   color: var(--base06);
 }
+
+.job-company strong {
+  font-weight: 600;
+  color: inherit;
+}
+
 
 .job-duration,
 .job-location {
@@ -300,12 +314,34 @@ h4 {
   margin-bottom: 0.25rem;
 }
 
+.job-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  margin: 1.5rem 0 0.75rem 0;
+}
+
+.job-title-company {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.job-title-company h3 {
+  margin: 0 0 0.5rem 0;
+}
+
 .job-period-location {
   display: flex;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.25rem;
   color: var(--base04);
-  font-size: 0.9rem;
-  margin-bottom: 0.25rem;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.job-period-location strong {
+  color: inherit;
 }
 
 .tools-used {
@@ -449,6 +485,16 @@ h4 {
 }
 
 @media (max-width: 768px) {
+  .job-header-container {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+
+  .job-period-location {
+    text-align: left;
+  }
+
   .job-header {
     flex-direction: row;
     align-items: center;
@@ -466,10 +512,6 @@ h4 {
 
   h3 {
     font-size: 1.1rem;
-  }
-
-  h4 {
-    font-size: 0.95rem;
   }
 
   .modal-content {
