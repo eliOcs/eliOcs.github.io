@@ -45,10 +45,34 @@
       <a href="/" class="home-nav">
         <img src="/selfie.jpg" alt="Go to home page" />
       </a>
+      <a
+        href="#"
+        onclick="window.print(); return false;"
+        class="download-nav"
+        title="Download/Print Resume"
+      >
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="7,10 12,15 17,10" />
+          <line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
+      </a>
       <h1>Elio Capella Sánchez</h1>
       <div class="contact-info">
         <a href="mailto:me@eliocapella.com">me@eliocapella.com</a> •
-        <a href="https://www.linkedin.com/in/eliocapella/" target="_blank">LinkedIn</a>
+        <a href="https://www.linkedin.com/in/eliocapella/" target="_blank"
+          >LinkedIn</a
+        >
+        • Madrid, Spain
       </div>
     </div>
     <p>
@@ -501,6 +525,40 @@
       </li>
     </ul>
 
+    <h2>Technical Expertise</h2>
+    <ul>
+      <li>
+        <strong>Architecture & Platforms:</strong> AWS, Infrastructure as Code,
+        Microservices, API Design, Multi-region Deployments, Data Residency
+        Compliance
+      </li>
+      <li>
+        <strong>Leadership-enabling Technologies:</strong> CI/CD, Monitoring &
+        Observability, Security & Compliance (ISO 27017), Performance
+        Optimization
+      </li>
+      <li>
+        <strong>Core Programming:</strong> JavaScript (Browser & Node.js), Java,
+        SQL, Bash, Swift, Python
+      </li>
+      <li>
+        <strong>Databases & Storage:</strong> PostgreSQL, MongoDB, SQLite, Data
+        Architecture
+      </li>
+      <li>
+        <strong>Engineering Management:</strong> Team Scaling (6→22 engineers),
+        Technical Strategy, Hiring & Onboarding, Performance Management
+      </li>
+      <li>
+        <strong>Development Practices:</strong> Test-Driven Development,
+        Domain-Driven Design, Code Review Processes, Quality Frameworks
+      </li>
+      <li>
+        <strong>Project & Product:</strong> OKRs, Agile Methodologies, Technical
+        Due Diligence, Startup Environments
+      </li>
+    </ul>
+
     <h2>Education</h2>
     <div class="job-header-container">
       <div class="job-title-company">
@@ -550,21 +608,61 @@
       </div>
     </div>
 
+    <div class="last-updated">Last updated: September 5, 2025</div>
+
     <!-- Modal for image viewing -->
     <div id="imageModal" class="modal">
-      <span class="close" onclick="closeModal()">&times;</span>
-      <span
+      <button class="close" onclick="closeModal()">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <button
         class="nav-arrow nav-arrow-left"
         id="prevButton"
         onclick="showPreviousImage()"
-        >&lt;</span
       >
-      <span
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="15,18 9,12 15,6"></polyline>
+        </svg>
+      </button>
+      <button
         class="nav-arrow nav-arrow-right"
         id="nextButton"
         onclick="showNextImage()"
-        >&gt;</span
       >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="9,18 15,12 9,6"></polyline>
+        </svg>
+      </button>
       <div class="modal-content">
         <figure>
           <img id="modalImage" src="" alt="" />
