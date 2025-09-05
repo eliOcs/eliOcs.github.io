@@ -76,15 +76,19 @@ h1 {
   font-size: 2.5rem;
   font-weight: 700;
   color: var(--base08);
-  margin: 0 0 0.5rem 0;
+  margin-bottom: 2rem;
   text-align: center;
   padding: 0 4rem;
+}
+
+.page-header h1 {
+  margin-bottom: 0;
 }
 
 .contact-info {
   text-align: center;
   margin-bottom: 1.5rem;
-  font-size: 1rem;
+  font-size: 1.125rem;
 }
 
 h2 {
@@ -305,7 +309,6 @@ a:hover h3 {
   font-weight: 600;
   color: inherit;
 }
-
 
 .job-duration,
 .job-location {
