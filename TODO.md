@@ -21,3 +21,7 @@ Share my thoughts and experience with the AI and let the AI write the article.
 
 # Blog articles ideas
 - Writing good unit tests: mock the edges of your system not the implementation details or internal layers. Don't write unit tests per function or file write them per feature or behavior. In memory databases. HTTP mocking libraries. Why I dislike jest
+
+# Resume
+- Add images to work entries for proof
+- Add referals to resume

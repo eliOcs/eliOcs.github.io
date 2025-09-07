@@ -15,6 +15,16 @@
   --base0D: #7cafc2;
   --base0E: #ba8baf;
   --base0F: #a16946;
+  
+  /* Common sizes */
+  --icon-size-desktop: 48px;
+  --icon-size-mobile: 40px;
+  --font-size-large: 1.125rem;
+  --font-size-small: 0.9rem;
+  --spacing-small: 0.5rem;
+  --spacing-medium: 1rem;
+  --spacing-large: 1.5rem;
+  --spacing-xlarge: 2rem;
 }
 
 * {
@@ -71,25 +81,31 @@ body {
   border-radius: 50%;
 }
 
+/* Common icon button styles */
+.icon-button {
+  width: var(--icon-size-desktop);
+  height: var(--icon-size-desktop);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  color: var(--base05);
+  cursor: pointer;
+  border: none;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.icon-button:hover {
+  background-color: var(--base01);
+}
+
 /* Download navigation button */
 .download-nav {
   position: absolute;
   top: 0.5rem;
   right: 0;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--base01);
-  transition: transform 0.2s ease, background-color 0.2s ease;
   z-index: 100;
-  color: var(--base05);
-}
-
-.download-nav:hover {
-  color: var(--base0C);
 }
 
 h1 {
@@ -121,8 +137,8 @@ h2 {
 }
 
 p {
-  margin-bottom: 1rem;
-  font-size: 1.125rem;
+  margin-bottom: var(--spacing-medium);
+  font-size: var(--font-size-large);
   text-align: justify;
 }
 
@@ -238,9 +254,13 @@ a:has(.blog-post-preview):hover {
   }
 
   .download-nav {
-    width: 40px;
-    height: 40px;
     top: 0.25rem;
+    background-color: var(--base01);
+  }
+  
+  .icon-button {
+    width: var(--icon-size-mobile);
+    height: var(--icon-size-mobile);
   }
 
   h1 {
@@ -274,13 +294,13 @@ h3 {
 }
 
 ul {
-  font-size: 1.125rem;
-  padding-left: 2rem;
-  margin: 1rem 0 2rem 0;
+  font-size: var(--font-size-large);
+  padding-left: var(--spacing-xlarge);
+  margin: var(--spacing-medium) 0 var(--spacing-xlarge) 0;
 }
 
 li {
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--spacing-small);
   line-height: 1.6;
 }
 
@@ -470,43 +490,14 @@ a:hover h3 {
   position: absolute;
   top: 15px;
   right: 35px;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--base01);
-  color: var(--base05);
-  cursor: pointer;
-  border: none;
   z-index: 1001;
-  transition: color 0.2s ease;
-}
-
-.close:hover {
-  color: var(--base0C);
 }
 .nav-arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--base01);
-  color: var(--base05);
-  cursor: pointer;
-  border: none;
   z-index: 1001;
   user-select: none;
-  transition: color 0.2s ease;
-}
-.nav-arrow:hover {
-  color: var(--base0C);
 }
 .nav-arrow-left {
   left: 35px;
@@ -561,12 +552,10 @@ a:hover h3 {
   .close {
     top: 10px;
     right: 20px;
-    width: 40px;
-    height: 40px;
+    background-color: var(--base01);
   }
   .nav-arrow {
-    width: 40px;
-    height: 40px;
+    background-color: var(--base01);
   }
   .nav-arrow-left {
     left: 20px;
@@ -720,11 +709,13 @@ a:hover h3 {
   }
 
   .contact-info a[href*="linkedin"] {
-    display: none;
+    font-size: 0;
   }
 
-  .contact-info::after {
+  .contact-info a[href*="linkedin"]::before {
     content: "\002B\0033\0034\0020\0036\0032\0037\0020\0034\0034\0035\0020\0038\0031\0031";
+    font-size: 11pt;
+    color: var(--base05);
   }
 
   /* Ensure good page breaks */
