@@ -1,0 +1,315 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Literata:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style.css" />
+    <title>Blog > How I Build Engineering Culture</title>
+    <meta
+      name="description"
+      content="Great engineering culture reduces time-to-value while protecting users and engineers. Learn how to build it through leading by example: kindness, pragmatism, reliability, autonomy, and fighting complexity."
+    />
+    <meta name="author" content="Elio Capella Sánchez" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article" />
+    <meta
+      property="og:url"
+      content="https://eliocapella.com/blog/engineering-culture/"
+    />
+    <meta property="og:title" content="How I Build Engineering Culture" />
+    <meta
+      property="og:description"
+      content="Great engineering culture reduces time-to-value while protecting users and engineers. Learn how to build it through leading by example: kindness, pragmatism, reliability, autonomy, and fighting complexity."
+    />
+    <meta
+      property="og:image"
+      content="https://eliocapella.com/blog/engineering-culture/layers-slice.png"
+    />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https://eliocapella.com/blog/engineering-culture/"
+    />
+    <meta property="twitter:title" content="How I Build Engineering Culture" />
+    <meta
+      property="twitter:description"
+      content="Great engineering culture reduces time-to-value while protecting users and engineers. Learn how to build it through leading by example: kindness, pragmatism, reliability, autonomy, and fighting complexity."
+    />
+    <meta
+      property="twitter:image"
+      content="https://eliocapella.com/blog/engineering-culture/layers-slice.png"
+    />
+  </head>
+  <body>
+    <div class="page-header">
+      <a href="/" class="home-nav">
+        <img src="/selfie.jpg" alt="Go to home page" />
+      </a>
+      <h1>How I Build Engineering Culture</h1>
+    </div>
+    <p>
+      Great engineering culture <strong>reduces time-to-value</strong> while
+      protecting users and engineers. It is easier said than done, I find that
+      <strong>leading by example</strong> is the best way to get your points
+      across. As engineers we hate politics and fluff we want to see meaning in
+      what we do, actions mean more than words.
+    </p>
+
+    <h2>Kindness and Respect</h2>
+    <p>
+      Unfortunately you can't fake this one. Real trust and motivation will come
+      naturally if you <em>truly care</em> about your team members. Show that
+      you care by doing things for them, help them out when you need them the
+      most, give them <strong>autonomy</strong> and allow them to make mistakes
+      so they grow. <strong>Don't blame</strong> and
+      <strong>assume positive intent</strong>. Share credit and celebrate wins.
+      Share constructive feedback on a regular basis.
+    </p>
+    <figure>
+      <img
+        width="400"
+        height="461"
+        src="./xkcd-team-commic.png"
+        alt="XKCD #1562: I in Team"
+      />
+      <figcaption>Funny how leadership mantras can get out of hand</figcaption>
+    </figure>
+    <p>
+      When you need to have a difficult conversation share the things you like
+      first then share what you don't like with
+      <strong>concrete examples</strong> so it easy to understand. If dealing
+      with people doesn't come naturally to you, I highly recommend reading the
+      popular How to
+      <a
+        href="https://www.amazon.com/How-Win-Friends-Influence-People/dp/0671027034"
+        >Win Friends and Influence People book</a
+      >.
+    </p>
+
+    <h2>Pragmatic: outcomes over output</h2>
+    <p>
+      At any point in time there are always many things you can do, that is why
+      it is important to <strong>pick your battles wisely</strong>. Much better
+      to have a heated argument on how we can we improve 10x the performance of
+      that slow backend route than wasting time discussing if we should use
+      single or double quotes for strings. Although the
+      <a
+        href="https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/"
+        target="_blank"
+        >Pragmatic Programmer book</a
+      >
+      is old, its still my favourite.
+    </p>
+    <figure>
+      <img
+        width="400"
+        height="384"
+        src="./pragmatic-meme.jpeg"
+        alt="Pragmatic meme about over complicated programming constructs"
+      />
+      <figcaption>Simple tools to get the job done</figcaption>
+    </figure>
+    <p>
+      Tie work to <strong>user value</strong>, challenge concepts early to try
+      and achieve <strong>80% of the value for 20% of the effort</strong>. Let's
+      say you are building a new notification panel.
+    </p>
+    <figure>
+      <img
+        width="250"
+        height="110"
+        src="./unread-icon-alternatives.png"
+        alt="Two different approaches to show unread notifications"
+      />
+      <figcaption>
+        Two different approaches to show unread notifications
+      </figcaption>
+    </figure>
+    <p>
+      What happens if the user has too many unread notifications? Will the
+      number fit in the UI? Will the backend take too much time to calculate the
+      total amount? Will we update the number as notifications are read?
+      <em>Slow down, start again</em>. How about just showing the marker with no
+      number in it? We can easily start with that and
+      <strong>iterate later if necessary</strong>.
+      <a href="https://www.youtube.com/watch?v=SxdOUGdseq4" target="_blank"
+        >Simplicity isn't easy, but it is worth it</a
+      >.
+    </p>
+
+    <h2>Reliability as habit</h2>
+    <p>
+      We've all experience the frustration of using a buggy product, it is
+      awful. The user gets the worst part but at the same time the developer
+      gets interrupted to <em>rework the unreliable implementation</em>.
+    </p>
+    <p>
+      Make sure the work you deliver has <strong>monitoring built in</strong>.
+      Think if is necessary to create an alert. Write
+      <strong>tests that verify the behaviour</strong> and give you confidence
+      every time you make a change. If you are in a already in a very unreliable
+      codebase, first <em>take a step back and analyze the root cause</em> of
+      the most common issues and fix them first.
+    </p>
+    <p>
+      We all make mistakes and it is fine from time to time, but there is
+      nothing more energy draining than having to fix the same issues over and
+      over again.
+    </p>
+
+    <h2>Full-cycle and Product-minded engineers</h2>
+    <p>
+      I've found giving <strong>autonomy</strong> to talented people is
+      empowering, having <strong>one person end to end</strong> designing,
+      building, testing, deploying and operating a
+      <strong>thin vertical slice</strong> of software. It is a good investment
+      to provide tools that allow engineers to comfortably be able to
+      <a
+        href="https://netflixtechblog.com/full-cycle-developers-at-netflix-a08c31f83249"
+        target="_blank"
+        >take ownership of each stage of the software development lifecycle</a
+      >.
+    </p>
+    <figure>
+      <img src="./layers-slice.png" alt="Vertical slice model representation" />
+      <figcaption>Vertical slice model representation</figcaption>
+    </figure>
+    <p>
+      <a
+        href="https://blog.pragmaticengineer.com/the-product-minded-engineer/"
+        target="_blank"
+        >Product-minded engineers</a
+      >
+      focus their interest in the product they are building, its users, and the
+      business context. Are <strong>proactive</strong> towards product
+      development, try to understand the <em>"why"</em> behind decisions. They
+      <strong>balance product and engineering tradeoffs</strong>, handling edge
+      cases pragmatically, and owning the product feature lifecycle.
+    </p>
+    <p>
+      If your technology stack allows for it, I'm also very fond of
+      <strong>full-stack engineers</strong>. Every time you can
+      <strong>eliminate a handoff</strong> you are reducing friction and
+      improving communication.
+    </p>
+
+    <h2>Transparency</h2>
+    <p>
+      Especially in remote teams, <strong>transparency is key</strong>. You need
+      to <strong>share all the context early</strong> and track decisions to
+      make sure everyone has the best information and a complete picture to do
+      the best work.
+    </p>
+    <p>
+      <strong>Overcommunicate</strong> if necessary. Explain the biggest
+      challenges and how we are going to tackle them. Share the vision and the
+      goals. Ask the team to <em>explain the strategy back to you</em> to test
+      how good your communication was.
+    </p>
+
+    <h2>Think Big, Start Small, Move Fast</h2>
+    <p>
+      Split problems into <strong>small pieces</strong> which can be done in
+      <strong>1-3 days</strong>, use <strong>feature flags</strong> to hide work
+      in progress and showcase feature to beta customers as soon as you have a
+      working solution.
+    </p>
+    <p>
+      I like to enforce a CI check that
+      <strong>disallows merging PRs that are over 500 lines</strong> of code
+      changes and make sure
+      <strong>every merged PR is deployed to production</strong>.
+    </p>
+    <figure>
+      <img
+        src="./solid-ci-cd-pipeline.png"
+        alt="A sample run of a solid CI/CD pipeline"
+      />
+      <figcaption>A sample run of a solid CI/CD pipeline</figcaption>
+    </figure>
+    <p>
+      Make sure you have <strong>safety nets in place</strong> to give the
+      confidence to your team to move fast. The
+      <strong>CI/CD pipeline should be solid</strong>: static code analysis
+      (linting, type checking, duplicates ...), there should be
+      <strong>E2E in place for the most critical paths</strong> and have
+      integrations or unit tests for most of the code base.
+    </p>
+
+    <h2>Architecture to match the business</h2>
+    <p>
+      I'm a big fan of
+      <a
+        href="https://www.amazon.com/dp/0134434420/ref=emc_b_5_i"
+        target="_blank"
+        >Domain Driven Design (DDD)</a
+      >
+      or <strong>Jobs To Be Done (JTBD)</strong> frameworks, analyse the problem
+      you are working on and split it up in manageable chunks which
+      <strong>have meaning for your end user</strong>.
+    </p>
+    <figure>
+      <img
+        src="./product-based-team-structure.png"
+        alt="Team structure that mirrors the product structure"
+      />
+      <figcaption>Team structure that mirrors the product structure</figcaption>
+    </figure>
+    <p>
+      The
+      <strong>team structure should mirror the structure of the software</strong
+      >. The code base structure should mimic this structure too. The
+      <strong>same terms our users use</strong>, our product team uses
+      <strong>should be in our code base</strong>. We have to work to eliminate
+      barriers to communication and avoid unnecessary complexity.
+    </p>
+
+    <h2>Operational excellence over DevOps</h2>
+    <p>
+      Unfortunately the meaning of DevOps has really been lost over the years in
+      the software community. I really like following the structure shared by
+      the
+      <a
+        href="https://aws.amazon.com/architecture/well-architected/"
+        target="_blank"
+        >AWS Well-Architected framework</a
+      >. Thankfully the software industry shares its best secrets openly. We can
+      quickly check best practices and benchmark metrics to
+      <a href="https://dora.dev/quickcheck/" target="_blank"
+        >understand where you are</a
+      >
+      and what is missing to become an elite team.
+    </p>
+    <p>
+      As the number of employees grows and the time working on the project
+      increases, the most value you are going to get from
+      <strong>every operation improvement</strong>. As you grow in number of
+      users the more value you will get from investments in
+      <strong>reliability, performance and security</strong>.
+    </p>
+    <p>
+      Start <a href="../measure-what-matters/">measuring what matters</a> to
+      understand your main bottlenecks, then work to improve and track your
+      progress.
+    </p>
+
+    <h2>Conclusion</h2>
+    <p>
+      <strong>Kind but direct communication</strong>,
+      <strong>iteration over grand plans</strong>,
+      <strong>user empathy</strong>, <strong>high standards</strong>,
+      <strong>pragmatic execution</strong>, and don't forget to
+      <strong>fight complexity</strong>
+      or it will end up stalling your progress.
+    </p>
+  </body>
+</html>
