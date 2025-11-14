@@ -195,6 +195,17 @@ figcaption {
   font-style: italic;
 }
 
+/* Code block styles */
+pre {
+  border-radius: 8px;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+}
+
+pre code {
+  border-radius: 8px;
+}
+
 .selfie {
   width: 150px;
   height: 150px;

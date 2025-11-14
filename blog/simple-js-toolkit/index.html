@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Literata:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
+    />
+    <title>Blog > Simple JavaScript Toolkit</title>
+    <meta
+      name="description"
+      content="Learn how to write simpler JavaScript code by applying Rich Hickey's 'Simple Made Easy' principles. Explore practical patterns for values over objects, data over syntax, and controlled state management."
+    />
+    <meta name="author" content="Elio Capella Sánchez" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article" />
+    <meta
+      property="og:url"
+      content="https://eliocapella.com/blog/simple-js-toolkit/"
+    />
+    <meta property="og:title" content="Simple JavaScript Toolkit" />
+    <meta
+      property="og:description"
+      content="Learn how to write simpler JavaScript code by applying Rich Hickey's 'Simple Made Easy' principles. Explore practical patterns for values over objects, data over syntax, and controlled state management."
+    />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https://eliocapella.com/blog/simple-js-toolkit/"
+    />
+    <meta property="twitter:title" content="Simple JavaScript Toolkit" />
+    <meta
+      property="twitter:description"
+      content="Learn how to write simpler JavaScript code by applying Rich Hickey's 'Simple Made Easy' principles. Explore practical patterns for values over objects, data over syntax, and controlled state management."
+    />
+  </head>
+  <body>
+    <div class="page-header">
+      <a href="/" class="home-nav">
+        <img src="/selfie.jpg" alt="Go to home page" />
+      </a>
+      <h1>Simple JavaScript Toolkit</h1>
+    </div>
+    <p>
+      I started my programming career with a lot of Java. It is a great runtime
+      but always felt too verbose for my liking and required lots of discipline
+      to not overcomplicate code with unnecessary hierarchy relationships.
+      Looking for alternatives I stumbled upon a lot of JVM languages like:
+      Scala, Kotlin and eventually Clojure. Although I never liked the lisp
+      syntax I appreciated its expressiveness. Eventually I got to find the many
+      great talks from the author of Clojure, Rich Hickey. Today I would like to
+      share how we can apply his
+      <a href="https://www.youtube.com/watch?v=SxdOUGdseq4" target="_blank"
+        >Simple Made Easy</a
+      >
+      ideas to JavaScript.
+    </p>
+
+    <h2>Object and Methods vs Values and Functions</h2>
+    <p>
+      With the increasing popularity of React this functional programming
+      paradigm has already been pushed pretty hard. Approaches are similar but
+      have subtle differences, in objects you are
+      <strong>tying the data and the behaviour</strong>. As you start adding
+      more behaviours you will end up with situations in which you want to reuse
+      some behaviour and you are forced to create a complex object only to
+      access a small part of it. As the author of Erlang, Joe Armstrong, said
+      <em
+        >"You wanted a banana but what you got was a gorilla holding the banana
+        and the entire jungle."</em
+      >
+    </p>
+    <p>Imagine a simple online shopping cart implementation:</p>
+    <pre><code class="language-js">class ShoppingCart {
+  constructor() {
+    this.items = []; 
+    this.taxRate = 0.08;
+  }
+
+  addItem(item) {
+    this.items.push(item);
+  }
+
+  calculateTotal() {
+    let subtotal = 0;
+    for (const item of this.items) {
+      subtotal += item.price;
+    }
+    const tax = subtotal * this.taxRate;
+    return subtotal + tax;
+  }
+}
+
+const cart = new ShoppingCart();
+cart.addItem({ name: "Banana", price: 1 });
+cart.addItem({ name: "Apple", price: 2 });
+cart.calculateTotal(); // Returns 3.24
+</code></pre>
+    <p>
+      Everything is nice and simple but what happens when in our shopping site
+      we decide to add a wishlist where users can also store items and calculate
+      their price. Should we create a new class which holds the calculate total
+      method and have both the ShoppingCart and the Wishlist classes inherit
+      from it?<br />
+      Instead we can just focus on the data and the behaviour separately:
+    </p>
+    <pre><code class="language-js">const cart = {
+  items: [
+    { name: "Banana", price: 1 },
+    { name: "Apple", price: 2 }
+  ],
+  taxRate: 0.08
+};
+
+const wishlist = [
+  { name: "Book", price: 15 },
+  { name: "Headphones", price: 100 }
+];
+
+const Cart = {
+  calculateTotal: (items, taxRate = 0.08) => {
+    const subtotal = items.reduce((sum, item) => sum + item.price, 0);
+    const tax = subtotal * taxRate;
+    return subtotal + tax;
+  },
+};
+
+const cartTotal = Cart.calculateTotal(cart.items, cart.taxRate);  // Returns 3.24
+const wishlistTotal = Cart.calculateTotal(wishlist); 
+</code></pre>
+    <p>
+      Our mind has a limit on how many things we can keep track of at the same
+      time. By <strong>isolating behaviour</strong> and making clear what data
+      is involved we can <strong>reduce the cognitive load</strong> and make our
+      code easier to understand.
+    </p>
+
+    <h2>Switch vs Polymorphism</h2>
+    <p>
+      One of the great things of OOP is <strong>polymorphism</strong>. It allows
+      you to decouple different implementations and avoid switch statements
+      which eventually don't scale.
+    </p>
+    <pre><code class="language-js">class ShoppingCart {
+
+  /* ... */
+
+  calculateTotal() {
+    let subtotal = 0;
+    let tax = 0;
+
+    for (const item of this.items) {
+      switch (item.type) {
+        case 'physical':
+          // Apply tax
+          subtotal += item.price;
+          tax += item.price * this.taxRate; 
+          break;
+        case 'service':
+          // No tax
+          subtotal += item.price;
+          break;
+      }
+    }
+    return subtotal + tax;
+  }
+}
+</code></pre>
+
+    <p>
+      When you are using classes you can create a Taxable interface and have
+      different implementations for each item type:
+    </p>
+    <pre><code class="language-js">class PhysicalItem {
+  /* ... */
+  calculatePrice(taxRate) {
+    return this.price + (this.price * taxRate); // Apply tax
+  }
+} 
+class DigitalItem {
+  /* ... */
+  calculatePrice() {
+    return this.price; // No tax
+  }
+}
+
+class ShoppingCart {
+  /* ... */
+  calculateTotal() {
+    let total = 0;
+    for (const item of this.items) {
+      total += item.calculatePrice(this.taxRate);
+    }
+    return total;
+  }
+}
+
+const cart = new ShoppingCart();
+cart.addItem(new PhysicalItem("Laptop", 1000));
+cart.addItem(new DigitalItem("E-book", 50));
+cart.calculateTotal(); // Returns 1130
+</code></pre>
+
+    <p>
+      But we can easily achieve the same result without the need for classes:
+    </p>
+
+    <pre><code class="language-js">const cart = {
+  items: [
+    { type: "physical", name: "Laptop", price: 1000 },
+    { type: "digital", name: "E-book", price: 50 }
+  ],
+  taxRate: 0.08
+};
+
+const calculatePrice = {
+  physical: (price, taxRate) => price + (price * taxRate), // Apply tax
+  digital: (price) => price, // No tax
+};
+
+const Cart = {
+  calculateTotal: (items, taxRate = 0.08) => {
+    return items.reduce(
+      (sum, item) => sum + calculatePrice[item.type](item.price, taxRate),
+      0);
+  },
+};
+
+const cartTotal = Cart.calculateTotal(cart.items, cart.taxRate);  // Returns 1130
+</code></pre>
+
+    <h2>Controlled vs Uncontrolled State</h2>
+    <p>
+      We've all been told that <strong>global state is bad</strong> and it is
+      indeed true that it makes things harder to understand. The reality is that
+      we add global state all the time in databases, caches, sessions...
+      <em>it is necessary</em>.
+    </p>
+    <pre><code class="language-js">const userSession = {
+  isLoggedIn: false,
+  cart: [],
+  theme: 'light'
+};
+
+// --- 'auth.js' ---
+function handleLogin() {
+  /* ... */
+  userSession.isLoggedIn = true; // Direct mutation
+  userSession.theme = 'dark';    // Direct mutation
+}
+
+// --- 'cart.js' ---
+function addItem(item) {
+  /* ... */
+  userSession.cart.push(item); // Direct mutation
+}
+
+// --- 'settings.js' ---
+function changeTheme(newTheme) {
+  /* ... */
+  userSession.theme = newTheme; // Direct mutation
+}
+    </code></pre>
+    <p>
+      It is all well and good until you have to debug an issue in the state,
+      then you have to add a breakpoint in <em>every</em> state modification,
+      which requires you to find them in the first place. Instead we can create
+      a <strong>central place</strong> where all the state modifications happen.
+    </p>
+
+    <pre><code class="language-js">const userSession = (() => {
+  let session = {
+      isLoggedIn: false,
+      cart: [],
+      theme: 'light'
+  };
+
+ return {
+   getSession: () => structuredClone(session),
+   update: (updater) => {
+     updater(session);
+     console.log('Session updated:', session);
+   }
+ }
+})();
+
+// --- 'auth.js' ---
+function handleLogin() {
+  userSession.update((session) => {
+    session.isLoggedIn = true;
+    session.theme = 'dark';
+  });
+}
+
+// --- 'cart.js' ---
+function addItem(item) {
+  userSession.update((session) => {
+    session.cart.push(item);
+  });
+}
+    </code></pre>
+    <p>
+      The global state still adds complexity but now when there is a problem you
+      have an <strong>easy way to track all the changes</strong> and find the
+      root cause.
+    </p>
+
+    <h2>Iterative loops vs Collection pipelines</h2>
+    <p>
+      Similar to switch statements, iterative loops can get out of hand pretty
+      quickly. As you start adding more and more logic you are reusing the loop
+      which is great for performance but
+      <strong>forces us to keep more things in mind</strong>.
+    </p>
+    <pre><code class="language-js">const numbers = [1, 2, 3, 4, 5];
+const squaresOfEvens = [];
+for (let i = 0; i < numbers.length; i++) {
+  const num = numbers[i];
+  if (num % 2 === 0) {
+    squaresOfEvens.push(num * num);
+  }
+}
+console.log(squaresOfEvens); // [4, 16]
+</code></pre>
+    <p>
+      Instead we can use collection pipelines to separate each step of the
+      process:
+    </p>
+    <pre><code class="language-js">const numbers = [1, 2, 3, 4, 5];
+const squaresOfEvens = numbers
+  .filter(num => num % 2 === 0)
+  .map(num => num * num);
+console.log(squaresOfEvens); // [4, 16]
+</code></pre>
+
+    <h2>Conditionals vs Rules</h2>
+    <p>
+      Similarly to switch statements and loops, conditionals can get out of hand
+      pretty quickly. If the logic gets complex you start getting
+      <strong>nested structures</strong> which are tied together and difficult
+      to reason about.
+    </p>
+    <pre><code class="language-js">function addProjectCollaborator(project, collaborator, user, subscription) {
+  if (project.collaborators.includes(user)) {
+    if (project.status === "active") {
+      if (project.collaborators.length < subscription.limits.numberOfProjectCollaborators) {
+        project.collaborators.push(collaborator);
+      } else if (subscription.status === "paid" || subscription.status === "trialing" ) {
+         throw new Error("Reached the subscription limit, please upgrade");
+      } else if (subscription.status === "inactive") {
+         throw new Error("Only available in paid plans, please subscribe");
+      }
+    } else {
+       throw new Error("Project isn't active");
+    }
+  } else {
+    throw new Error("Not enough permissions");
+  }
+}
+</code></pre>
+
+    <p>Try to compose the logic with <strong>independent rules</strong>:</p>
+    <pre><code class="language-js">function checkRules(context, rules) {
+  for (const { check, error } of rules) {
+    if (!check(context)) {
+      throw new Error(error);
+    }
+  }
+}
+function hasPermission({ project, user }) {  
+  return project.collaborators.includes(user);
+}
+function isProjectActive({ project }) {
+  return project.status === "active";
+}
+function isWithinSubscriptionLimits({ project, subscription }) {
+  return project.collaborators.length < subscription.limits.numberOfProjectCollaborators;
+}
+function isSubscriptionValid({ subscription }) {
+  return subscription.status === "paid" || subscription.status === "trialing";
+}
+checkRules({ project, user, subscription }, [
+  { check: hasPermission, error: "Not enough permissions" },
+  { check: isProjectActive, error: "Project isn't active" },
+  { check: isWithinSubscriptionLimits, error: "Reached the subscription limit, please upgrade" },
+  { check: isSubscriptionValid, error: "Only available in paid plans, please subscribe" },
+]);
+addProjectCollaborator(project, collaborator);
+</code></pre>
+
+    <h2>Syntax vs Data</h2>
+    <p>
+      This might be the <em>hardest one to grasp</em>. If you've never played
+      with Lisp where code is just lists or MongoDB queries which are just JSON.
+      In JavaScript the most familiar approach is to use syntax instead of data
+      all the time. Good thing about <strong>data</strong> is that it is
+      <strong>much easier to manipulate and use</strong>.
+    </p>
+    <p>Imagine a simple api using the Express framework:</p>
+    <pre><code class="language-js">const express = require("express");
+const app = express();
+
+const userRoutes = express.Router();
+userRoutes.post("/login", loginHandler);
+userRoutes.post("/logout", logoutHandler);
+app.use("/users", userRoutes);
+
+const productRoutes = express.Router();
+productRoutes.post("/products", createProductHandler);
+productRoutes.get("/products/:id", getProductHandler);
+app.use("/products", productRoutes);
+</code></pre>
+    <p>
+      Everything is fine until you want to change to another framework, now all
+      your route definitions are <strong>tied to Express syntax</strong>.
+      Instead we can define our routes as <strong>data</strong>:
+    </p>
+    <pre><code class="language-js">const routes = [
+  { method: "POST", path: "/users/login", handler: loginHandler },
+  { method: "POST", path: "/users/logout", handler: logoutHandler },
+  { method: "POST", path: "/products", handler: createProductHandler },
+  { method: "GET", path: "/products/:id", handler: getProductHandler },
+];
+
+// Express setup
+const express = require("express");
+const app = express();
+routes.forEach(({ method, path, handler }) => {
+  app[method.toLowerCase()](path, handler);
+});
+
+// Fastify setup
+const fastify = require("fastify")();
+routes.forEach(({ method, path, handler }) => {
+  fastify.route({ method, url: path, handler });
+});
+</code></pre>
+    <p>
+      Unfortunately we would still need to adapt each handler because each
+      frameworks models the exact same query, body or response data in a
+      different way. That is the core problem we face, we are
+      <strong>constantly modelling data with syntax</strong> in slightly
+      different ways causing endless work on migrations. So if you have the
+      choice <strong>always try to model with data first</strong>.
+    </p>
+
+    <h2>ORM vs SQL</h2>
+    <p>
+      Tied to the last point we talked about, ORMs are a great example of
+      <strong>syntax over data</strong>. They try to abstract away the database
+      queries into objects and methods which end up being
+      <strong>leaky abstractions</strong>.
+    </p>
+    <pre><code class="language-js">// ORM, eg: Sequelize
+import { Sequelize, DataTypes } from 'sequelize';
+const sequelize = new Sequelize('sqlite::memory:');
+
+const User = sequelize.define('User', {
+  id: DataTypes.INTEGER,
+  age: DataTypes.INTEGER,
+  name: DataTypes.STRING,
+});
+
+const jane = await User.create({
+  name: 'Jane',
+  age: 25,
+});
+const users = await User.findAll({ where: {
+  age: { [Sequelize.Op.gt]: 18
+} } });
+</code></pre>
+
+    <p>
+      I understand the appeal of ORMs, they provide a familiar interface, handle
+      types, makes queries easier to write but they are
+      <strong>tying up the data to the persistence logic</strong>. We can have
+      the same benefits if we use a query builder:
+    </p>
+
+    <pre><code class="language-js">// Query Builder, eg: Knex
+import knex from 'knex'({
+  client: 'sqlite3',
+  connection: {
+    filename: ":memory:",
+  }
+});
+
+/**
+ * @typedef {Object} User
+ * @property {number} id
+ * @property {number} age
+ * @property {string} name
+ *
+ * @returns {Knex.QueryBuilder<User, {}>}
+ */
+const Users = () => knex('Users');
+
+const jane = await Users().insert({
+  name: 'Jane',
+  age: 25,
+});
+const users = await Users().where('age', '>', 18);
+</code></pre>
+
+    <p>
+      Now you can easily use your user type without it being tied to the
+      database logic. Or you can create behaviours which use multiple database
+      tables or parts of tables without having to overcomplicate the ORM models.
+      Much easier to compose and move around behaviour.
+    </p>
+
+    <h2>Concurrency vs Sequential</h2>
+    <p>
+      Having
+      <strong
+        >multiple executions at the same time is hard to reason about</strong
+      >. One of the reasons to love JavaScript in the first place is its
+      <strong>single threaded nature</strong>. Still this doesn't mean that each
+      execution path is executed in order, the execution will jump between parts
+      of the code as they reach a point in which they have to wait. Even using
+      JavaScript you may have WebWorkers or multiple Node.js processes using the
+      same database we can't escape that fact.
+    </p>
+    <pre><code class="language-js">async function transferFunds(fromAccount, toAccount, amount) {
+  const fromBalance = await getAccountBalance(fromAccount);
+  if (fromBalance < amount) {
+    throw new Error('Insufficient funds');
+  }
+  await deductFromAccount(fromAccount, amount);
+  await addToAccount(toAccount, amount);
+}
+</code></pre>
+    <p>
+      In this classical example, a <strong>race condition</strong> can happen.
+      While we are waiting for the balance to be fetched
+      <em>another transfer could modify the balance</em> which could cause an
+      invalid negative balance. A <strong>queue</strong> is a perfect tool to
+      <strong>transform it into a sequence</strong> and have only one process
+      make the updates:
+    </p>
+    <pre><code class="language-js">
+accountQueue.add(transferFunds, { fromAccount, toAccount, amount });
+while (accountQueue.hasPendingTasks()) {
+  await accountQueue.processNextTask();
+}
+  </code></pre>
+    <p>
+      Now we can be sure that each transferFunds execution will happen one at a
+      time and we won't have race conditions. The trade off is performance, but
+      in most cases <strong>the simplicity is worth it</strong>.
+    </p>
+
+    <h2>Conclusion</h2>
+    <p>
+      <strong>Simple doesn't mean familiar</strong>. That is the true lesson
+      here, our experience leaves a heavy bias on our decision making.
+      <strong>Simple means untangled</strong>. Our brains are pretty limited in
+      the amount of things we can keep track of at the same time, so we need to
+      try and <strong>reduce the cognitive load</strong> as much as possible.
+      Achieving simple code isn't easy but
+      <em>the benefits are worth it in the long run</em>.
+    </p>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  </body>
+</html>
