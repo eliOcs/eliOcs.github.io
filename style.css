@@ -15,7 +15,7 @@
   --base0D: #7cafc2;
   --base0E: #ba8baf;
   --base0F: #a16946;
-  
+
   /* Common sizes */
   --icon-size-desktop: 48px;
   --icon-size-mobile: 40px;
@@ -93,7 +93,9 @@ body {
   color: var(--base05);
   cursor: pointer;
   border: none;
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .icon-button:hover {
@@ -120,6 +122,13 @@ h1 {
 
 .page-header h1 {
   margin-bottom: 0;
+}
+
+.post-date {
+  text-align: center;
+  color: var(--base03);
+  margin-top: 0.5rem;
+  margin-bottom: 2rem;
 }
 
 .contact-info {
@@ -235,7 +244,7 @@ a .blog-post-preview:hover {
 
 a .blog-post-preview h2 {
   color: var(--base08);
-  margin-top: 0;
+  margin: 0;
 }
 
 a .blog-post-preview:hover h2 {
@@ -253,6 +262,10 @@ a:has(.blog-post-preview):hover {
   color: inherit;
 }
 
+.preview-date {
+  color: var(--base03);
+}
+
 @media (max-width: 768px) {
   body {
     padding: 1rem 0.75rem;
@@ -268,7 +281,7 @@ a:has(.blog-post-preview):hover {
     top: 0.25rem;
     background-color: var(--base01);
   }
-  
+
   .icon-button {
     width: var(--icon-size-mobile);
     height: var(--icon-size-mobile);
