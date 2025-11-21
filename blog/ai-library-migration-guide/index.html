@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Literata:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
+    />
+    <title>Blog > Leveraging AI for Software Updates</title>
+    <meta name="description" content="" />
+    <meta name="author" content="Elio Capella Sánchez" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article" />
+    <meta property="article:published_time" content="" />
+    <meta
+      property="og:url"
+      content="https://eliocapella.com/blog/ai-library-migration-guide/"
+    />
+    <meta property="og:title" content="" />
+    <meta property="og:description" content="" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https://eliocapella.com/blog/ai-library-migration-guide/"
+    />
+    <meta property="twitter:title" content="" />
+    <meta property="twitter:description" content="" />
+  </head>
+  <body>
+    <div class="page-header">
+      <a href="/" class="home-nav">
+        <img src="/selfie.jpg" alt="Go to home page" />
+      </a>
+      <h1>Leveraging AI for Software Updates</h1>
+      <p class="post-date">November 21, 2025</p>
+    </div>
+    <p>
+      Internet is floded about of very impressive vibe coding demos but in our
+      day to day job we rarely start codebases from scratch and we have to deal
+      with hundred of thousands of lines of code and their dependencies.<br />
+      I set out to explore if AI could help migrate our 932 test files with over
+      4000 test cases in our frontend from react testing library v13 to v14 how
+      hard could it be...
+    </p>
+
+    <h2>Step 1: Preparing a migration guide</h2>
+    <p>
+      At first I naively told
+      <a href="https://www.claude.com/product/claude-code" target="_blank"
+        >Claude Code CLI</a
+      >
+      to migrate our codebase to the new package version it started working,
+      update the package to the latest version and then run the tests. On every
+      test failure it tried to debug and fix the test but there were too many
+      test failures so it started to spiral out of control.
+    </p>
+    <p>
+      I quickly understood this was not going to work, I decided to dig deeper.
+      I used web version of Claude and using the research tool I asked it to
+      build a migration guide and best practices. I read through this guide to
+      learn about all the changes and oh boy there were a lot of them!
+    </p>
+    <p>
+      The update to v14 included fundamentally changes how you write tests by
+      making all APIs asynchronous and introducing a new setup pattern. This
+      means a lot of code changes but the works part is that the timing
+      behaviours also changed which meant that many tests will start failing
+      others will have less coverage and will require manual debugging to fix.
+    </p>
+
+    <h2>Step 2: Splitting into small changes</h2>
+    <p>
+      This update would require thousands of changes and would require days even
+      with AI, increasing the possibility for the team to create new tests and
+      create conflicts.<br />
+      To be able to split the change in multiple PRs I had to find a way to have
+      both versions of the package running at the same time, luckily that is
+      pretty easy with NPM:
+    </p>
+    <pre><code class="language-json">{
+  "devDependencies": {
+    "@testing-library/user-event": "13.5.0",
+    "@testing-library/user-event-new": "npm:@testing-library/user-event@14.5.2"
+  }
+}</code></pre>
+    <p>
+      So my first PR was ready, have both versions installed and the migration
+      guide in md format in our repo.
+    </p>
+
+    <h2>Step 3: Automating the code changes</h2>
+    <p>I decided to first focus on the easy part,</p>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  </body>
+</html>
