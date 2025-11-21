@@ -15,6 +15,10 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/diff-highlight/prism-diff-highlight.min.css"
+    />
     <title>Blog > Leveraging AI for Software Updates</title>
     <meta name="description" content="" />
     <meta name="author" content="Elio Capella Sánchez" />
@@ -47,47 +51,54 @@
       <p class="post-date">November 21, 2025</p>
     </div>
     <p>
-      Internet is floded about of very impressive vibe coding demos but in our
-      day to day job we rarely start codebases from scratch and we have to deal
-      with hundred of thousands of lines of code and their dependencies.<br />
-      I set out to explore if AI could help migrate our 932 test files with over
-      4000 test cases in our frontend from react testing library v13 to v14 how
-      hard could it be...
+      The internet is flooded with very impressive vibe-style coding demos, but
+      in our day-to-day job we rarely start codebases from scratch and we have
+      to deal with <strong>hundreds of thousands of lines of code</strong> and
+      their dependencies.<br />
+      I set out to explore if AI could help migrate our
+      <strong>932 test files</strong> with over
+      <strong>4000 test cases</strong> in our frontend from React Testing
+      Library v13 to v14 at
+      <a href="https://www.filestage.io" target="_blank">Filestage</a>.
+      <em>How hard could it be...</em>
     </p>
 
     <h2>Step 1: Preparing a migration guide</h2>
     <p>
-      At first I naively told
+      At first, I naively told
       <a href="https://www.claude.com/product/claude-code" target="_blank"
         >Claude Code CLI</a
       >
-      to migrate our codebase to the new package version it started working,
-      update the package to the latest version and then run the tests. On every
-      test failure it tried to debug and fix the test but there were too many
-      test failures so it started to spiral out of control.
+      to migrate our codebase to the new package version. It started working,
+      updated the package to the latest version, and then ran the tests. On
+      every test failure, it tried to debug and fix the test, but there were
+      <em>too many test failures</em>, so it started to
+      <strong>spiral out of control</strong>.
     </p>
     <p>
-      I quickly understood this was not going to work, I decided to dig deeper.
-      I used web version of Claude and using the research tool I asked it to
-      build a migration guide and best practices. I read through this guide to
-      learn about all the changes and oh boy there were a lot of them!
+      I quickly understood this was not going to work, so I decided to dig
+      deeper. I used the web version of Claude and using the research tool I
+      asked it to build a <strong>migration guide</strong> and best practices. I
+      read through this guide to learn about all the changes and
+      <em>oh boy there were a lot of them!</em>
     </p>
     <p>
-      The update to v14 included fundamentally changes how you write tests by
-      making all APIs asynchronous and introducing a new setup pattern. This
-      means a lot of code changes but the works part is that the timing
-      behaviours also changed which meant that many tests will start failing
-      others will have less coverage and will require manual debugging to fix.
+      The update to v14 <strong>fundamentally changed</strong> how you write
+      tests by making <em>all APIs asynchronous</em> and introducing a new setup
+      pattern. This means a lot of code changes, but the worst part is that the
+      <strong>timing behaviors also changed</strong>, which meant that many
+      tests will start failing, others will have less coverage, and will require
+      manual debugging to fix.
     </p>
 
     <h2>Step 2: Splitting into small changes</h2>
     <p>
-      This update would require thousands of changes and would require days even
-      with AI, increasing the possibility for the team to create new tests and
-      create conflicts.<br />
+      This update would require <strong>thousands of changes</strong> and would
+      require days even with AI, increasing the possibility for the team to
+      create new tests and create conflicts.<br />
       To be able to split the change in multiple PRs I had to find a way to have
-      both versions of the package running at the same time, luckily that is
-      pretty easy with NPM:
+      <strong>both versions of the package running at the same time</strong>,
+      luckily that is pretty easy with NPM:
     </p>
     <pre><code class="language-json">{
   "devDependencies": {
@@ -101,9 +112,235 @@
     </p>
 
     <h2>Step 3: Automating the code changes</h2>
-    <p>I decided to first focus on the easy part,</p>
+    <p>
+      I decided to first focus on the easy part. I gave the migration guide to
+      Claude Code and told it to built a <strong>codemod</strong>. I used
+      <a href="https://jscodeshift.com/" target="_blank">jscodeshift</a> which
+      parses the code into a <em>AST</em> which is just nested object structure
+      that you can manipulate, the tool takes care of then getting that new AST
+      and generating the output code.
+    </p>
+    <figure>
+      <img
+        src="./ast-example.png"
+        alt="Sample of an AST structure in astexplorer.net"
+      />
+      <figcaption>
+        Sample of an AST structure in
+        <a href="https://astexplorer.net" target="_blank">astexplorer.net</a>
+      </figcaption>
+    </figure>
+    <p>
+      Great thing about jscodeshift is that you can
+      <strong>easily write tests</strong> for your codemod and use them to
+      <strong>verify what the AI has done</strong>. You have input and output
+      fixtures and it will run the codemod on them and compare them with the
+      expected output.
+    </p>
+    <pre><code class="language-js">"use strict";
+
+const path = require("path");
+const { defineTest } = require("jscodeshift/dist/testUtils");
+
+describe("migrate-to-userevent-v14 codemod", () => {
+  for (const test of [
+    "sample",
+    /* ... */
+  ]) {
+    defineTest(
+      path.resolve(__dirname, "codemods"),
+      "migrate-to-userevent-v14",
+      null,
+      `migrate-to-userevent-v14/${test}`,
+    );
+  }
+});
+</code></pre>
+    <figure>
+      <pre><code class="language-diff-jsx diff-highlight">@@ -1,26 +1,33 @@
+-import { render, screen } from "@testing-library/react";
+-import userEvent from "@testing-library/user-event";
++import { screen } from "@testing-library/react";
++import { renderWithUserEvent } from "@shared/test/utils";
+
+ import { Button } from "./Button";
+
+ describe("Button", () => {
+   it("should render button text", () => {
+-    render(&lt;Button&gt;Click me&lt;/Button&gt;);
++    renderWithUserEvent(&lt;Button&gt;Click me&lt;/Button&gt;);
+     expect(screen.getByText("Click me")).toBeInTheDocument();
+   });
+
+   it("should call onClick when clicked", async () => {
+     const handleClick = jest.fn();
+-    render(&lt;Button onClick={handleClick}&gt;Click me&lt;/Button&gt;);
++
++    const {
++      userEvent
++    } = renderWithUserEvent(&lt;Button onClick={handleClick}&gt;Click me&lt;/Button&gt;);
+
+     await userEvent.click(screen.getByText("Click me"));
+     expect(handleClick).toHaveBeenCalled();
+   });
+
+   it("should type text into input", async () => {
+-    render(&lt;input placeholder="Enter text" /&gt;);
++    const {
++      userEvent
++    } = renderWithUserEvent(&lt;input placeholder="Enter text" /&gt;);
++
++    await userEvent.click(screen.getByPlaceholderText("Enter text"));
+
+-    await userEvent.type(screen.getByPlaceholderText("Enter text"), "Hello");
++    await userEvent.keyboard("Hello");
+     expect(screen.getByPlaceholderText("Enter text")).toHaveValue("Hello");
+   });
+ });
+</code></pre>
+      <figcaption>Diff of the sample input and output test fixtures</figcaption>
+    </figure>
+    <p>The second PR was ready, the first codemod iteration and its tests.</p>
+
+    <h2>Step 4: The actual migration</h2>
+    <p>
+      Now the fun part begins, I gave Claude Code this prompt to start
+      migrating:
+    </p>
+    <pre><code class="language-md">We are migrating the frontend tests to the latest version of userevent testing library v14, the migration guide frontend/doc/user-event-testing-library-migration-guide.md.
+We have created a codemod to help with the migration at frontend/codemods/migrate-to-userevent-v14.js.
+We have created new render utility functions that return the userEvent instance at frontend/src/shared/test/utils.js.
+Until the migration is done we have both user event versions installed, v13 as "@testing-library/user-event" and v14 as "user-event-new".
+
+I want you to continue migrating the next 10 tests (`grep -rl 'from "@testing-library/user-event"' src | head -n 10`), for each test:
+*Make sure to set your working path to the frontend dir so the commands run correctly.*
+- Apply the codemod to the test file
+- After migrating a test we need to execute `npm run validate:fix` to verify we didn't introduce linting issues in the file, fix introduced issues if any
+- Then we have to execute `npm run test -- &lt;test-file&gt;` to verify the test is working, fix any issues if any
+- Finally verify the coverage is still 100% then we can move to the next test file, fix any coverage issues if any, eg: `npm test -- PasswordField.test.jsx --coverage --collectCoverageFrom=src/supporting/components/PasswordField/PasswordField.jsx --reporter=json` then read the coverage report at frontend/jest-coverage/coverage-final.json
+
+Improve the migration codemod if you find any patterns repeated in the codebase that are not being covered.
+Improve the migration guide if you find any patterns repeated in the codebase that are not being covered.</code></pre>
+    <p>
+      This wasn't the first version of the prompt I started with a very basic
+      one and watched for the AI to fail and
+      <strong>improved it iteratively</strong>. At the beginning there were many
+      <em>edge cases</em> found, some of them could be fixed automatically by
+      improving the codemod but others required
+      <strong>manual intervention</strong> so the iterative learnings were
+      consolidated in the migration guide. The migration guide started with
+      <strong>4532 words</strong> and ended up with <strong>7517</strong>. The
+      codemod started with <strong>271 lines of code</strong> and one test and
+      ended up with <strong>868</strong> and <strong>16 test cases</strong>.
+    </p>
+    <figure>
+      <img
+        src="./migration-on-the-works.png"
+        alt="Claude Code CLI agentic AI migrating tests"
+      />
+      <figcaption>Claude Code CLI agentic AI migrating tests</figcaption>
+    </figure>
+    <p>
+      This step was repeated 50 times until all tests were migrated, creating a
+      PR for each.
+    </p>
+
+    <h2>Current AI shortcomings</h2>
+    <p>
+      I've been thoroughly impressed by the AI performance for this use case,
+      the ability to <strong>debug and fix tests</strong> has really surprised
+      me. I did find some shortcomings during this project.<br />As
+      <a
+        href="https://steve-yegge.medium.com/introducing-beads-a-coding-agent-memory-system-637d7d92514a"
+        target="_blank"
+        >Steve Yegge has already talked about</a
+      >
+      when the AI reaches its <strong>context limit</strong> normally during
+      long running tasks it will really have a hard time remembering what to do
+      next and following the original plan. For me I found that
+      <strong>10 tests at a time</strong> was the sweet spot.<br />
+      <strong>Verifying the results is critical</strong>, this project was a
+      perfect example because apart from manually reviewing the code changes, we
+      could easily run the tests and verify they worked as expected with
+      <strong>100% coverage</strong> and make sure
+      <em>no original source code was modified</em>. Having
+      <strong>good automated tests</strong> is even more valuable than ever.<br />
+      AI will tend to <strong>skip problems it can't solve easily</strong>. I
+      noticed that it wasn't able to maintain the code coverage until I added to
+      the prompt the instructions on how to collect the coverage in JSON format
+      so it could understand the coverage problem and have enough context to
+      make the necessary fixes.<br />
+      AI providers are having trouble keeping up with the demand. During this
+      migration I had multiple outages.
+    </p>
+    <figure>
+      <img
+        width="60%"
+        src="./sample-outages.png"
+        alt="Claude Code status page with multiple outages"
+      />
+      <figcaption>Claude Code status page with multiple outages</figcaption>
+    </figure>
+    <p>
+      Although I was tempted to automate even further this migration by creating
+      a script to loop over each migration stage and create the PR
+      automatically, I decided against it because when faced with an edge case,
+      the solution from the AI wasn't always the best. Sometimes it relied on
+      hacks, for example using
+      <code>fireEvent</code> instead of deeply understanding the real root
+      causes under the hood with <code>userEvent</code>. So right now I prefer
+      to be vigilant instead of making a fool of myself in front of the whole
+      team.
+    </p>
+
+    <h2>Conclusion</h2>
+    <figure>
+      <img
+        width="60%"
+        src="./pr-flood.png"
+        alt="Sample PRs created for the migration"
+      />
+      <figcaption>Sample PRs created for the migration</figcaption>
+    </figure>
+    <p>
+      It took me <strong>one week</strong> to do this migration. It consisted of
+      <strong>50 PRs</strong> and each one took around half an hour. There were
+      many tricky situations which would've taken me
+      <em>hours to debug myself</em>, and the changes involved, although mostly
+      mechanical and repetitive, would've taken
+      <strong>months to complete</strong>. The worst part of this kind of work
+      is how energy-draining it is because there is little creativity involved.
+      I'm truly amazed, and this is not a Claude ad, I'm a big fan of
+      <a href="https://chatgpt.com/en-ES/features/codex/" target="_blank"
+        >OpenAI Codex CLI</a
+      >
+      or
+      <a href="https://geminicli.com/" target="_blank">Google Gemini CLI</a>
+      too. Paying for more usage and better models has been totally worth it.
+    </p>
+    <p>
+      <strong
+        >Traditional strong software development fundamentals still
+        apply</strong
+      >: work on small changes iteratively, make sure you have good automated
+      validation to give you confidence to push those changes, and make sure you
+      have a good understanding of what is going on under the hood when the time
+      comes to debug because I'm sure it will.
+    </p>
+    <p>
+      I'm truly excited because <strong>mundane maintenance tasks</strong> are
+      very common in long-running projects and it seems we are getting close to
+      forgetting about them and having them <strong>truly automated</strong>.
+      Giving software developers more time to actually work on
+      <em>solving real customer problems</em> with software, what an amazing
+      revolution we are living.
+    </p>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markdown.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-diff.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/diff-highlight/prism-diff-highlight.min.js"></script>
   </body>
 </html>
