@@ -19,10 +19,10 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/diff-highlight/prism-diff-highlight.min.css"
     />
-    <title>Blog > Leveraging AI for Software Updates</title>
+    <title>Blog > Migrating 6000 React tests using AI Agents and ASTs</title>
     <meta
       name="description"
-      content="How I used AI to migrate 932 test files with 4000+ test cases from React Testing Library v13 to v14 in one week, through 50 PRs that would have taken months manually."
+      content="How I used AI to migrate 970 test files with 6000+ test cases from React Testing Library v13 to v14 in one week, through 50 PRs that would have taken months manually."
     />
     <meta name="author" content="Elio Capella Sánchez" />
 
@@ -33,10 +33,13 @@
       property="og:url"
       content="https://eliocapella.com/blog/ai-library-migration-guide/"
     />
-    <meta property="og:title" content="Leveraging AI for Software Updates" />
+    <meta
+      property="og:title"
+      content="Migrating 6000 React tests using AI Agents and ASTs"
+    />
     <meta
       property="og:description"
-      content="How I used AI to migrate 932 test files with 4000+ test cases from React Testing Library v13 to v14 in one week, through 50 PRs that would have taken months manually."
+      content="How I used AI to migrate 970 test files with 6000+ test cases from React Testing Library v13 to v14 in one week, through 50 PRs that would have taken months manually."
     />
     <meta
       property="og:image"
@@ -51,11 +54,11 @@
     />
     <meta
       property="twitter:title"
-      content="Leveraging AI for Software Updates"
+      content="Migrating 6000 React tests using AI Agents and ASTs"
     />
     <meta
       property="twitter:description"
-      content="How I used AI to migrate 932 test files with 4000+ test cases from React Testing Library v13 to v14 in one week, through 50 PRs that would have taken months manually."
+      content="How I used AI to migrate 970 test files with 6000+ test cases from React Testing Library v13 to v14 in one week, through 50 PRs that would have taken months manually."
     />
     <meta
       property="twitter:image"
@@ -67,7 +70,7 @@
       <a href="/" class="home-nav">
         <img src="/selfie.jpg" alt="Go to home page" />
       </a>
-      <h1>Leveraging AI for Software Updates</h1>
+      <h1>Migrating 6000 React tests using AI Agents and ASTs</h1>
       <p class="post-date">November 21, 2025</p>
     </div>
     <p>
@@ -76,8 +79,8 @@
       to deal with <strong>hundreds of thousands of lines of code</strong> and
       their dependencies.<br />
       I set out to explore if AI could help migrate our
-      <strong>932 test files</strong> with over
-      <strong>4000 test cases</strong> in our frontend from React Testing
+      <strong>970 test files</strong> with over
+      <strong>6000 test cases</strong> in our frontend from React Testing
       Library v13 to v14 at
       <a href="https://www.filestage.io" target="_blank">Filestage</a>.
       <em>How hard could it be...</em>
@@ -136,9 +139,14 @@
       I decided to first focus on the easy part. I gave the migration guide to
       Claude Code and told it to built a <strong>codemod</strong>. I used
       <a href="https://jscodeshift.com/" target="_blank">jscodeshift</a> which
-      parses the code into a <em>AST</em> which is just nested object structure
-      that you can manipulate, the tool takes care of then getting that new AST
-      and generating the output code.
+      parses the code into a
+      <a
+        href="https://en.wikipedia.org/wiki/Abstract_syntax_tree"
+        target="_blank"
+        >AST</a
+      >
+      which is just nested object structure that you can manipulate, the tool
+      takes care of then getting that new AST and generating the output code.
     </p>
     <figure>
       <img

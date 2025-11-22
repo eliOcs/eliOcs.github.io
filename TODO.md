@@ -1,4 +1,5 @@
 # Blog
+
 Goal "Silicon Valley-caliber leader based in Europe.".
 
 - "How we built AI-powered review at Filestage"
@@ -11,25 +12,11 @@ Goal "Silicon Valley-caliber leader based in Europe.".
 - Promote articles in social media
 
 # Resume
+
 - B2B Contractor (Autónomo)
 - Add testimonials
 
-
-# Target companies
-
-Segment A: The "Post-Series B" US Startups: These companies typically have raised $30M-$50M and are in a phase of rapid scaling. They face "growing pains"—technical debt, process chaos, and hiring bottlenecks. They need experienced leaders who have "seen this before" to stabilize their engineering culture. This segment is the primary target for the "Engineering Culture" content.
-
-Segment B: The "Legacy Modernizers": Established tech companies with 10+ years of codebase history (often in PHP, Ruby, or older JS frameworks) that are desperate to modernize without halting product development. They value pragmatism over hype. This segment is the primary target for the "AI Migration" content.
-
-Segment C: The "Bootstrap Champions": Profitable, remote-first companies (e.g., Doist, 37Signals, Buffer) that value written communication, async work, and deep technical craft. They often pay globally standardized salaries. This segment will resonate with the "Simple Toolkit" and "Async/Remote" themes in the candidate's portfolio.
-
 # Improvements
-
-3.1 The Viral Asset: "Leveraging AI for Software Updates"
-Optimization Requirement: The title is currently too passive. It needs to highlight the scale (4,000 tests) and the speed (1 week) to trigger the "curiosity gap" on platforms like Hacker News.
-
-
-Migrating 4,000+ tests from React Testing Library v13 to v14 in one week using AI agents
 
 The Conversion Asset: "How I Build Engineering Culture"
 Optimization Requirement: It needs to be tightly coupled with the resume. The resume should link directly to this post as evidence of "Leadership Philosophy."
@@ -67,7 +54,7 @@ Contextual CTAs: At the end of the "AI Migration" post, add a specific CTA: "Str
 
 Headline Remodeling: Instead of just "Head of Engineering," the resume headline should be "Head of Engineering | Distributed Systems & Remote Leadership | AI-Driven Modernization."
 
-Quantification of Impact: US resumes are obsessed with metrics. The current description of the Filestage role  is good ("reduced codebase complexity by 25K LOC"), but it can be stronger.
+Quantification of Impact: US resumes are obsessed with metrics. The current description of the Filestage role is good ("reduced codebase complexity by 25K LOC"), but it can be stronger.
 
 Add: "Managed a fully remote engineering team across X time zones, maintaining 99.9% uptime while increasing feature velocity by Y%."
 
@@ -76,6 +63,7 @@ Add: "Architected the AI-assisted migration workflow that reduced a projected 3-
 The "Remote" Keyword: Ensure the word "Remote" appears frequently in job titles and descriptions. "Senior Software Engineer (Remote)" is better than just "Senior Software Engineer." This reassures the ATS (Applicant Tracking System) and the recruiter that the candidate is a "remote native".
 
 # 6.3 The "Work With Me" Page
+
 Create a dedicated page (/services or /hire-me) that acts as a sales brochure.
 
 Value Proposition: "I bridge the gap between technical execution and strategic business goals."
@@ -88,8 +76,8 @@ Staff+ Individual Contributor: For scale-ups needing high-level architectural ha
 
 Logistics: "Based in Madrid (CET). Available for 4 hours of daily EST overlap. Seamless B2B invoicing via US-compliant contractor agreements." This answers the "logistics" question before it is even asked.
 
-
 # Promoting in newsletters
+
 Software Lead Weekly: Curated by Oren Ellenbogen. This is the "bible" for engineering managers.
 
 Action: Submit the "How I Build Engineering Culture" post directly via the suggestion form or email. The focus on "Kindness" and "Pragmatism" aligns perfectly with the newsletter's ethos.
@@ -104,12 +92,10 @@ Action: While direct submission is difficult, engaging with Gergely's content on
 
 # Positioning for Head of Engineering roles
 
-
 8.1 The "Manager of Managers" Signal
 In the "Culture" post and resume, emphasize experience with hiring, firing, budgeting, and strategy.
 
 Content Tweak: Add a section to the Culture post about "Making Hard Decisions." Discuss how to handle underperformance or budget cuts with kindness. This shows the "grit" required for leadership roles.
-
 
 8.2 The "Business Alignment" Signal
 Engineers talk about code; leaders talk about business.
