@@ -171,14 +171,9 @@ a:focus:not(:focus-visible) {
   outline: none;
 }
 
-em {
-  color: var(--base0B);
-}
-
 b,
 strong {
-  color: var(--base0A);
-  font-weight: 400;
+  font-weight: 600;
 }
 
 img {
