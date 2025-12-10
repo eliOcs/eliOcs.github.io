@@ -9,7 +9,9 @@ Goal "Silicon Valley-caliber leader based in Europe.".
 - Pen tests in startups
 - Moving up to enterprise customers: SSO, compliance, security, audits
 - Hiring remotely
-- Promote articles in social media
+- Roles and permissions:
+  https://github.com/PostHog/posthog/blob/master/ee/models/rbac/access_control.py
+  https://www.figma.com/blog/how-we-rolled-out-our-own-permissions-dsl-at-figma/
 
 # Resume
 
