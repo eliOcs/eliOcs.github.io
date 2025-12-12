@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Literata:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style.css" />
+    <title>Blog > Permission Systems for Enterprise that Scale</title>
+    <meta
+      name="description"
+      content="Learn how to implement permission systems that scale for enterprise customers. From naive read-time queries to RBAC with write-time permissions, with interactive demos."
+    />
+    <meta name="author" content="Elio Capella Sánchez" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article" />
+    <meta
+      property="article:published_time"
+      content="2025-12-12T00:00:00+01:00"
+    />
+    <meta
+      property="og:url"
+      content="https://eliocapella.com/blog/permission-systems-for-enterprise/"
+    />
+    <meta
+      property="og:title"
+      content="Permission Systems for Enterprise that Scale"
+    />
+    <meta
+      property="og:description"
+      content="Learn how to implement permission systems that scale for enterprise customers. From naive read-time queries to RBAC with write-time permissions, with interactive demos."
+    />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https://eliocapella.com/blog/permission-systems-for-enterprise/"
+    />
+    <meta
+      property="twitter:title"
+      content="Permission Systems for Enterprise that Scale"
+    />
+    <meta
+      property="twitter:description"
+      content="Learn how to implement permission systems that scale for enterprise customers. From naive read-time queries to RBAC with write-time permissions, with interactive demos."
+    />
+  </head>
+  <body>
+    <div class="page-header">
+      <a href="/" class="home-nav">
+        <img src="/selfie.jpg" alt="Go to home page" />
+      </a>
+      <h1>Permission Systems for Enterprise that Scale</h1>
+      <p class="post-date">December 12, 2025</p>
+    </div>
+
+    <p>
+      Many startups eventually gravitate towards enterprise customers for bigger
+      tickets and long-term contracts. As enterprise customers start using your
+      product they soon demand advanced permissions systems to manage their
+      different user roles and access levels. A naive implementation of the
+      permission checks works perfectly fine at first but as they start to use
+      more and more your platform the amount of data, users and relationships
+      will put that implementation to the test. Soon your biggest paying
+      customer will be threatening to leave because your app is just too slow
+      for them to use.
+    </p>
+    <p>
+      To illustrate this problem we will use a simple example. Imagine an app
+      which has folders and files where an 'admin' can see all folders and files
+      but 'standard' users can only see files and folders they've created or
+      have been shared with them.
+    </p>
+
+    <h2>The Naive Approach (read-time permission queries)</h2>
+
+    <p>
+      Your first intuition will be to query the database on every request to
+      calculate the permissions and the data that the user can access. First you
+      will check the role of the user in the team, is the user an admin or an
+      standard user. If the user is not at admin then query for all the
+      resources the user has created or has been shared with.
+    </p>
+
+    <p>
+      <!-- TODO: Section 2 - RBAC (write-time permissions) -->
+
+      <!-- TODO: Section 3 - Why ABAC isn't suitable for list queries -->
+
+      <!-- TODO: Conclusion -->
+    </p>
+  </body>
+</html>

@@ -4,11 +4,13 @@
   "description": "Personal website",
   "main": "index.js",
   "scripts": {
-    "start": "serve ."
+    "start": "serve .",
+    "test": "playwright test"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@playwright/test": "1.57.0",
     "prettier": "3.6.2",
     "serve": "14.2.5"
   }

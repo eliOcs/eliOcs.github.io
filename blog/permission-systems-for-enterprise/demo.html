@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Permission Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --base00: #181818;
+        --base01: #282828;
+        --base02: #383838;
+        --base03: #585858;
+        --base04: #b8b8b8;
+        --base05: #d8d8d8;
+        --base06: #e8e8e8;
+        --base07: #f8f8f8;
+        --base08: #ab4642;
+        --base09: #dc9656;
+        --base0A: #f7ca88;
+        --base0B: #a1b56c;
+        --base0C: #86c1b9;
+        --base0D: #7cafc2;
+        --base0E: #ba8baf;
+        --base0F: #a16946;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 400;
+        line-height: 1.6;
+        color: var(--base05);
+        background-color: var(--base00);
+        padding: 1rem;
+      }
+
+      .demo-container {
+        max-width: 600px;
+        margin: 0 auto;
+        border: 1px solid var(--base02);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      /* Tabs */
+      .tabs {
+        display: flex;
+        background-color: var(--base01);
+        border-bottom: 1px solid var(--base02);
+        overflow-x: auto;
+      }
+
+      .tab {
+        padding: 0.75rem 1.25rem;
+        background: none;
+        border: none;
+        color: var(--base04);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        white-space: nowrap;
+        transition:
+          color 0.2s ease,
+          border-color 0.2s ease;
+      }
+
+      .tab:hover {
+        color: var(--base05);
+      }
+
+      .tab.active {
+        color: var(--base08);
+        border-bottom-color: var(--base08);
+      }
+
+      .tab.add-user {
+        color: var(--base0D);
+        margin-left: auto;
+      }
+
+      .tab.add-user:hover {
+        color: var(--base0C);
+      }
+
+      /* Controls */
+      .controls {
+        padding: 1rem;
+        background-color: var(--base01);
+        border-bottom: 1px solid var(--base02);
+      }
+
+      .user-type {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .user-type label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        font-size: 0.95rem;
+      }
+
+      .user-type input[type="radio"] {
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--base03);
+        border-radius: 50%;
+        cursor: pointer;
+        position: relative;
+      }
+
+      .user-type input[type="radio"]:checked {
+        border-color: var(--base0D);
+      }
+
+      .user-type input[type="radio"]:checked::after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 8px;
+        height: 8px;
+        background-color: var(--base0D);
+        border-radius: 50%;
+      }
+
+      .actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 0.5rem 1rem;
+        background-color: var(--base01);
+        border: 2px solid var(--base03);
+        border-radius: 4px;
+        color: var(--base07);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: border-color 0.2s ease;
+      }
+
+      .btn:hover:not(:disabled) {
+        border-color: var(--base0D);
+      }
+
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      /* Share dropdown */
+      .share-container {
+        position: relative;
+        display: inline-block;
+      }
+
+      .share-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        margin-top: 0.25rem;
+        background-color: var(--base01);
+        border: 1px solid var(--base03);
+        border-radius: 4px;
+        min-width: 150px;
+        z-index: 100;
+        display: none;
+      }
+
+      .share-dropdown.open {
+        display: block;
+      }
+
+      .share-option {
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: background-color 0.2s ease;
+      }
+
+      .share-option:hover {
+        background-color: var(--base02);
+      }
+
+      .share-option.new-user {
+        border-top: 1px solid var(--base02);
+        color: var(--base0D);
+      }
+
+      /* Tree */
+      .tree {
+        padding: 1rem;
+        min-height: 200px;
+        background-color: var(--base00);
+      }
+
+      .tree-item {
+        padding: 0.4rem 0.75rem;
+        cursor: pointer;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+        transition: background-color 0.2s ease;
+      }
+
+      .tree-item:hover {
+        background-color: var(--base01);
+      }
+
+      .tree-item.selected {
+        background-color: var(--base02);
+      }
+
+      .tree-item .icon {
+        flex-shrink: 0;
+      }
+
+      .tree-item .name {
+        flex: 1;
+      }
+
+      .tree-item .shared-badge {
+        font-size: 0.75rem;
+        color: var(--base0B);
+        background-color: var(--base01);
+        padding: 0.1rem 0.4rem;
+        border-radius: 3px;
+      }
+
+      .tree-children {
+        margin-left: 1.25rem;
+      }
+
+      .empty-message {
+        color: var(--base03);
+        font-style: italic;
+        padding: 1rem;
+        text-align: center;
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 0.5rem;
+        }
+
+        .tab {
+          padding: 0.6rem 1rem;
+          font-size: 0.85rem;
+        }
+
+        .controls {
+          padding: 0.75rem;
+        }
+
+        .user-type {
+          gap: 1rem;
+        }
+
+        .btn {
+          padding: 0.4rem 0.75rem;
+          font-size: 0.8rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="demo-container">
+      <div class="tabs" id="tabs"></div>
+      <div class="controls">
+        <div class="user-type" id="userType"></div>
+        <div class="actions" id="actions"></div>
+      </div>
+      <div class="tree" id="tree"></div>
+    </div>
+
+    <script>
+      // State
+      const state = {
+        users: [{ id: 1, name: "User 1", type: "standard" }],
+        resources: [
+          {
+            id: 1,
+            type: "folder",
+            name: "User 1's Folder",
+            parentId: null,
+            ownerId: 1,
+          },
+        ],
+        shares: [],
+        counters: { folder: 1, file: 0, user: 1, resource: 1 },
+        selectedResourceId: 1,
+        activeUserId: 1,
+      };
+
+      // DOM elements
+      const tabsEl = document.getElementById("tabs");
+      const userTypeEl = document.getElementById("userType");
+      const actionsEl = document.getElementById("actions");
+      const treeEl = document.getElementById("tree");
+
+      // Helpers
+      function getActiveUser() {
+        return state.users.find((u) => u.id === state.activeUserId);
+      }
+
+      function getSelectedResource() {
+        return state.resources.find((r) => r.id === state.selectedResourceId);
+      }
+
+      function getAncestorIds(resourceId) {
+        const ancestors = [];
+        let current = state.resources.find((r) => r.id === resourceId);
+        while (current && current.parentId !== null) {
+          ancestors.push(current.parentId);
+          current = state.resources.find((r) => r.id === current.parentId);
+        }
+        return ancestors;
+      }
+
+      function getDescendantIds(resourceId) {
+        const descendants = [];
+        const children = state.resources.filter(
+          (r) => r.parentId === resourceId,
+        );
+        for (const child of children) {
+          descendants.push(child.id);
+          descendants.push(...getDescendantIds(child.id));
+        }
+        return descendants;
+      }
+
+      function getVisibleResourceIds(userId) {
+        const user = state.users.find((u) => u.id === userId);
+        if (user.type === "admin") {
+          return state.resources.map((r) => r.id);
+        }
+
+        const visibleIds = new Set();
+
+        // Add owned resources and their descendants
+        for (const resource of state.resources) {
+          if (resource.ownerId === userId) {
+            visibleIds.add(resource.id);
+            getDescendantIds(resource.id).forEach((id) => visibleIds.add(id));
+          }
+        }
+
+        // Add shared resources and their descendants + ancestors
+        for (const share of state.shares) {
+          if (share.userId === userId) {
+            visibleIds.add(share.resourceId);
+            getDescendantIds(share.resourceId).forEach((id) =>
+              visibleIds.add(id),
+            );
+            getAncestorIds(share.resourceId).forEach((id) =>
+              visibleIds.add(id),
+            );
+          }
+        }
+
+        return Array.from(visibleIds);
+      }
+
+      function isAncestorOnly(resourceId, userId) {
+        const user = state.users.find((u) => u.id === userId);
+        if (user.type === "admin") return false;
+
+        const resource = state.resources.find((r) => r.id === resourceId);
+        if (resource.ownerId === userId) return false;
+        if (
+          state.shares.some(
+            (s) => s.resourceId === resourceId && s.userId === userId,
+          )
+        )
+          return false;
+
+        // Check if any shared resource has this as ancestor
+        for (const share of state.shares) {
+          if (share.userId === userId) {
+            const ancestors = getAncestorIds(share.resourceId);
+            if (ancestors.includes(resourceId)) return true;
+          }
+        }
+
+        return false;
+      }
+
+      // Render functions
+      function renderTabs() {
+        tabsEl.innerHTML =
+          state.users
+            .map(
+              (user) => `
+          <button class="tab ${user.id === state.activeUserId ? "active" : ""}" data-user-id="${user.id}">
+            ${user.name}
+          </button>
+        `,
+            )
+            .join("") + `<button class="tab add-user">+ Add User</button>`;
+
+        tabsEl.querySelectorAll(".tab[data-user-id]").forEach((tab) => {
+          tab.addEventListener("click", () => {
+            state.activeUserId = parseInt(tab.dataset.userId);
+            // Select first visible resource for this user
+            const visibleIds = getVisibleResourceIds(state.activeUserId);
+            if (
+              !visibleIds.includes(state.selectedResourceId) &&
+              visibleIds.length > 0
+            ) {
+              state.selectedResourceId = visibleIds[0];
+            }
+            render();
+          });
+        });
+
+        tabsEl.querySelector(".tab.add-user").addEventListener("click", () => {
+          state.counters.user++;
+          const newUser = {
+            id: state.counters.user,
+            name: `User ${state.counters.user}`,
+            type: "standard",
+          };
+          state.users.push(newUser);
+
+          // Create root folder for new user
+          state.counters.resource++;
+          state.resources.push({
+            id: state.counters.resource,
+            type: "folder",
+            name: `${newUser.name}'s Folder`,
+            parentId: null,
+            ownerId: newUser.id,
+          });
+
+          // Switch to the new user
+          state.activeUserId = newUser.id;
+          state.selectedResourceId = state.counters.resource;
+          render();
+        });
+      }
+
+      function renderUserType() {
+        const user = getActiveUser();
+        userTypeEl.innerHTML = `
+          <label>
+            <input type="radio" name="userType" value="admin" ${user.type === "admin" ? "checked" : ""}>
+            Admin
+          </label>
+          <label>
+            <input type="radio" name="userType" value="standard" ${user.type === "standard" ? "checked" : ""}>
+            Standard
+          </label>
+        `;
+
+        userTypeEl.querySelectorAll('input[type="radio"]').forEach((radio) => {
+          radio.addEventListener("change", () => {
+            const user = getActiveUser();
+            user.type = radio.value;
+            render();
+          });
+        });
+      }
+
+      function renderActions() {
+        const selected = getSelectedResource();
+        const isFolder = selected && selected.type === "folder";
+        const user = getActiveUser();
+        const isAncestor = selected && isAncestorOnly(selected.id, user.id);
+        const isOwner = selected && selected.ownerId === user.id;
+
+        actionsEl.innerHTML = `
+          <button class="btn" id="addFolderBtn" ${!isFolder || isAncestor ? "disabled" : ""}>+ Add Folder</button>
+          <button class="btn" id="addFileBtn" ${!isFolder || isAncestor ? "disabled" : ""}>+ Add File</button>
+          <div class="share-container">
+            <button class="btn" id="shareBtn" ${!selected || isAncestor || !isOwner ? "disabled" : ""}>Share</button>
+            <div class="share-dropdown" id="shareDropdown"></div>
+          </div>
+        `;
+
+        const addFolderBtn = document.getElementById("addFolderBtn");
+        const addFileBtn = document.getElementById("addFileBtn");
+        const shareBtn = document.getElementById("shareBtn");
+        const shareDropdown = document.getElementById("shareDropdown");
+
+        addFolderBtn.addEventListener("click", () => {
+          if (!isFolder || isAncestor) return;
+          state.counters.folder++;
+          state.counters.resource++;
+          const newFolder = {
+            id: state.counters.resource,
+            type: "folder",
+            name: `Folder ${state.counters.folder}`,
+            parentId: selected.id,
+            ownerId: state.activeUserId,
+          };
+          state.resources.push(newFolder);
+          render();
+        });
+
+        addFileBtn.addEventListener("click", () => {
+          if (!isFolder || isAncestor) return;
+          state.counters.file++;
+          state.counters.resource++;
+          const newFile = {
+            id: state.counters.resource,
+            type: "file",
+            name: `File ${state.counters.file}`,
+            parentId: selected.id,
+            ownerId: state.activeUserId,
+          };
+          state.resources.push(newFile);
+          render();
+        });
+
+        shareBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const isOpen = shareDropdown.classList.contains("open");
+          shareDropdown.classList.toggle("open", !isOpen);
+
+          if (!isOpen) {
+            const otherUsers = state.users.filter(
+              (u) => u.id !== selected.ownerId,
+            );
+            shareDropdown.innerHTML =
+              otherUsers
+                .map(
+                  (u) => `
+              <div class="share-option" data-user-id="${u.id}">${u.name}</div>
+            `,
+                )
+                .join("") +
+              `<div class="share-option new-user" data-new-user="true">+ New User</div>`;
+
+            shareDropdown.querySelectorAll(".share-option").forEach((opt) => {
+              opt.addEventListener("click", (e) => {
+                e.stopPropagation();
+                let targetUserId;
+
+                if (opt.dataset.newUser) {
+                  // Create new user
+                  state.counters.user++;
+                  const newUser = {
+                    id: state.counters.user,
+                    name: `User ${state.counters.user}`,
+                    type: "standard",
+                  };
+                  state.users.push(newUser);
+
+                  // Create root folder for new user
+                  state.counters.resource++;
+                  state.resources.push({
+                    id: state.counters.resource,
+                    type: "folder",
+                    name: `${newUser.name}'s Folder`,
+                    parentId: null,
+                    ownerId: newUser.id,
+                  });
+
+                  targetUserId = newUser.id;
+                } else {
+                  targetUserId = parseInt(opt.dataset.userId);
+                }
+
+                // Add share if not already shared
+                if (
+                  !state.shares.some(
+                    (s) =>
+                      s.resourceId === selected.id && s.userId === targetUserId,
+                  )
+                ) {
+                  state.shares.push({
+                    resourceId: selected.id,
+                    userId: targetUserId,
+                  });
+                }
+
+                shareDropdown.classList.remove("open");
+                render();
+              });
+            });
+          }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener("click", () => {
+          shareDropdown.classList.remove("open");
+        });
+      }
+
+      function renderTree() {
+        const visibleIds = getVisibleResourceIds(state.activeUserId);
+        const user = getActiveUser();
+
+        if (visibleIds.length === 0) {
+          treeEl.innerHTML =
+            '<div class="empty-message">No files or folders to display</div>';
+          return;
+        }
+
+        function renderNode(parentId, depth = 0) {
+          const children = state.resources.filter(
+            (r) => r.parentId === parentId && visibleIds.includes(r.id),
+          );
+
+          if (children.length === 0) return "";
+
+          return children
+            .map((resource) => {
+              const isSelected = resource.id === state.selectedResourceId;
+              const sharedWithUsers = state.shares
+                .filter((s) => s.resourceId === resource.id)
+                .map((s) => state.users.find((u) => u.id === s.userId))
+                .filter(Boolean);
+              const icon = resource.type === "folder" ? "📁" : "📄";
+              const childrenHtml = renderNode(resource.id, depth + 1);
+              const isOwner = resource.ownerId === state.activeUserId;
+              let sharedBadge = "";
+              if (sharedWithUsers.length > 0) {
+                sharedBadge = isOwner
+                  ? `<span class="shared-badge">shared with: ${sharedWithUsers.map((u) => u.name).join(", ")}</span>`
+                  : `<span class="shared-badge">shared</span>`;
+              }
+
+              return `
+              <div class="tree-item ${isSelected ? "selected" : ""}" data-resource-id="${resource.id}">
+                <span class="icon">${icon}</span>
+                <span class="name">${resource.name}</span>
+                ${sharedBadge}
+              </div>
+              ${childrenHtml ? `<div class="tree-children">${childrenHtml}</div>` : ""}
+            `;
+            })
+            .join("");
+        }
+
+        treeEl.innerHTML = renderNode(null);
+
+        treeEl.querySelectorAll(".tree-item").forEach((item) => {
+          item.addEventListener("click", () => {
+            state.selectedResourceId = parseInt(item.dataset.resourceId);
+            render();
+          });
+        });
+      }
+
+      function render() {
+        renderTabs();
+        renderUserType();
+        renderActions();
+        renderTree();
+      }
+
+      // Initial render
+      render();
+    </script>
+  </body>
+</html>
