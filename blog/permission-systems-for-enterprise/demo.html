@@ -261,6 +261,71 @@
         text-align: center;
       }
 
+      /* Status bar */
+      .status-bar {
+        display: flex;
+        gap: 1rem;
+        padding: 0.5rem 1rem;
+        background-color: var(--base01);
+        border-top: 1px solid var(--base02);
+        font-size: 0.75rem;
+        color: var(--base04);
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .status-bar .stat {
+        display: flex;
+        gap: 0.25rem;
+      }
+
+      .status-bar .stat-value {
+        color: var(--base0D);
+      }
+
+      .status-bar .stat-value.rbac {
+        color: var(--base0B);
+      }
+
+      .impl-toggle {
+        margin-left: auto;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+
+      .impl-toggle label {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        cursor: pointer;
+      }
+
+      .impl-toggle input[type="radio"] {
+        appearance: none;
+        width: 12px;
+        height: 12px;
+        border: 2px solid var(--base03);
+        border-radius: 50%;
+        cursor: pointer;
+        position: relative;
+      }
+
+      .impl-toggle input[type="radio"]:checked {
+        border-color: var(--base0D);
+      }
+
+      .impl-toggle input[type="radio"]:checked::after {
+        content: "";
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        width: 6px;
+        height: 6px;
+        background-color: var(--base0D);
+        border-radius: 50%;
+      }
+
       @media (max-width: 768px) {
         body {
           padding: 0.5rem;
@@ -283,6 +348,16 @@
           padding: 0.4rem 0.75rem;
           font-size: 0.8rem;
         }
+
+        .status-bar {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.5rem;
+        }
+
+        .impl-toggle {
+          margin-left: 0;
+        }
       }
     </style>
   </head>
@@ -294,25 +369,191 @@
         <div class="actions" id="actions"></div>
       </div>
       <div class="tree" id="tree"></div>
+      <div class="status-bar" id="statusBar">
+        <div class="stat">
+          reads: <span class="stat-value" id="statReads">0</span>
+        </div>
+        <div class="stat">
+          writes: <span class="stat-value" id="statWrites">0</span>
+        </div>
+        <div class="stat">
+          scanned: <span class="stat-value" id="statScanned">0</span>
+        </div>
+        <div class="impl-toggle">
+          <label>
+            <input type="radio" name="impl" value="naive" checked />
+            Naive
+          </label>
+          <label>
+            <input type="radio" name="impl" value="rbac" />
+            RBAC
+          </label>
+        </div>
+      </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.13.0/sql-wasm.min.js"></script>
     <script>
-      // State
-      const state = {
-        users: [{ id: 1, name: "User 1", type: "standard" }],
-        resources: [
-          {
-            id: 1,
-            type: "folder",
-            name: "User 1's Folder",
-            parentId: null,
-            ownerId: 1,
-          },
-        ],
+      // Configuration
+      const DB_THROTTLE_MS = 10;
+
+      // Current implementation mode
+      let implementationMode = "naive";
+
+      // Stats tracking (per minute)
+      const stats = { reads: 0, writes: 0, scanned: 0 };
+      let statsStartTime = Date.now();
+
+      function resetStatsIfNeeded() {
+        const now = Date.now();
+        if (now - statsStartTime >= 60000) {
+          stats.reads = 0;
+          stats.writes = 0;
+          stats.scanned = 0;
+          statsStartTime = now;
+        }
+      }
+
+      function updateStatsDisplay() {
+        resetStatsIfNeeded();
+        const statValueClass =
+          implementationMode === "rbac" ? "stat-value rbac" : "stat-value";
+        document.getElementById("statReads").className = statValueClass;
+        document.getElementById("statWrites").className = statValueClass;
+        document.getElementById("statScanned").className = statValueClass;
+        document.getElementById("statReads").textContent = stats.reads;
+        document.getElementById("statWrites").textContent = stats.writes;
+        document.getElementById("statScanned").textContent = stats.scanned;
+      }
+
+      // Throttle helper to simulate network latency
+      function throttle() {
+        return new Promise((resolve) => setTimeout(resolve, DB_THROTTLE_MS));
+      }
+
+      // SQLite database
+      let db;
+
+      async function initSQL() {
+        const SQL = await initSqlJs({
+          locateFile: (file) =>
+            `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.13.0/${file}`,
+        });
+        db = new SQL.Database();
+
+        // Create tables
+        db.run(`
+          CREATE TABLE users (
+            id INTEGER PRIMARY KEY,
+            name TEXT NOT NULL,
+            type TEXT NOT NULL DEFAULT 'standard'
+          )
+        `);
+
+        db.run(`
+          CREATE TABLE resources (
+            id INTEGER PRIMARY KEY,
+            type TEXT NOT NULL,
+            name TEXT NOT NULL,
+            parent_id INTEGER,
+            owner_id INTEGER NOT NULL,
+            ancestor_path TEXT DEFAULT '',
+            FOREIGN KEY (parent_id) REFERENCES resources(id),
+            FOREIGN KEY (owner_id) REFERENCES users(id)
+          )
+        `);
+
+        db.run(`
+          CREATE TABLE shares (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            resource_id INTEGER NOT NULL,
+            user_id INTEGER NOT NULL,
+            FOREIGN KEY (resource_id) REFERENCES resources(id),
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            UNIQUE(resource_id, user_id)
+          )
+        `);
+
+        db.run(`
+          CREATE TABLE counters (
+            id TEXT PRIMARY KEY,
+            folder_count INTEGER DEFAULT 1,
+            file_count INTEGER DEFAULT 0,
+            user_count INTEGER DEFAULT 1,
+            resource_count INTEGER DEFAULT 1
+          )
+        `);
+
+        // RBAC: Pre-computed permissions (junction table for O(1) access checks)
+        // access_type: 'owner' (full control), 'shared' (read only), 'path_only' (visible but no access)
+        db.run(`
+          CREATE TABLE permissions (
+            user_id INTEGER NOT NULL,
+            resource_id INTEGER NOT NULL,
+            access_type TEXT NOT NULL DEFAULT 'path_only',
+            PRIMARY KEY (user_id, resource_id),
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            FOREIGN KEY (resource_id) REFERENCES resources(id)
+          )
+        `);
+
+        // Create indexes for faster queries
+        db.run(`CREATE INDEX idx_resources_parent ON resources(parent_id)`);
+        db.run(`CREATE INDEX idx_resources_owner ON resources(owner_id)`);
+        db.run(`CREATE INDEX idx_shares_resource ON shares(resource_id)`);
+        db.run(`CREATE INDEX idx_shares_user ON shares(user_id)`);
+        db.run(`CREATE INDEX idx_permissions_user ON permissions(user_id)`);
+      }
+
+      // SQL helper functions with stats tracking
+      async function sqlQuery(sql, params = []) {
+        await throttle();
+        stats.reads++;
+        updateStatsDisplay();
+
+        const result = db.exec(sql, params);
+        if (result.length === 0) return [];
+
+        const columns = result[0].columns;
+        const rows = result[0].values.map((row) => {
+          const obj = {};
+          columns.forEach((col, i) => (obj[col] = row[i]));
+          return obj;
+        });
+
+        stats.scanned += rows.length;
+        updateStatsDisplay();
+        return rows;
+      }
+
+      async function sqlQueryOne(sql, params = []) {
+        const rows = await sqlQuery(sql, params);
+        return rows[0] || null;
+      }
+
+      async function sqlRun(sql, params = []) {
+        await throttle();
+        stats.writes++;
+        updateStatsDisplay();
+        db.run(sql, params);
+      }
+
+      function sqlRunSync(sql, params = []) {
+        db.run(sql, params);
+      }
+
+      // UI State
+      let activeUserId = 1;
+      let selectedResourceId = 1;
+
+      // Cache for rendering (avoid DB queries on selection change)
+      let cache = {
+        users: [],
+        resources: [],
         shares: [],
-        counters: { folder: 1, file: 0, user: 1, resource: 1 },
-        selectedResourceId: 1,
-        activeUserId: 1,
+        visibleIds: [],
+        permissions: {}, // RBAC: { resourceId: 'owner' | 'shared' | 'path_only' }
+        dirty: true,
       };
 
       // DOM elements
@@ -321,100 +562,340 @@
       const actionsEl = document.getElementById("actions");
       const treeEl = document.getElementById("tree");
 
-      // Helpers
-      function getActiveUser() {
-        return state.users.find((u) => u.id === state.activeUserId);
+      // Helper to parse ancestor_path string into array of IDs
+      function parseAncestorPath(path) {
+        if (!path) return [];
+        return path.split(",").filter(Boolean).map(Number);
       }
 
-      function getSelectedResource() {
-        return state.resources.find((r) => r.id === state.selectedResourceId);
-      }
-
-      function getAncestorIds(resourceId) {
-        const ancestors = [];
-        let current = state.resources.find((r) => r.id === resourceId);
-        while (current && current.parentId !== null) {
-          ancestors.push(current.parentId);
-          current = state.resources.find((r) => r.id === current.parentId);
-        }
-        return ancestors;
-      }
-
-      function getDescendantIds(resourceId) {
-        const descendants = [];
-        const children = state.resources.filter(
-          (r) => r.parentId === resourceId,
+      // RBAC: Grant permission for a new resource to its owner
+      async function grantPermissionOnCreate(resourceId, ownerId) {
+        await sqlRun(
+          `INSERT OR IGNORE INTO permissions (user_id, resource_id, access_type) VALUES (?, ?, 'owner')`,
+          [ownerId, resourceId],
         );
-        for (const child of children) {
-          descendants.push(child.id);
-          descendants.push(...getDescendantIds(child.id));
-        }
-        return descendants;
       }
 
-      function getVisibleResourceIds(userId) {
-        const user = state.users.find((u) => u.id === userId);
+      // RBAC: Grant permissions when sharing a resource
+      // - Shared resource + descendants: 'shared' (read access)
+      // - Ancestors: 'path_only' (visible but no access)
+      async function grantPermissionsOnShare(resourceId, userId) {
+        const resource = await sqlQueryOne(
+          `SELECT id, ancestor_path FROM resources WHERE id = ?`,
+          [resourceId],
+        );
+
+        // Add the shared resource itself with 'shared' access
+        await sqlRun(
+          `INSERT OR IGNORE INTO permissions (user_id, resource_id, access_type) VALUES (?, ?, 'shared')`,
+          [userId, resourceId],
+        );
+
+        // Add ancestors for path visibility (path_only - no actual access)
+        const ancestorIds = parseAncestorPath(resource.ancestor_path);
+        for (const ancestorId of ancestorIds) {
+          await sqlRun(
+            `INSERT OR IGNORE INTO permissions (user_id, resource_id, access_type) VALUES (?, ?, 'path_only')`,
+            [userId, ancestorId],
+          );
+        }
+
+        // Add all descendants with 'shared' access
+        const descendants = await sqlQuery(
+          `
+          WITH RECURSIVE tree AS (
+            SELECT id FROM resources WHERE parent_id = ?
+            UNION ALL
+            SELECT r.id FROM resources r JOIN tree t ON r.parent_id = t.id
+          )
+          SELECT id FROM tree
+        `,
+          [resourceId],
+        );
+        for (const desc of descendants) {
+          await sqlRun(
+            `INSERT OR IGNORE INTO permissions (user_id, resource_id, access_type) VALUES (?, ?, 'shared')`,
+            [userId, desc.id],
+          );
+        }
+      }
+
+      // RBAC: Full rebuild of permissions (used when user type changes)
+      async function rebuildUserPermissions(userId) {
+        // Clear existing permissions
+        await sqlRun(`DELETE FROM permissions WHERE user_id = ?`, [userId]);
+
+        const user = await sqlQueryOne(`SELECT * FROM users WHERE id = ?`, [
+          userId,
+        ]);
+
         if (user.type === "admin") {
-          return state.resources.map((r) => r.id);
+          // Admin has 'owner' access to everything
+          await sqlRun(
+            `INSERT INTO permissions (user_id, resource_id, access_type)
+             SELECT ?, id, 'owner' FROM resources`,
+            [userId],
+          );
+          return;
+        }
+
+        // Standard user: owned resources + descendants get 'owner' access
+        const ownedAndDescendants = await sqlQuery(
+          `
+          WITH RECURSIVE owned_tree AS (
+            SELECT id FROM resources WHERE owner_id = ?
+            UNION ALL
+            SELECT r.id FROM resources r
+            JOIN owned_tree ot ON r.parent_id = ot.id
+          )
+          SELECT id FROM owned_tree
+        `,
+          [userId],
+        );
+        for (const r of ownedAndDescendants) {
+          await sqlRun(
+            `INSERT OR IGNORE INTO permissions (user_id, resource_id, access_type) VALUES (?, ?, 'owner')`,
+            [userId, r.id],
+          );
+        }
+
+        // Standard user: shared resources + ancestors + descendants
+        const sharedResources = await sqlQuery(
+          `
+          SELECT r.id, r.ancestor_path
+          FROM shares s
+          JOIN resources r ON s.resource_id = r.id
+          WHERE s.user_id = ?
+        `,
+          [userId],
+        );
+
+        for (const resource of sharedResources) {
+          // Shared resource gets 'shared' access
+          await sqlRun(
+            `INSERT OR IGNORE INTO permissions (user_id, resource_id, access_type) VALUES (?, ?, 'shared')`,
+            [userId, resource.id],
+          );
+
+          // Ancestors get 'path_only' access
+          for (const ancestorId of parseAncestorPath(resource.ancestor_path)) {
+            await sqlRun(
+              `INSERT OR IGNORE INTO permissions (user_id, resource_id, access_type) VALUES (?, ?, 'path_only')`,
+              [userId, ancestorId],
+            );
+          }
+
+          // Descendants get 'shared' access
+          const descendants = await sqlQuery(
+            `
+            WITH RECURSIVE tree AS (
+              SELECT id FROM resources WHERE parent_id = ?
+              UNION ALL
+              SELECT r.id FROM resources r JOIN tree t ON r.parent_id = t.id
+            )
+            SELECT id FROM tree
+          `,
+            [resource.id],
+          );
+          for (const desc of descendants) {
+            await sqlRun(
+              `INSERT OR IGNORE INTO permissions (user_id, resource_id, access_type) VALUES (?, ?, 'shared')`,
+              [userId, desc.id],
+            );
+          }
+        }
+      }
+
+      // Get visible resource IDs - different implementation based on mode
+      async function getVisibleResourceIds(userId) {
+        if (implementationMode === "rbac") {
+          // RBAC: Single query to get pre-computed permissions via JOIN
+          const permissions = await sqlQuery(
+            `SELECT resource_id FROM permissions WHERE user_id = ?`,
+            [userId],
+          );
+          return permissions.map((p) => p.resource_id);
+        }
+
+        // ==========================================
+        // NAIVE IMPLEMENTATION - Multiple queries
+        // This demonstrates the N+1 query problem
+        // ==========================================
+
+        const user = await sqlQueryOne(`SELECT * FROM users WHERE id = ?`, [
+          userId,
+        ]);
+
+        if (user.type === "admin") {
+          // Admin: Fetch all resources
+          const allResources = await sqlQuery(`SELECT id FROM resources`);
+          return allResources.map((r) => r.id);
         }
 
         const visibleIds = new Set();
 
-        // Add owned resources and their descendants
-        for (const resource of state.resources) {
-          if (resource.ownerId === userId) {
-            visibleIds.add(resource.id);
-            getDescendantIds(resource.id).forEach((id) => visibleIds.add(id));
-          }
+        // Query 1: Get owned resources
+        const ownedResources = await sqlQuery(
+          `SELECT id FROM resources WHERE owner_id = ?`,
+          [userId],
+        );
+
+        // N+1 Problem: For each owned resource, fetch descendants recursively
+        for (const resource of ownedResources) {
+          visibleIds.add(resource.id);
+
+          // Recursive query for each owned resource
+          const descendants = await sqlQuery(
+            `
+            WITH RECURSIVE tree AS (
+              SELECT id FROM resources WHERE parent_id = ?
+              UNION ALL
+              SELECT r.id FROM resources r JOIN tree t ON r.parent_id = t.id
+            )
+            SELECT id FROM tree
+          `,
+            [resource.id],
+          );
+          descendants.forEach((r) => visibleIds.add(r.id));
         }
 
-        // Add shared resources and their descendants + ancestors
-        for (const share of state.shares) {
-          if (share.userId === userId) {
-            visibleIds.add(share.resourceId);
-            getDescendantIds(share.resourceId).forEach((id) =>
-              visibleIds.add(id),
-            );
-            getAncestorIds(share.resourceId).forEach((id) =>
-              visibleIds.add(id),
-            );
-          }
+        // Query 2: Get resources shared with user
+        const sharedResources = await sqlQuery(
+          `
+          SELECT r.id, r.ancestor_path
+          FROM shares s
+          JOIN resources r ON s.resource_id = r.id
+          WHERE s.user_id = ?
+        `,
+          [userId],
+        );
+
+        // N+1 Problem: For each shared resource, process ancestors and fetch descendants
+        for (const resource of sharedResources) {
+          visibleIds.add(resource.id);
+
+          // Add ancestors (parsed from stored path)
+          parseAncestorPath(resource.ancestor_path).forEach((id) =>
+            visibleIds.add(id),
+          );
+
+          // Another query for descendants of each shared resource
+          const descendants = await sqlQuery(
+            `
+            WITH RECURSIVE tree AS (
+              SELECT id FROM resources WHERE parent_id = ?
+              UNION ALL
+              SELECT r.id FROM resources r JOIN tree t ON r.parent_id = t.id
+            )
+            SELECT id FROM tree
+          `,
+            [resource.id],
+          );
+          descendants.forEach((r) => visibleIds.add(r.id));
         }
 
         return Array.from(visibleIds);
       }
 
-      function isAncestorOnly(resourceId, userId) {
-        const user = state.users.find((u) => u.id === userId);
+      async function getCounters() {
+        let counters = await sqlQueryOne(
+          `SELECT * FROM counters WHERE id = 'main'`,
+        );
+        if (!counters) {
+          await sqlRun(
+            `INSERT INTO counters (id, folder_count, file_count, user_count, resource_count)
+             VALUES ('main', 1, 0, 1, 1)`,
+          );
+          counters = {
+            folder_count: 1,
+            file_count: 0,
+            user_count: 1,
+            resource_count: 1,
+          };
+        }
+        return {
+          folder: counters.folder_count,
+          file: counters.file_count,
+          user: counters.user_count,
+          resource: counters.resource_count,
+        };
+      }
+
+      async function updateCounters(counters) {
+        await sqlRun(
+          `UPDATE counters SET folder_count = ?, file_count = ?, user_count = ?, resource_count = ?
+           WHERE id = 'main'`,
+          [counters.folder, counters.file, counters.user, counters.resource],
+        );
+      }
+
+      // Check if resource is only visible as ancestor (using cache)
+      function isAncestorOnlyCached(resourceId, userId) {
+        const user = cache.users.find((u) => u.id === userId);
         if (user.type === "admin") return false;
 
-        const resource = state.resources.find((r) => r.id === resourceId);
-        if (resource.ownerId === userId) return false;
-        if (
-          state.shares.some(
-            (s) => s.resourceId === resourceId && s.userId === userId,
-          )
-        )
-          return false;
+        const resource = cache.resources.find((r) => r.id === resourceId);
+        if (resource.owner_id === userId) return false;
 
-        // Check if any shared resource has this as ancestor
-        for (const share of state.shares) {
-          if (share.userId === userId) {
-            const ancestors = getAncestorIds(share.resourceId);
-            if (ancestors.includes(resourceId)) return true;
+        // Check if directly shared with user
+        if (
+          cache.shares.some(
+            (s) => s.resource_id === resourceId && s.user_id === userId,
+          )
+        ) {
+          return false;
+        }
+
+        // Check if this resource is an ancestor of a shared resource
+        const userShares = cache.shares.filter((s) => s.user_id === userId);
+        for (const share of userShares) {
+          const sharedResource = cache.resources.find(
+            (r) => r.id === share.resource_id,
+          );
+          if (sharedResource) {
+            const ancestorIds = parseAncestorPath(sharedResource.ancestor_path);
+            if (ancestorIds.includes(resourceId)) {
+              return true;
+            }
           }
         }
 
         return false;
       }
 
+      // Refresh cache from DB (called when data changes)
+      async function refreshCache() {
+        cache.users = await sqlQuery(`SELECT * FROM users`);
+        cache.resources = await sqlQuery(`SELECT * FROM resources`);
+        cache.shares = await sqlQuery(`SELECT * FROM shares`);
+        cache.visibleIds = await getVisibleResourceIds(activeUserId);
+
+        // RBAC: Load permissions with access_type for O(1) lookups
+        if (implementationMode === "rbac") {
+          const perms = await sqlQuery(
+            `SELECT resource_id, access_type FROM permissions WHERE user_id = ?`,
+            [activeUserId],
+          );
+          cache.permissions = {};
+          for (const p of perms) {
+            cache.permissions[p.resource_id] = p.access_type;
+          }
+        } else {
+          cache.permissions = {};
+        }
+
+        cache.dirty = false;
+      }
+
       // Render functions
-      function renderTabs() {
+      async function renderTabs() {
+        const users = cache.users;
+
         tabsEl.innerHTML =
-          state.users
+          users
             .map(
               (user) => `
-          <button class="tab ${user.id === state.activeUserId ? "active" : ""}" data-user-id="${user.id}">
+          <button class="tab ${user.id === activeUserId ? "active" : ""}" data-user-id="${user.id}">
             ${user.name}
           </button>
         `,
@@ -422,48 +903,58 @@
             .join("") + `<button class="tab add-user">+ Add User</button>`;
 
         tabsEl.querySelectorAll(".tab[data-user-id]").forEach((tab) => {
-          tab.addEventListener("click", () => {
-            state.activeUserId = parseInt(tab.dataset.userId);
-            // Select first visible resource for this user
-            const visibleIds = getVisibleResourceIds(state.activeUserId);
+          tab.addEventListener("click", async () => {
+            activeUserId = parseInt(tab.dataset.userId);
+            // Refresh cache for new user's visibility and permissions
+            await refreshCache();
             if (
-              !visibleIds.includes(state.selectedResourceId) &&
-              visibleIds.length > 0
+              !cache.visibleIds.includes(selectedResourceId) &&
+              cache.visibleIds.length > 0
             ) {
-              state.selectedResourceId = visibleIds[0];
+              selectedResourceId = cache.visibleIds[0];
             }
-            render();
+            await render();
           });
         });
 
-        tabsEl.querySelector(".tab.add-user").addEventListener("click", () => {
-          state.counters.user++;
-          const newUser = {
-            id: state.counters.user,
-            name: `User ${state.counters.user}`,
-            type: "standard",
-          };
-          state.users.push(newUser);
+        tabsEl
+          .querySelector(".tab.add-user")
+          .addEventListener("click", async () => {
+            const counters = await getCounters();
+            counters.user++;
+            counters.resource++;
 
-          // Create root folder for new user
-          state.counters.resource++;
-          state.resources.push({
-            id: state.counters.resource,
-            type: "folder",
-            name: `${newUser.name}'s Folder`,
-            parentId: null,
-            ownerId: newUser.id,
+            const newUserId = counters.user;
+            const newUserName = `User ${counters.user}`;
+
+            await sqlRun(
+              `INSERT INTO users (id, name, type) VALUES (?, ?, 'standard')`,
+              [newUserId, newUserName],
+            );
+
+            const newFolderName = `${newUserName}'s Folder`;
+            await sqlRun(
+              `INSERT INTO resources (id, type, name, parent_id, ancestor_path, owner_id)
+               VALUES (?, 'folder', ?, NULL, '', ?)`,
+              [counters.resource, newFolderName, newUserId],
+            );
+
+            await updateCounters(counters);
+
+            // RBAC: Initialize permissions for new user (owns their root folder)
+            if (implementationMode === "rbac") {
+              await grantPermissionOnCreate(counters.resource, newUserId);
+            }
+
+            activeUserId = newUserId;
+            selectedResourceId = counters.resource;
+            await refreshCache();
+            await render();
           });
-
-          // Switch to the new user
-          state.activeUserId = newUser.id;
-          state.selectedResourceId = state.counters.resource;
-          render();
-        });
       }
 
-      function renderUserType() {
-        const user = getActiveUser();
+      async function renderUserType() {
+        const user = cache.users.find((u) => u.id === activeUserId);
         userTypeEl.innerHTML = `
           <label>
             <input type="radio" name="userType" value="admin" ${user.type === "admin" ? "checked" : ""}>
@@ -476,26 +967,54 @@
         `;
 
         userTypeEl.querySelectorAll('input[type="radio"]').forEach((radio) => {
-          radio.addEventListener("change", () => {
-            const user = getActiveUser();
-            user.type = radio.value;
-            render();
+          radio.addEventListener("change", async () => {
+            await sqlRun(`UPDATE users SET type = ? WHERE id = ?`, [
+              radio.value,
+              activeUserId,
+            ]);
+
+            // RBAC: Rebuild permissions when role changes
+            if (implementationMode === "rbac") {
+              await rebuildUserPermissions(activeUserId);
+            }
+
+            await refreshCache();
+            await render();
           });
         });
       }
 
-      function renderActions() {
-        const selected = getSelectedResource();
+      async function renderActions() {
+        const selected = cache.resources.find(
+          (r) => r.id === selectedResourceId,
+        );
         const isFolder = selected && selected.type === "folder";
-        const user = getActiveUser();
-        const isAncestor = selected && isAncestorOnly(selected.id, user.id);
-        const isOwner = selected && selected.ownerId === user.id;
+
+        // Determine permissions - RBAC uses cached access_type, naive calculates
+        let canCreate = false;
+        let canShare = false;
+
+        if (selected) {
+          if (implementationMode === "rbac") {
+            // RBAC: O(1) lookup from cached permissions
+            const accessType = cache.permissions[selected.id];
+            // Only owner can create or share
+            canCreate = accessType === "owner" && isFolder;
+            canShare = accessType === "owner";
+          } else {
+            // Naive: Must calculate ownership
+            const isOwner = selected.owner_id === activeUserId;
+            // Only owner can create or share
+            canCreate = isFolder && isOwner;
+            canShare = isOwner;
+          }
+        }
 
         actionsEl.innerHTML = `
-          <button class="btn" id="addFolderBtn" ${!isFolder || isAncestor ? "disabled" : ""}>+ Add Folder</button>
-          <button class="btn" id="addFileBtn" ${!isFolder || isAncestor ? "disabled" : ""}>+ Add File</button>
+          <button class="btn" id="addFolderBtn" ${!canCreate ? "disabled" : ""}>+ Add Folder</button>
+          <button class="btn" id="addFileBtn" ${!canCreate ? "disabled" : ""}>+ Add File</button>
           <div class="share-container">
-            <button class="btn" id="shareBtn" ${!selected || isAncestor || !isOwner ? "disabled" : ""}>Share</button>
+            <button class="btn" id="shareBtn" ${!canShare ? "disabled" : ""}>Share</button>
             <div class="share-dropdown" id="shareDropdown"></div>
           </div>
         `;
@@ -505,45 +1024,82 @@
         const shareBtn = document.getElementById("shareBtn");
         const shareDropdown = document.getElementById("shareDropdown");
 
-        addFolderBtn.addEventListener("click", () => {
-          if (!isFolder || isAncestor) return;
-          state.counters.folder++;
-          state.counters.resource++;
-          const newFolder = {
-            id: state.counters.resource,
-            type: "folder",
-            name: `Folder ${state.counters.folder}`,
-            parentId: selected.id,
-            ownerId: state.activeUserId,
-          };
-          state.resources.push(newFolder);
-          render();
+        addFolderBtn.addEventListener("click", async () => {
+          if (!canCreate) return;
+          const counters = await getCounters();
+          counters.folder++;
+          counters.resource++;
+
+          // Build ancestor path: parent's path + parent's id
+          const ancestorPath = selected.ancestor_path
+            ? `${selected.ancestor_path},${selected.id}`
+            : `${selected.id}`;
+
+          await sqlRun(
+            `INSERT INTO resources (id, type, name, parent_id, ancestor_path, owner_id)
+             VALUES (?, 'folder', ?, ?, ?, ?)`,
+            [
+              counters.resource,
+              `Folder ${counters.folder}`,
+              selected.id,
+              ancestorPath,
+              activeUserId,
+            ],
+          );
+          await updateCounters(counters);
+
+          // RBAC: Grant permission for the new resource
+          if (implementationMode === "rbac") {
+            await grantPermissionOnCreate(counters.resource, activeUserId);
+          }
+
+          await refreshCache();
+          await render();
         });
 
-        addFileBtn.addEventListener("click", () => {
-          if (!isFolder || isAncestor) return;
-          state.counters.file++;
-          state.counters.resource++;
-          const newFile = {
-            id: state.counters.resource,
-            type: "file",
-            name: `File ${state.counters.file}`,
-            parentId: selected.id,
-            ownerId: state.activeUserId,
-          };
-          state.resources.push(newFile);
-          render();
+        addFileBtn.addEventListener("click", async () => {
+          if (!canCreate) return;
+          const counters = await getCounters();
+          counters.file++;
+          counters.resource++;
+
+          // Build ancestor path: parent's path + parent's id
+          const ancestorPath = selected.ancestor_path
+            ? `${selected.ancestor_path},${selected.id}`
+            : `${selected.id}`;
+
+          await sqlRun(
+            `INSERT INTO resources (id, type, name, parent_id, ancestor_path, owner_id)
+             VALUES (?, 'file', ?, ?, ?, ?)`,
+            [
+              counters.resource,
+              `File ${counters.file}`,
+              selected.id,
+              ancestorPath,
+              activeUserId,
+            ],
+          );
+          await updateCounters(counters);
+
+          // RBAC: Grant permission for the new resource
+          if (implementationMode === "rbac") {
+            await grantPermissionOnCreate(counters.resource, activeUserId);
+          }
+
+          await refreshCache();
+          await render();
         });
 
-        shareBtn.addEventListener("click", (e) => {
+        shareBtn.addEventListener("click", async (e) => {
           e.stopPropagation();
           const isOpen = shareDropdown.classList.contains("open");
           shareDropdown.classList.toggle("open", !isOpen);
 
           if (!isOpen) {
-            const otherUsers = state.users.filter(
-              (u) => u.id !== selected.ownerId,
+            const otherUsers = cache.users.filter(
+              (u) => u.id !== selected.owner_id,
             );
+
             shareDropdown.innerHTML =
               otherUsers
                 .map(
@@ -555,96 +1111,105 @@
               `<div class="share-option new-user" data-new-user="true">+ New User</div>`;
 
             shareDropdown.querySelectorAll(".share-option").forEach((opt) => {
-              opt.addEventListener("click", (e) => {
+              opt.addEventListener("click", async (e) => {
                 e.stopPropagation();
                 let targetUserId;
 
                 if (opt.dataset.newUser) {
-                  // Create new user
-                  state.counters.user++;
-                  const newUser = {
-                    id: state.counters.user,
-                    name: `User ${state.counters.user}`,
-                    type: "standard",
-                  };
-                  state.users.push(newUser);
+                  const counters = await getCounters();
+                  counters.user++;
+                  counters.resource++;
 
-                  // Create root folder for new user
-                  state.counters.resource++;
-                  state.resources.push({
-                    id: state.counters.resource,
-                    type: "folder",
-                    name: `${newUser.name}'s Folder`,
-                    parentId: null,
-                    ownerId: newUser.id,
-                  });
+                  const newUserId = counters.user;
+                  const newUserName = `User ${counters.user}`;
 
-                  targetUserId = newUser.id;
+                  await sqlRun(
+                    `INSERT INTO users (id, name, type) VALUES (?, ?, 'standard')`,
+                    [newUserId, newUserName],
+                  );
+
+                  await sqlRun(
+                    `INSERT INTO resources (id, type, name, parent_id, ancestor_path, owner_id)
+                     VALUES (?, 'folder', ?, NULL, '', ?)`,
+                    [counters.resource, `${newUserName}'s Folder`, newUserId],
+                  );
+
+                  await updateCounters(counters);
+                  targetUserId = newUserId;
+
+                  // RBAC: Grant permission for new user's root folder
+                  if (implementationMode === "rbac") {
+                    await grantPermissionOnCreate(counters.resource, newUserId);
+                  }
                 } else {
                   targetUserId = parseInt(opt.dataset.userId);
                 }
 
-                // Add share if not already shared
+                // Check if already shared using cache
                 if (
-                  !state.shares.some(
+                  !cache.shares.some(
                     (s) =>
-                      s.resourceId === selected.id && s.userId === targetUserId,
+                      s.resource_id === selected.id &&
+                      s.user_id === targetUserId,
                   )
                 ) {
-                  state.shares.push({
-                    resourceId: selected.id,
-                    userId: targetUserId,
-                  });
+                  await sqlRun(
+                    `INSERT INTO shares (resource_id, user_id) VALUES (?, ?)`,
+                    [selected.id, targetUserId],
+                  );
+
+                  // RBAC: Grant permissions for shared resource
+                  if (implementationMode === "rbac") {
+                    await grantPermissionsOnShare(selected.id, targetUserId);
+                  }
                 }
 
                 shareDropdown.classList.remove("open");
-                render();
+                await refreshCache();
+                await render();
               });
             });
           }
         });
 
-        // Close dropdown when clicking outside
         document.addEventListener("click", () => {
           shareDropdown.classList.remove("open");
         });
       }
 
-      function renderTree() {
-        const visibleIds = getVisibleResourceIds(state.activeUserId);
-        const user = getActiveUser();
-
-        if (visibleIds.length === 0) {
+      async function renderTree() {
+        if (cache.visibleIds.length === 0) {
           treeEl.innerHTML =
             '<div class="empty-message">No files or folders to display</div>';
           return;
         }
 
-        function renderNode(parentId, depth = 0) {
-          const children = state.resources.filter(
-            (r) => r.parentId === parentId && visibleIds.includes(r.id),
+        function renderNode(parentId) {
+          const children = cache.resources.filter(
+            (r) => r.parent_id === parentId && cache.visibleIds.includes(r.id),
           );
 
           if (children.length === 0) return "";
 
-          return children
-            .map((resource) => {
-              const isSelected = resource.id === state.selectedResourceId;
-              const sharedWithUsers = state.shares
-                .filter((s) => s.resourceId === resource.id)
-                .map((s) => state.users.find((u) => u.id === s.userId))
-                .filter(Boolean);
-              const icon = resource.type === "folder" ? "📁" : "📄";
-              const childrenHtml = renderNode(resource.id, depth + 1);
-              const isOwner = resource.ownerId === state.activeUserId;
-              let sharedBadge = "";
-              if (sharedWithUsers.length > 0) {
-                sharedBadge = isOwner
-                  ? `<span class="shared-badge">shared with: ${sharedWithUsers.map((u) => u.name).join(", ")}</span>`
-                  : `<span class="shared-badge">shared</span>`;
-              }
+          let html = "";
+          for (const resource of children) {
+            const isSelected = resource.id === selectedResourceId;
+            const sharedWithUsers = cache.shares
+              .filter((s) => s.resource_id === resource.id)
+              .map((s) => cache.users.find((u) => u.id === s.user_id))
+              .filter(Boolean);
+            const icon = resource.type === "folder" ? "📁" : "📄";
+            const childrenHtml = renderNode(resource.id);
+            const isOwner = resource.owner_id === activeUserId;
 
-              return `
+            let sharedBadge = "";
+            if (sharedWithUsers.length > 0) {
+              sharedBadge = isOwner
+                ? `<span class="shared-badge">shared with: ${sharedWithUsers.map((u) => u.name).join(", ")}</span>`
+                : `<span class="shared-badge">shared</span>`;
+            }
+
+            html += `
               <div class="tree-item ${isSelected ? "selected" : ""}" data-resource-id="${resource.id}">
                 <span class="icon">${icon}</span>
                 <span class="name">${resource.name}</span>
@@ -652,29 +1217,100 @@
               </div>
               ${childrenHtml ? `<div class="tree-children">${childrenHtml}</div>` : ""}
             `;
-            })
-            .join("");
+          }
+          return html;
         }
 
         treeEl.innerHTML = renderNode(null);
 
         treeEl.querySelectorAll(".tree-item").forEach((item) => {
           item.addEventListener("click", () => {
-            state.selectedResourceId = parseInt(item.dataset.resourceId);
-            render();
+            selectedResourceId = parseInt(item.dataset.resourceId);
+            // No DB queries - just re-render from cache
+            renderFromCache();
           });
         });
       }
 
-      function render() {
+      // Fast render from cache (no DB queries)
+      function renderFromCache() {
         renderTabs();
         renderUserType();
         renderActions();
         renderTree();
       }
 
-      // Initial render
-      render();
+      async function render() {
+        await renderTabs();
+        await renderUserType();
+        await renderActions();
+        await renderTree();
+      }
+
+      // Initialize database with seed data
+      async function initDB() {
+        // Clear all tables (SQLite way)
+        sqlRunSync(`DELETE FROM permissions`);
+        sqlRunSync(`DELETE FROM shares`);
+        sqlRunSync(`DELETE FROM resources`);
+        sqlRunSync(`DELETE FROM users`);
+        sqlRunSync(`DELETE FROM counters`);
+
+        // Reset stats
+        stats.reads = 0;
+        stats.writes = 0;
+        stats.scanned = 0;
+        statsStartTime = Date.now();
+
+        // Reset UI state
+        activeUserId = 1;
+        selectedResourceId = 1;
+
+        // Create initial user
+        await sqlRun(
+          `INSERT INTO users (id, name, type) VALUES (1, 'User 1', 'standard')`,
+        );
+
+        // Create initial root folder
+        await sqlRun(
+          `INSERT INTO resources (id, type, name, parent_id, ancestor_path, owner_id)
+           VALUES (1, 'folder', 'User 1''s Folder', NULL, '', 1)`,
+        );
+
+        // Create initial counters
+        await sqlRun(
+          `INSERT INTO counters (id, folder_count, file_count, user_count, resource_count)
+           VALUES ('main', 1, 0, 1, 1)`,
+        );
+
+        // RBAC: Grant permission for first user's root folder
+        if (implementationMode === "rbac") {
+          await grantPermissionOnCreate(1, 1);
+        }
+
+        // Load cache and render
+        await refreshCache();
+        renderFromCache();
+      }
+
+      async function init() {
+        await initSQL();
+
+        // Set up implementation toggle
+        document.querySelectorAll('input[name="impl"]').forEach((radio) => {
+          radio.addEventListener("change", async () => {
+            implementationMode = radio.value;
+            await initDB();
+          });
+        });
+
+        // Update stats display every 60 seconds to reset counters
+        setInterval(updateStatsDisplay, 60000);
+
+        await initDB();
+      }
+
+      init();
     </script>
   </body>
 </html>
