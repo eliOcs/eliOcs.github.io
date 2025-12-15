@@ -51,52 +51,132 @@
       property="twitter:description"
       content="Learn how to implement permission systems that scale for enterprise customers. From naive read-time queries to RBAC with write-time permissions, with interactive demos."
     />
+    <style>
+      .split-layout {
+        display: flex;
+        flex-direction: row;
+        min-height: 100vh;
+      }
+
+      .blog-content {
+        flex: 1;
+        padding: var(--spacing-lg);
+        overflow-y: auto;
+        display: flex;
+        justify-content: center;
+      }
+
+      .blog-content-inner {
+        max-width: 65ch;
+        width: 100%;
+      }
+
+      .demo-panel {
+        flex: 0 0 auto;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+      }
+
+      .demo-panel iframe {
+        width: 634px;
+        height: auto;
+        aspect-ratio: 634 / 500;
+        border: none;
+      }
+
+      /* Override default body padding when using split layout */
+      body:has(.split-layout) {
+        padding: 0;
+        max-width: none;
+      }
+
+      @media (max-width: 1200px) {
+        .split-layout {
+          flex-direction: column;
+          height: 100vh;
+        }
+
+        .blog-content {
+          flex: 1;
+          max-width: none;
+          padding: var(--spacing-md);
+          overflow-y: auto;
+        }
+
+        .demo-panel {
+          flex: 0 0 auto;
+          position: sticky;
+          bottom: 0;
+          height: auto;
+          min-height: 0;
+        }
+
+        .demo-panel iframe {
+          width: 100%;
+          height: 45vh;
+          min-height: 350px;
+          aspect-ratio: auto;
+        }
+      }
+    </style>
   </head>
   <body>
-    <div class="page-header">
-      <a href="/" class="home-nav">
-        <img src="/selfie.jpg" alt="Go to home page" />
-      </a>
-      <h1>Permission Systems for Enterprise that Scale</h1>
-      <p class="post-date">December 12, 2025</p>
+    <div class="split-layout">
+      <div class="blog-content">
+        <div class="blog-content-inner">
+          <div class="page-header">
+            <a href="/" class="home-nav">
+              <img src="/selfie.jpg" alt="Go to home page" />
+            </a>
+            <h1>Permission Systems for Enterprise that Scale</h1>
+            <p class="post-date">December 12, 2025</p>
+          </div>
+
+          <p>
+            Many startups eventually gravitate towards enterprise customers for
+            bigger tickets and long-term contracts. As enterprise customers start
+            using your product they soon demand advanced permissions systems to
+            manage their different user roles and access levels. A naive
+            implementation of the permission checks works perfectly fine at first
+            but as they start to use more and more your platform the amount of
+            data, users and relationships will put that implementation to the
+            test. Soon your biggest paying customer will be threatening to leave
+            because your app is just too slow for them to use.
+          </p>
+          <p>
+            To illustrate this problem we will use a simple example. Imagine an
+            app which has folders and files where an 'admin' can see all folders
+            and files but 'standard' users can only see files and folders they've
+            created or have been shared with them.
+          </p>
+
+          <h2>The Naive Approach (read-time permission queries)</h2>
+
+          <p>
+            Your first intuition will be to query the database on every request to
+            calculate the permissions and the data that the user can access. First
+            you will check the role of the user in the team, is the user an admin
+            or an standard user. If the user is not at admin then query for all
+            the resources the user has created or has been shared with.
+          </p>
+
+          <p>
+            <!-- TODO: Section 2 - RBAC (write-time permissions) -->
+
+            <!-- TODO: Section 3 - Why ABAC isn't suitable for list queries -->
+
+            <!-- TODO: Section 4 - Adding the list of ascendants, alternative approach is folder closure tables -->
+
+            <!-- TODO: Conclusion -->
+          </p>
+        </div>
+      </div>
+      <div class="demo-panel">
+        <iframe src="./demo.html" title="Permission System Demo"></iframe>
+      </div>
     </div>
-
-    <p>
-      Many startups eventually gravitate towards enterprise customers for bigger
-      tickets and long-term contracts. As enterprise customers start using your
-      product they soon demand advanced permissions systems to manage their
-      different user roles and access levels. A naive implementation of the
-      permission checks works perfectly fine at first but as they start to use
-      more and more your platform the amount of data, users and relationships
-      will put that implementation to the test. Soon your biggest paying
-      customer will be threatening to leave because your app is just too slow
-      for them to use.
-    </p>
-    <p>
-      To illustrate this problem we will use a simple example. Imagine an app
-      which has folders and files where an 'admin' can see all folders and files
-      but 'standard' users can only see files and folders they've created or
-      have been shared with them.
-    </p>
-
-    <h2>The Naive Approach (read-time permission queries)</h2>
-
-    <p>
-      Your first intuition will be to query the database on every request to
-      calculate the permissions and the data that the user can access. First you
-      will check the role of the user in the team, is the user an admin or an
-      standard user. If the user is not at admin then query for all the
-      resources the user has created or has been shared with.
-    </p>
-
-    <p>
-      <!-- TODO: Section 2 - RBAC (write-time permissions) -->
-
-      <!-- TODO: Section 3 - Why ABAC isn't suitable for list queries -->
-
-      <!-- TODO: Section 4 - Adding the list of ascendants, alternative approach is folder closure tables -->
-
-      <!-- TODO: Conclusion -->
-    </p>
   </body>
 </html>
