@@ -40,7 +40,7 @@ test.describe("Permission Demo - Mode Switching & Data Sync", () => {
     await page.getByRole("button", { name: "+ Add File" }).click();
 
     // Verify structure exists
-    await expect(page.getByText("User 1's Folder")).toBeVisible();
+    await expect(page.getByText("User 1's Root Folder")).toBeVisible();
     await expect(page.getByText("Folder 2")).toBeVisible();
     await expect(page.getByText("File 1")).toBeVisible();
     await expect(page.getByText("File 2")).toBeVisible();
@@ -49,7 +49,7 @@ test.describe("Permission Demo - Mode Switching & Data Sync", () => {
     await page.getByRole("radio", { name: "RBAC" }).click();
 
     // All resources should still be visible
-    await expect(page.getByText("User 1's Folder")).toBeVisible();
+    await expect(page.getByText("User 1's Root Folder")).toBeVisible();
     await expect(page.getByText("Folder 2")).toBeVisible();
     await expect(page.getByText("File 1")).toBeVisible();
     await expect(page.getByText("File 2")).toBeVisible();
@@ -93,10 +93,10 @@ test.describe("Permission Demo - Mode Switching & Data Sync", () => {
     await expect(page.getByRole("button", { name: "User 1" })).toHaveClass(
       /active/,
     );
-    await expect(page.getByText("User 1's Folder")).toBeVisible();
+    await expect(page.getByText("User 1's Root Folder")).toBeVisible();
 
-    // Click on User 1's Folder to ensure it's selected, then add a folder
-    await page.getByText("User 1's Folder").click();
+    // Click on User 1's Root Folder to ensure it's selected, then add a folder
+    await page.getByText("User 1's Root Folder").click();
     await page.getByRole("button", { name: "+ Add Folder" }).click();
     await expect(page.getByText("Folder 2")).toBeVisible();
 
@@ -117,38 +117,6 @@ test.describe("Permission Demo - Mode Switching & Data Sync", () => {
     await expect(page.getByText("shared with: User 2")).toBeVisible();
   });
 
-  test("stats reset when switching modes", async ({ page }) => {
-    // Create some activity to generate stats in Naive mode
-    await page.getByRole("button", { name: "+ Add Folder" }).click();
-    await page.getByRole("button", { name: "+ Add File" }).click();
-    await page.getByRole("button", { name: "+ Add User" }).click();
-
-    // Get current stats (they should be non-zero)
-    const readsBeforeSwitch = await page.locator("#statReads").textContent();
-    expect(parseInt(readsBeforeSwitch)).toBeGreaterThan(0);
-
-    // Switch to RBAC - stats should reset
-    await page.getByRole("radio", { name: "RBAC" }).click();
-
-    // Wait a moment for stats to update
-    await page.waitForTimeout(100);
-
-    // The stats text should show the rebuilding activity, but be different from before
-    // (they won't be exactly 0 because rebuilding permissions does some reads/writes)
-    const readsAfterSwitch = await page.locator("#statReads").textContent();
-
-    // Switch back to Naive - stats should reset again
-    await page.getByRole("radio", { name: "Naive" }).click();
-    await page.waitForTimeout(100);
-
-    const readsAfterSwitchBack = await page.locator("#statReads").textContent();
-
-    // Stats after switching back should be lower (just cache refresh, no permission rebuild)
-    expect(parseInt(readsAfterSwitchBack)).toBeLessThan(
-      parseInt(readsAfterSwitch),
-    );
-  });
-
   test("permissions work correctly after switching to RBAC", async ({
     page,
   }) => {
@@ -166,8 +134,8 @@ test.describe("Permission Demo - Mode Switching & Data Sync", () => {
     // User 2 should see shared content with correct permissions
     await page.getByRole("button", { name: "User 2" }).click();
 
-    // Should see ancestor (User 1's Folder), shared folder, and descendant file
-    await expect(page.getByText("User 1's Folder")).toBeVisible();
+    // Should see ancestor (User 1's Root Folder), shared folder, and descendant file
+    await expect(page.getByText("User 1's Root Folder")).toBeVisible();
     await expect(page.getByText("Folder 2")).toBeVisible();
     await expect(page.getByText("File 1")).toBeVisible();
 
@@ -182,13 +150,13 @@ test.describe("Permission Demo - Mode Switching & Data Sync", () => {
     await expect(page.getByRole("button", { name: "Share" })).toBeDisabled();
 
     // Select ancestor - also should be disabled
-    await page.getByText("User 1's Folder").click();
+    await page.getByText("User 1's Root Folder").click();
     await expect(
       page.getByRole("button", { name: "+ Add Folder" }),
     ).toBeDisabled();
 
     // User 2's own folder should have full permissions
-    await page.getByText("User 2's Folder").click();
+    await page.getByText("User 2's Root Folder").click();
     await expect(
       page.getByRole("button", { name: "+ Add Folder" }),
     ).toBeEnabled();
@@ -206,7 +174,7 @@ test.describe("Permission Demo - Mode Switching & Data Sync", () => {
     // Create User 2 with their own folder (User 2's tab becomes active)
     await page.getByRole("button", { name: "+ Add User" }).click();
     await expect(page.getByRole("button", { name: "User 2" })).toBeVisible();
-    await expect(page.getByText("User 2's Folder")).toBeVisible();
+    await expect(page.getByText("User 2's Root Folder")).toBeVisible();
 
     // User 2 creates a folder inside their root folder
     // (folder_count stays at 1 when adding user, so next is Folder 2)
@@ -218,7 +186,7 @@ test.describe("Permission Demo - Mode Switching & Data Sync", () => {
     await expect(page.getByRole("radio", { name: "Admin" })).toBeChecked();
 
     // Admin can see User 2's resources
-    await expect(page.getByText("User 2's Folder")).toBeVisible();
+    await expect(page.getByText("User 2's Root Folder")).toBeVisible();
     await expect(page.getByText("Folder 2")).toBeVisible();
 
     // Switch to RBAC
@@ -228,7 +196,7 @@ test.describe("Permission Demo - Mode Switching & Data Sync", () => {
     await expect(page.getByRole("radio", { name: "Admin" })).toBeChecked();
 
     // Admin should still see all resources
-    await expect(page.getByText("User 2's Folder")).toBeVisible();
+    await expect(page.getByText("User 2's Root Folder")).toBeVisible();
     await expect(page.getByText("Folder 2")).toBeVisible();
   });
 
@@ -246,7 +214,7 @@ test.describe("Permission Demo - Mode Switching & Data Sync", () => {
     await expect(page.getByRole("button", { name: "User 2" })).toHaveClass(
       /active/,
     );
-    await expect(page.getByText("User 2's Folder")).toBeVisible();
+    await expect(page.getByText("User 2's Root Folder")).toBeVisible();
   });
 });
 
@@ -270,7 +238,7 @@ for (const impl of DEMO_IMPLEMENTATIONS) {
       await expect(page.getByRole("radio", { name: "Standard" })).toBeChecked();
 
       // Root folder is visible and selected
-      const rootFolder = page.getByText("User 1's Folder");
+      const rootFolder = page.getByText("User 1's Root Folder");
       await expect(rootFolder).toBeVisible();
       await expect(rootFolder.locator("..")).toHaveClass(/selected/);
     });
@@ -288,40 +256,17 @@ for (const impl of DEMO_IMPLEMENTATIONS) {
       );
 
       // User 2's root folder is visible
-      await expect(page.getByText("User 2's Folder")).toBeVisible();
+      await expect(page.getByText("User 2's Root Folder")).toBeVisible();
     });
 
-    test("add folder creates folder under selected folder", async ({
+    test("add folder and file creates resources under selected folder", async ({
       page,
     }) => {
       await page.getByRole("button", { name: "+ Add Folder" }).click();
-
-      // New folder appears in tree
       await expect(page.getByText("Folder 2")).toBeVisible();
-    });
 
-    test("add file creates file under selected folder", async ({ page }) => {
       await page.getByRole("button", { name: "+ Add File" }).click();
-
-      // New file appears in tree
       await expect(page.getByText("File 1")).toBeVisible();
-    });
-
-    test("share resource with new user", async ({ page }) => {
-      // Create a file to share
-      await page.getByRole("button", { name: "+ Add File" }).click();
-      await page.getByText("File 1").click();
-      await expect(page.getByText("File 1").locator("..")).toHaveClass(/selected/);
-
-      // Share with new user
-      await page.getByRole("button", { name: "Share" }).click();
-      await page.getByText("+ New User").click();
-
-      // New user tab created
-      await expect(page.getByRole("button", { name: "User 2" })).toBeVisible();
-
-      // Owner sees "shared with: User 2"
-      await expect(page.getByText("shared with: User 2")).toBeVisible();
     });
 
     test("owner sees 'shared with' but recipient sees just 'shared'", async ({
@@ -330,7 +275,9 @@ for (const impl of DEMO_IMPLEMENTATIONS) {
       // Create a file and share it
       await page.getByRole("button", { name: "+ Add File" }).click();
       await page.getByText("File 1").click();
-      await expect(page.getByText("File 1").locator("..")).toHaveClass(/selected/);
+      await expect(page.getByText("File 1").locator("..")).toHaveClass(
+        /selected/,
+      );
       await page.getByRole("button", { name: "Share" }).click();
       await page.getByText("+ New User").click();
 
@@ -357,14 +304,14 @@ for (const impl of DEMO_IMPLEMENTATIONS) {
       await page.getByRole("button", { name: "User 1" }).click();
 
       // User 1 should not see User 2's folder
-      await expect(page.getByText("User 2's Folder")).toHaveCount(0);
+      await expect(page.getByText("User 2's Root Folder")).toHaveCount(0);
       await expect(page.getByText("Folder 2")).toHaveCount(0);
     });
 
     test("admin user sees all resources", async ({ page }) => {
       // Create User 2
       await page.getByRole("button", { name: "+ Add User" }).click();
-      await expect(page.getByText("User 2's Folder")).toBeVisible();
+      await expect(page.getByText("User 2's Root Folder")).toBeVisible();
 
       // User 2 creates a folder
       await page.getByRole("button", { name: "+ Add Folder" }).click();
@@ -375,7 +322,7 @@ for (const impl of DEMO_IMPLEMENTATIONS) {
       await page.getByRole("radio", { name: "Admin" }).click();
 
       // User 1 should now see User 2's resources
-      await expect(page.getByText("User 2's Folder")).toBeVisible();
+      await expect(page.getByText("User 2's Root Folder")).toBeVisible();
       await expect(page.getByText("Folder 2")).toBeVisible();
     });
 
@@ -402,13 +349,19 @@ for (const impl of DEMO_IMPLEMENTATIONS) {
 
       // Select the shared folder - buttons should be disabled (read-only access)
       await page.getByText("Folder 2").click();
-      await expect(page.getByText("Folder 2").locator("..")).toHaveClass(/selected/);
-      await expect(page.getByRole("button", { name: "+ Add Folder" })).toBeDisabled();
-      await expect(page.getByRole("button", { name: "+ Add File" })).toBeDisabled();
+      await expect(page.getByText("Folder 2").locator("..")).toHaveClass(
+        /selected/,
+      );
+      await expect(
+        page.getByRole("button", { name: "+ Add Folder" }),
+      ).toBeDisabled();
+      await expect(
+        page.getByRole("button", { name: "+ Add File" }),
+      ).toBeDisabled();
       await expect(page.getByRole("button", { name: "Share" })).toBeDisabled();
     });
 
-    test("sharing file shows ancestor path but not siblings", async ({
+    test("sharing file shows ancestor path, hides siblings, disables buttons on ancestors", async ({
       page,
     }) => {
       // Create: Folder 2 > File 1, File 2
@@ -419,7 +372,9 @@ for (const impl of DEMO_IMPLEMENTATIONS) {
 
       // Share only File 1 with new user
       await page.getByText("File 1").click();
-      await expect(page.getByText("File 1").locator("..")).toHaveClass(/selected/);
+      await expect(page.getByText("File 1").locator("..")).toHaveClass(
+        /selected/,
+      );
       await page.getByRole("button", { name: "Share" }).click();
       await page.getByText("+ New User").click();
 
@@ -427,33 +382,15 @@ for (const impl of DEMO_IMPLEMENTATIONS) {
       await page.getByRole("button", { name: "User 2" }).click();
 
       // User 2 should see ancestor path and File 1
-      await expect(page.getByText("User 1's Folder")).toBeVisible();
+      await expect(page.getByText("User 1's Root Folder")).toBeVisible();
       await expect(page.getByText("Folder 2")).toBeVisible();
       await expect(page.getByText("File 1")).toBeVisible();
 
       // But NOT File 2 (sibling)
       await expect(page.getByText("File 2")).toHaveCount(0);
-    });
 
-    test("buttons disabled on ancestor-only folders", async ({ page }) => {
-      // Create: Folder 2 > File 1
-      await page.getByRole("button", { name: "+ Add Folder" }).click();
-      await page.getByText("Folder 2").click();
-      await page.getByRole("button", { name: "+ Add File" }).click();
-
-      // Share File 1 with new user
-      await page.getByText("File 1").click();
-      await expect(page.getByText("File 1").locator("..")).toHaveClass(/selected/);
-      await page.getByRole("button", { name: "Share" }).click();
-      await page.getByText("+ New User").click();
-
-      // Switch to User 2
-      await page.getByRole("button", { name: "User 2" }).click();
-
-      // Select ancestor folder (User 1's Folder)
-      await page.getByText("User 1's Folder").click();
-
-      // Buttons should be disabled
+      // Buttons should be disabled on ancestor folders
+      await page.getByText("User 1's Root Folder").click();
       await expect(
         page.getByRole("button", { name: "+ Add Folder" }),
       ).toBeDisabled();
@@ -466,7 +403,7 @@ for (const impl of DEMO_IMPLEMENTATIONS) {
     test("switching tabs updates visible resources", async ({ page }) => {
       // Create User 2 with a file
       await page.getByRole("button", { name: "+ Add User" }).click();
-      await expect(page.getByText("User 2's Folder")).toBeVisible();
+      await expect(page.getByText("User 2's Root Folder")).toBeVisible();
       await page.getByRole("button", { name: "+ Add File" }).click();
       await expect(page.getByText("File 1")).toBeVisible();
 
@@ -474,35 +411,15 @@ for (const impl of DEMO_IMPLEMENTATIONS) {
       await page.getByRole("button", { name: "User 1" }).click();
 
       // Should see User 1's folder, not User 2's
-      await expect(page.getByText("User 1's Folder")).toBeVisible();
-      await expect(page.getByText("User 2's Folder")).toHaveCount(0);
+      await expect(page.getByText("User 1's Root Folder")).toBeVisible();
+      await expect(page.getByText("User 2's Root Folder")).toHaveCount(0);
 
       // Switch back to User 2
       await page.getByRole("button", { name: "User 2" }).click();
 
       // Should see User 2's folder and file
-      await expect(page.getByText("User 2's Folder")).toBeVisible();
+      await expect(page.getByText("User 2's Root Folder")).toBeVisible();
       await expect(page.getByText("File 1")).toBeVisible();
-    });
-
-    test("cannot share a resource that was shared with you", async ({
-      page,
-    }) => {
-      // User 1 creates a file and shares it with new user
-      await page.getByRole("button", { name: "+ Add File" }).click();
-      await page.getByText("File 1").click();
-      await expect(page.getByText("File 1").locator("..")).toHaveClass(/selected/);
-      await page.getByRole("button", { name: "Share" }).click();
-      await page.getByText("+ New User").click();
-
-      // Switch to User 2
-      await page.getByRole("button", { name: "User 2" }).click();
-
-      // Select the shared file
-      await page.getByText("File 1").click();
-
-      // Share button should be disabled
-      await expect(page.getByRole("button", { name: "Share" })).toBeDisabled();
     });
   });
 }

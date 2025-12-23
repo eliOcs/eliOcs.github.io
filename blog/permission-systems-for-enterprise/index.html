@@ -18,7 +18,7 @@
     <title>Blog > Permission Systems for Enterprise that Scale</title>
     <meta
       name="description"
-      content="Learn how to implement permission systems that scale for enterprise customers. From naive read-time queries to RBAC with write-time permissions, with interactive demos."
+      content="Permission checks that query on every request will break at scale. Learn how pre-computing permissions at write-time enables O(1) reads, with working SQL examples and an interactive demo."
     />
     <meta name="author" content="Elio Capella Sánchez" />
 
@@ -38,7 +38,7 @@
     />
     <meta
       property="og:description"
-      content="Learn how to implement permission systems that scale for enterprise customers. From naive read-time queries to RBAC with write-time permissions, with interactive demos."
+      content="Permission checks that query on every request will break at scale. Learn how pre-computing permissions at write-time enables O(1) reads, with working SQL examples and an interactive demo."
     />
 
     <!-- Twitter -->
@@ -53,7 +53,7 @@
     />
     <meta
       property="twitter:description"
-      content="Learn how to implement permission systems that scale for enterprise customers. From naive read-time queries to RBAC with write-time permissions, with interactive demos."
+      content="Permission checks that query on every request will break at scale. Learn how pre-computing permissions at write-time enables O(1) reads, with working SQL examples and an interactive demo."
     />
     <style>
       .split-layout {
@@ -68,7 +68,6 @@
         flex: 0 1 800px;
         max-width: 800px;
         padding: 2rem 1rem;
-        overflow-y: auto;
       }
 
       .demo-panel {
@@ -82,8 +81,8 @@
 
       .demo-panel iframe {
         width: 634px;
-        height: auto;
-        aspect-ratio: 634 / 500;
+        height: 85vh;
+        max-height: 800px;
         border: none;
       }
 
@@ -96,8 +95,8 @@
       @media (max-width: 1200px) {
         .split-layout {
           flex-direction: column;
-          height: 100vh;
-          gap: 0;
+          min-height: 100vh;
+          gap: 0.5rem;
         }
 
         .blog-content {
@@ -106,7 +105,6 @@
           max-width: 800px;
           margin: 0 auto;
           padding: 2rem 1rem;
-          overflow-y: auto;
         }
 
         .demo-panel {
@@ -142,19 +140,19 @@
           <p>
             Many startups eventually gravitate towards enterprise customers for
             bigger tickets and long-term contracts. As enterprise customers
-            start using your product they soon demand advanced permissions
+            start using your product, they soon demand advanced permission
             systems to manage their different user roles and access levels. A
-            naive implementation of the permission checks works perfectly fine
-            at first but as they start to use more and more your platform the
-            amount of data, users and relationships will put that implementation
-            to the test. Soon your biggest paying customer will be threatening
-            to churn because your app is just too slow.
+            naive implementation of permission checks works perfectly fine at
+            first, but as they use your platform more and more, the amount of
+            data, users, and relationships will put that implementation to the
+            test. Soon your biggest paying customer will be threatening to churn
+            because your app is just <em>too slow</em>.
           </p>
           <p>
-            To illustrate this problem we will I've setup a simple example.
-            Imagine an app which has folders and files where an 'admin' can see
-            all folders and files but 'standard' users can only see files and
-            folders they've created or have been shared with them.
+            To illustrate this problem, I've set up a simple example. Imagine an
+            app with folders and files where an admin can see all folders and
+            files, but standard users can only see files and folders they've
+            created or that have been shared with them.
           </p>
 
           <h2>The Naive Approach (read-time permission queries)</h2>
@@ -162,14 +160,13 @@
           <p>
             Your first intuition will be to query the database on every request
             to calculate the permissions and the data that the user can access.
-            First you will check the role of the user in the team, is the user
-            an admin or an standard user. If the user is not at admin then query
-            for all the resources the user has created or has been shared with
-            them.
+            First, you check the role of the user: is the user an admin or a
+            standard user? If the user is not an admin, then query for all the
+            resources the user has created or that have been shared with them.
           </p>
           <p>
-            First part is straightforward, if you are an admin return all
-            resources:
+            The first part is straightforward: if you are an admin, return all
+            resources.
           </p>
           <pre><code class="language-js">const user = await sqlQueryOne(`SELECT * FROM users WHERE id = ?`, [
   userId,
@@ -177,21 +174,23 @@
 
 // Admin: Fetch all resources
 if (user.type === "admin") {
-  return await sqlQuery(`SELECT id FROM resources`);
+  return await sqlQuery(`SELECT * FROM resources`);
 }</code></pre>
           <p>
-            For standard users you will need to query for resources created by
-            them, if the resource is a folder you will have access to all of its
-            descendants:
+            For standard users, you need to query for resources created by them.
+            If the resource is a folder, you will have access to all of its
+            descendants.
           </p>
-          <pre><code class="language-js">const ownedResources = await sqlQuery(
-  `SELECT id FROM resources WHERE owner_id = ?`,
+          <pre><code class="language-js">const accessibleResources = [];
+
+const ownedResources = await sqlQuery(
+  `SELECT * FROM resources WHERE owner_id = ?`,
   [userId],
 );
 
 // For each owned resource, fetch descendants recursively
 for (const resource of ownedResources) {
-  accessibleResources.add(resource);
+  accessibleResources.push(resource);
 
   const descendants = await sqlQuery(
     `
@@ -200,24 +199,25 @@ for (const resource of ownedResources) {
       UNION ALL
       SELECT r.id FROM resources r JOIN tree t ON r.parent_id = t.id
     )
-    SELECT id FROM tree
+    SELECT r.* FROM resources r JOIN tree t ON r.id = t.id
   `,
     [resource.id],
   );
-  accessibleResources.add(...descendants);
+  accessibleResources.push(...descendants);
 }</code></pre>
 
           <p>
-            We can start to see recursive queries, as we own more and more
-            resources and there is more and more nesting the queries will get
-            slower.<br />
-            Finally we include all shared resources, their descendants if you've
-            been shared a folder, plus their ancestors to show the full path:
+            We can already see recursive queries appearing. As we own more
+            resources with deeper nesting, the queries will get slower.
+          </p>
+          <p>
+            Finally, we include all shared resources, their descendants if a
+            folder was shared, plus their ancestors to show the full path.
           </p>
 
           <pre><code class="language-js">const sharedResources = await sqlQuery(
   `
-  SELECT r.id, r.ancestor_path
+  SELECT r.*
   FROM shares s
   JOIN resources r ON s.resource_id = r.id
   WHERE s.user_id = ?
@@ -225,9 +225,9 @@ for (const resource of ownedResources) {
   [userId],
 );
 
-// For each shared resource, fetch ascenstors and descendants
+// For each shared resource, fetch ancestors and descendants
 for (const resource of sharedResources) {
-  accessibleResources.add(resource);
+  accessibleResources.push(resource);
 
   // Query ancestors to show full path
   const ancestors = await sqlQuery(
@@ -238,11 +238,11 @@ for (const resource of sharedResources) {
       SELECT r.parent_id FROM resources r JOIN ancestors a ON r.id = a.parent_id
       WHERE r.parent_id IS NOT NULL
     )
-    SELECT parent_id as id FROM ancestors WHERE parent_id IS NOT NULL
+    SELECT r.* FROM resources r JOIN ancestors a ON r.id = a.parent_id
   `,
-    [resourceId],
+    [resource.id],
   );
-  accessibleResources.add(...ancestors);
+  accessibleResources.push(...ancestors);
 
   // Another query for descendants of each shared resource
   const descendants = await sqlQuery(
@@ -252,44 +252,43 @@ for (const resource of sharedResources) {
       UNION ALL
       SELECT r.id FROM resources r JOIN tree t ON r.parent_id = t.id
     )
-    SELECT id FROM tree
+    SELECT r.* FROM resources r JOIN tree t ON r.id = t.id
   `,
     [resource.id],
   );
-  accessibleResources.add(...ancestors);
+  accessibleResources.push(...descendants);
 }</code></pre>
           <p>
-            The code is easy to follow but the number of queries and recursive
-            queries in this case with the nested folder setup will quickly
-            become a bottleneck as you scale.
+            The code is easy to follow, but the number of queries—especially
+            recursive ones with nested folder structures—will quickly become a
+            <strong>bottleneck</strong> as you scale.
           </p>
 
           <h2>RBAC (write-time permission queries)</h2>
           <p>
-            Because we read more than we write, it make sense to optimize for
-            reads. How does this look like? With
+            Because we normally develop apps that
+            <strong>read more than they write</strong>, it makes sense to
+            optimize for reads. What does this look like? With
             <a
               href="https://en.wikipedia.org/wiki/Role-based_access_control"
               target="_blank"
               >Role Based Access Control</a
             >
-            we will store the precomputed roles in the database, linking users
+            we store the pre-computed permissions in the database, linking users
             with resources:
           </p>
 
-          <pre><code class="language-js">// RBAC: Pre-computed permissions
-// access_type: 'owner' (full control), 'shared' (read only), 'path_only' (visible but no access)
-db.run(`
-  CREATE TABLE permissions (
-    user_id INTEGER NOT NULL,
-    resource_id INTEGER NOT NULL,
-    access_type TEXT NOT NULL DEFAULT 'path_only',
-    PRIMARY KEY (user_id, resource_id),
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (resource_id) REFERENCES resources(id)
-  )
-`);</code></pre>
-          <p>Now when querying for resources we can simply do:</p>
+          <pre><code class="language-sql">-- RBAC: Pre-computed permissions
+-- access_type: 'owner' (full control), 'shared' (read only), 'path_only' (visible but no access)
+CREATE TABLE permissions (
+  user_id INTEGER NOT NULL,
+  resource_id INTEGER NOT NULL,
+  access_type TEXT NOT NULL,
+  PRIMARY KEY (user_id, resource_id),
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (resource_id) REFERENCES resources(id)
+);</code></pre>
+          <p>Now, when querying for resources, we can simply do:</p>
           <pre><code class="language-js">const resources = await sqlQuery(
   `SELECT r.* FROM resources r
    JOIN permissions p ON r.id = p.resource_id
@@ -299,9 +298,11 @@ db.run(`
 </code></pre>
           <p>
             That's it! No recursive queries, no multiple queries, just a simple
-            join. Can't get faster than that as it is easy to index too.<br />Let's
-            see how to maintain the permissions table. On every new resource we
-            need to grant the owner full access:
+            join. It's as fast as it gets, and easy to index too.
+          </p>
+          <p>
+            Let's see how to maintain the permissions table. On every new
+            resource, we need to grant the owner full access:
           </p>
 
           <pre><code class="language-js">await sqlRun(
@@ -309,7 +310,7 @@ db.run(`
   [ownerId, resourceId],
 );</code></pre>
           <p>
-            That was easy but some more complex logic is needed when sharing
+            That was easy, but some more complex logic is needed when sharing
             resources:
           </p>
           <pre><code class="language-js">// Add the shared resource itself with 'shared' access
@@ -337,19 +338,18 @@ for (const descId of descendantIds) {
 }
 </code></pre>
           <p>
-            You can clearly see the trade-off here, we moved the complexity from
-            read-time to write-time. Every time a resource is created or shared
-            we need to update the permissions table accordingly. We added a
-            point of failure as the permission table and be out of sync with the
-            actual data.
+            You can clearly see the trade-off here: we moved the complexity from
+            <strong>read-time</strong> to <strong>write-time</strong>. Every
+            time a resource is created or shared, we need to update the
+            permissions table accordingly. We added a point of failure, as the
+            permissions table can get out of sync with the actual data.
           </p>
 
           <h2>Real-world example: PostHog</h2>
           <p>
-            This is not just theory.
-            <a href="https://posthog.com/" target="_blank">PostHog</a>, the
-            popular open-source product analytics platform, uses the exact same
-            approach. They have an
+            Although this is a simple example, while browsing the
+            <a href="https://posthog.com/" target="_blank">PostHog</a> source
+            code I found the exact same approach. They have an
             <a
               href="https://github.com/PostHog/posthog/blob/master/ee/models/rbac/access_control.py"
               target="_blank"
@@ -407,16 +407,15 @@ def _get_access_controls(self, filters):
     return self._cache[key]</code></pre>
 
           <p>
-            The pattern is clear: pre-compute permissions at write-time, store
-            them in a dedicated table, and filter with simple lookups at
-            read-time.
+            The pattern is clear: <strong>pre-compute</strong> permissions at
+            write-time, <strong>store</strong> them in a dedicated table, and
+            <strong>filter</strong> with simple lookups at read-time.
           </p>
 
-          <!-- TODO: Section 3 - Why ABAC isn't suitable for list queries -->
           <h2>What about ABAC?</h2>
           <p>
-            If you research on ways to implement permission systems you will
-            often find
+            If you research ways to implement permission systems, you will often
+            find
             <a
               href="https://en.wikipedia.org/wiki/Attribute-based_access_control"
               target="_blank"
@@ -424,7 +423,7 @@ def _get_access_controls(self, filters):
             >
             as a recommended approach. ABAC is great when you need to make
             complex decisions on whether a user can access a specific resource
-            or not. Figma showed how they handle permissions and this is an
+            or not. Figma showed how they handle permissions, and this is an
             example of
             <a
               href="https://www.figma.com/blog/how-we-rolled-out-our-own-permissions-dsl-at-figma/"
@@ -433,13 +432,13 @@ def _get_access_controls(self, filters):
             >
           </p>
           <p>
-            The main difference with our naive approach is that ABAC approaches
-            offer a declaritive way of defining the rules and policies behind
-            the permission checks. The engine will convert those policies into
+            The main difference from our naive approach is that ABAC offers a
+            declarative way of defining the rules and policies behind the
+            permission checks. The engine will convert those policies into
             queries and code to execute them at read-time. Here is an example of
-            how those rules could look like for our example:
+            how those rules could look for our example:
           </p>
-          <pre><code># Rule 1: Admins can access everything
+          <pre><code class="language-none"># Rule 1: Admins can access everything
 allow if {
     input.user.type == "admin"
 }
@@ -459,16 +458,133 @@ allow if {
 # ...
 </code></pre>
           <p>
-            This approach is very clear and composable, it works great for
-            single resource access checks, "can user x access resource y?". It
-            struggles when listing resources as we would need to execute the
-            policies for each resource and we can't directly query the resources
-            table with simple filters.
+            This approach is very clear and composable. It works great for
+            single-resource access checks:
+            <em>"can user X access resource Y?"</em> It struggles when listing
+            resources, as we would need to execute the policies for each
+            resource and can't directly query the resources table with simple
+            filters.
           </p>
 
-          <!-- TODO: Section 4 - Adding the list of ascendants, alternative approach is folder closure tables -->
+          <h2>Optimizing for hierarchical data</h2>
+          <p>
+            Both approaches still rely on recursive queries to traverse the
+            folder hierarchy. In SaaS applications with deeply nested
+            structures, these recursive queries can also become a bottleneck.
+            There are two common patterns to eliminate them.
+          </p>
 
-          <!-- TODO: Conclusion -->
+          <h3>Materialized paths</h3>
+          <p>
+            A simple alternative is storing the full path as a string column on
+            each resource.
+          </p>
+          <pre><code class="language-sql">ALTER TABLE resources ADD COLUMN path TEXT;
+
+-- Example paths:
+-- /1/           (root folder, id=1)
+-- /1/5/         (child of root, id=5)
+-- /1/5/12/      (grandchild, id=12)</code></pre>
+          <p>Finding descendants becomes a prefix search.</p>
+          <pre><code class="language-js">// All descendants of resource with path '/1/5/'
+const descendants = await sqlQuery(
+  `SELECT * FROM resources WHERE path LIKE ?`,
+  [resource.path + "%"],
+);
+
+// All ancestors by parsing the path
+const ancestorIds = resource.path.split("/").filter(Boolean);
+const ancestors = await sqlQuery(
+  `SELECT * FROM resources WHERE id IN (${ancestorIds.join(",")})`,
+);</code></pre>
+          <p>
+            Materialized paths are easier to implement but can be tricky when
+            moving resources between folders, as you need to update the path of
+            all descendants. Closure tables handle moves more gracefully.
+          </p>
+
+          <h3>Closure tables</h3>
+          <p>
+            A closure table pre-computes all ancestor-descendant relationships.
+            Instead of traversing the tree at query time, you store every
+            possible path—another trade-off between read and write times.
+          </p>
+          <pre><code class="language-sql">CREATE TABLE resource_closure (
+  ancestor_id INTEGER NOT NULL,
+  descendant_id INTEGER NOT NULL,
+  depth INTEGER NOT NULL,
+  PRIMARY KEY (ancestor_id, descendant_id),
+  FOREIGN KEY (ancestor_id) REFERENCES resources(id),
+  FOREIGN KEY (descendant_id) REFERENCES resources(id)
+);
+
+-- /1/           (root folder, id=1)
+INSERT INTO resource_closure VALUES (1, 1, 0);
+
+-- /1/5/         (child of root, id=5)
+INSERT INTO resource_closure VALUES (5, 5, 0);
+INSERT INTO resource_closure VALUES (1, 5, 1);
+
+-- /1/5/12/      (grandchild, id=12)
+INSERT INTO resource_closure VALUES (12, 12, 0);
+INSERT INTO resource_closure VALUES (5, 12, 1);
+INSERT INTO resource_closure VALUES (1, 12, 2);</code></pre>
+          <p>
+            With this table, finding all descendants becomes a simple join with
+            no recursion.
+          </p>
+          <pre><code class="language-js">// All descendants of a resource (instant lookup)
+const descendants = await sqlQuery(
+  `SELECT r.* FROM resources r
+   JOIN resource_closure c ON r.id = c.descendant_id
+   WHERE c.ancestor_id = ? AND c.depth > 0`,
+  [resourceId],
+);
+
+// All ancestors of a resource (for showing the path)
+const ancestors = await sqlQuery(
+  `SELECT r.* FROM resources r
+   JOIN resource_closure c ON r.id = c.ancestor_id
+   WHERE c.descendant_id = ? AND c.depth > 0
+   ORDER BY c.depth DESC`,
+  [resourceId],
+);</code></pre>
+          <p>
+            The trade-off is write complexity. When creating a resource, you
+            must insert closure entries for all ancestors.
+          </p>
+          <pre><code class="language-js">// When creating a new resource under parentId
+await sqlRun(
+  `INSERT INTO resource_closure (ancestor_id, descendant_id, depth)
+   SELECT ancestor_id, ?, depth + 1
+   FROM resource_closure
+   WHERE descendant_id = ?
+   UNION ALL
+   SELECT ?, ?, 0`,
+  [newResourceId, parentId, newResourceId, newResourceId],
+);</code></pre>
+
+          <h2>Conclusion</h2>
+          <p>
+            The core trade-off is clear: you can pay the cost at read-time with
+            recursive queries, or at write-time by maintaining a permissions
+            index. Starting with the naive approach makes sense it's simpler to
+            implement and debug.
+          </p>
+          <p>
+            But when your enterprise customers start experiencing slow load
+            times, the RBAC approach becomes worth the added complexity. The
+            performance difference is significant enough that it can eliminate
+            the need for other workarounds like aggressive caching or complex
+            pagination.
+          </p>
+          <p>
+            The main risk with pre-computed permissions is data getting
+            <strong>out of sync</strong>. Plan for this by building a rebuild
+            script from day one that can recompute all permissions from the
+            source of truth. When bugs happen, and they will, you'll be glad you
+            have it.
+          </p>
         </div>
       </div>
       <div class="demo-panel">
