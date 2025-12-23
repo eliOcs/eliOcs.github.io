@@ -3,6 +3,253 @@ import { test, expect } from "@playwright/test";
 const DEMO_URL = "/blog/permission-systems-for-enterprise/demo.html";
 const DEMO_IMPLEMENTATIONS = ["Naive", "RBAC"];
 
+test.describe("Permission Demo - Mode Switching & Data Sync", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto(DEMO_URL);
+    // Wait for SQLite initialization (starts in Naive mode)
+    await page.waitForSelector(".tree-item");
+  });
+
+  test("switching from Naive to RBAC preserves users", async ({ page }) => {
+    // Start in Naive mode (default)
+    await expect(page.getByRole("radio", { name: "Naive" })).toBeChecked();
+
+    // Create additional users (wait for each one to be created)
+    await page.getByRole("button", { name: "+ Add User" }).click();
+    await expect(page.getByRole("button", { name: "User 2" })).toBeVisible();
+    await page.getByRole("button", { name: "+ Add User" }).click();
+    await expect(page.getByRole("button", { name: "User 3" })).toBeVisible();
+
+    // Switch to RBAC
+    await page.getByRole("radio", { name: "RBAC" }).click();
+    await expect(page.getByRole("radio", { name: "RBAC" })).toBeChecked();
+
+    // All users should still be visible
+    await expect(page.getByRole("button", { name: "User 1" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "User 2" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "User 3" })).toBeVisible();
+  });
+
+  test("switching from Naive to RBAC preserves folders and files", async ({
+    page,
+  }) => {
+    // Create folder structure in Naive mode
+    await page.getByRole("button", { name: "+ Add Folder" }).click();
+    await page.getByText("Folder 2").click();
+    await page.getByRole("button", { name: "+ Add File" }).click();
+    await page.getByRole("button", { name: "+ Add File" }).click();
+
+    // Verify structure exists
+    await expect(page.getByText("User 1's Folder")).toBeVisible();
+    await expect(page.getByText("Folder 2")).toBeVisible();
+    await expect(page.getByText("File 1")).toBeVisible();
+    await expect(page.getByText("File 2")).toBeVisible();
+
+    // Switch to RBAC
+    await page.getByRole("radio", { name: "RBAC" }).click();
+
+    // All resources should still be visible
+    await expect(page.getByText("User 1's Folder")).toBeVisible();
+    await expect(page.getByText("Folder 2")).toBeVisible();
+    await expect(page.getByText("File 1")).toBeVisible();
+    await expect(page.getByText("File 2")).toBeVisible();
+  });
+
+  test("switching from Naive to RBAC preserves sharing relationships", async ({
+    page,
+  }) => {
+    // Create a folder and share it with a new user
+    await page.getByRole("button", { name: "+ Add Folder" }).click();
+    await page.getByText("Folder 2").click();
+    await page.getByRole("button", { name: "Share" }).click();
+    await page.getByText("+ New User").click();
+
+    // Verify sharing badge
+    await expect(page.getByText("shared with: User 2")).toBeVisible();
+
+    // Switch to RBAC
+    await page.getByRole("radio", { name: "RBAC" }).click();
+
+    // Sharing relationship should be preserved
+    await expect(page.getByText("shared with: User 2")).toBeVisible();
+
+    // Switch to User 2 and verify they can see the shared folder
+    await page.getByRole("button", { name: "User 2" }).click();
+    await expect(page.getByText("Folder 2")).toBeVisible();
+    await expect(page.getByText("shared", { exact: true })).toBeVisible();
+  });
+
+  test("switching back to Naive preserves data from RBAC", async ({ page }) => {
+    // Switch to RBAC first
+    await page.getByRole("radio", { name: "RBAC" }).click();
+    await expect(page.getByRole("radio", { name: "RBAC" })).toBeChecked();
+
+    // Create structure in RBAC mode
+    await page.getByRole("button", { name: "+ Add User" }).click();
+    await expect(page.getByRole("button", { name: "User 2" })).toBeVisible();
+
+    // Switch to User 1 and wait for their tree to load
+    await page.getByRole("button", { name: "User 1" }).click();
+    await expect(page.getByRole("button", { name: "User 1" })).toHaveClass(
+      /active/,
+    );
+    await expect(page.getByText("User 1's Folder")).toBeVisible();
+
+    // Click on User 1's Folder to ensure it's selected, then add a folder
+    await page.getByText("User 1's Folder").click();
+    await page.getByRole("button", { name: "+ Add Folder" }).click();
+    await expect(page.getByText("Folder 2")).toBeVisible();
+
+    // Select Folder 2 and share with User 2
+    await page.getByText("Folder 2").click();
+    await page.getByRole("button", { name: "Share" }).click();
+    await page.locator(".share-option").getByText("User 2").click();
+    await expect(page.getByText("shared with: User 2")).toBeVisible();
+
+    // Switch back to Naive
+    await page.getByRole("radio", { name: "Naive" }).click();
+    await expect(page.getByRole("radio", { name: "Naive" })).toBeChecked();
+
+    // All data should be preserved
+    await expect(page.getByRole("button", { name: "User 1" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "User 2" })).toBeVisible();
+    await expect(page.getByText("Folder 2")).toBeVisible();
+    await expect(page.getByText("shared with: User 2")).toBeVisible();
+  });
+
+  test("stats reset when switching modes", async ({ page }) => {
+    // Create some activity to generate stats in Naive mode
+    await page.getByRole("button", { name: "+ Add Folder" }).click();
+    await page.getByRole("button", { name: "+ Add File" }).click();
+    await page.getByRole("button", { name: "+ Add User" }).click();
+
+    // Get current stats (they should be non-zero)
+    const readsBeforeSwitch = await page.locator("#statReads").textContent();
+    expect(parseInt(readsBeforeSwitch)).toBeGreaterThan(0);
+
+    // Switch to RBAC - stats should reset
+    await page.getByRole("radio", { name: "RBAC" }).click();
+
+    // Wait a moment for stats to update
+    await page.waitForTimeout(100);
+
+    // The stats text should show the rebuilding activity, but be different from before
+    // (they won't be exactly 0 because rebuilding permissions does some reads/writes)
+    const readsAfterSwitch = await page.locator("#statReads").textContent();
+
+    // Switch back to Naive - stats should reset again
+    await page.getByRole("radio", { name: "Naive" }).click();
+    await page.waitForTimeout(100);
+
+    const readsAfterSwitchBack = await page.locator("#statReads").textContent();
+
+    // Stats after switching back should be lower (just cache refresh, no permission rebuild)
+    expect(parseInt(readsAfterSwitchBack)).toBeLessThan(
+      parseInt(readsAfterSwitch),
+    );
+  });
+
+  test("permissions work correctly after switching to RBAC", async ({
+    page,
+  }) => {
+    // Set up complex scenario in Naive mode
+    // User 1 creates Folder 2 > File 1, shares Folder 2 with User 2
+    await page.getByRole("button", { name: "+ Add Folder" }).click();
+    await page.getByText("Folder 2").click();
+    await page.getByRole("button", { name: "+ Add File" }).click();
+    await page.getByRole("button", { name: "Share" }).click();
+    await page.getByText("+ New User").click();
+
+    // Switch to RBAC
+    await page.getByRole("radio", { name: "RBAC" }).click();
+
+    // User 2 should see shared content with correct permissions
+    await page.getByRole("button", { name: "User 2" }).click();
+
+    // Should see ancestor (User 1's Folder), shared folder, and descendant file
+    await expect(page.getByText("User 1's Folder")).toBeVisible();
+    await expect(page.getByText("Folder 2")).toBeVisible();
+    await expect(page.getByText("File 1")).toBeVisible();
+
+    // Select the shared folder - buttons should be disabled (read-only)
+    await page.getByText("Folder 2").click();
+    await expect(
+      page.getByRole("button", { name: "+ Add Folder" }),
+    ).toBeDisabled();
+    await expect(
+      page.getByRole("button", { name: "+ Add File" }),
+    ).toBeDisabled();
+    await expect(page.getByRole("button", { name: "Share" })).toBeDisabled();
+
+    // Select ancestor - also should be disabled
+    await page.getByText("User 1's Folder").click();
+    await expect(
+      page.getByRole("button", { name: "+ Add Folder" }),
+    ).toBeDisabled();
+
+    // User 2's own folder should have full permissions
+    await page.getByText("User 2's Folder").click();
+    await expect(
+      page.getByRole("button", { name: "+ Add Folder" }),
+    ).toBeEnabled();
+    await expect(
+      page.getByRole("button", { name: "+ Add File" }),
+    ).toBeEnabled();
+    await expect(page.getByRole("button", { name: "Share" })).toBeEnabled();
+  });
+
+  test("admin status is preserved when switching modes", async ({ page }) => {
+    // Make User 1 an admin
+    await page.getByRole("radio", { name: "Admin" }).click();
+    await expect(page.getByRole("radio", { name: "Admin" })).toBeChecked();
+
+    // Create User 2 with their own folder (User 2's tab becomes active)
+    await page.getByRole("button", { name: "+ Add User" }).click();
+    await expect(page.getByRole("button", { name: "User 2" })).toBeVisible();
+    await expect(page.getByText("User 2's Folder")).toBeVisible();
+
+    // User 2 creates a folder inside their root folder
+    // (folder_count stays at 1 when adding user, so next is Folder 2)
+    await page.getByRole("button", { name: "+ Add Folder" }).click();
+    await expect(page.getByText("Folder 2")).toBeVisible();
+
+    // Switch back to User 1 (admin)
+    await page.getByRole("button", { name: "User 1" }).click();
+    await expect(page.getByRole("radio", { name: "Admin" })).toBeChecked();
+
+    // Admin can see User 2's resources
+    await expect(page.getByText("User 2's Folder")).toBeVisible();
+    await expect(page.getByText("Folder 2")).toBeVisible();
+
+    // Switch to RBAC
+    await page.getByRole("radio", { name: "RBAC" }).click();
+
+    // Admin status should be preserved
+    await expect(page.getByRole("radio", { name: "Admin" })).toBeChecked();
+
+    // Admin should still see all resources
+    await expect(page.getByText("User 2's Folder")).toBeVisible();
+    await expect(page.getByText("Folder 2")).toBeVisible();
+  });
+
+  test("selected user is preserved when switching modes", async ({ page }) => {
+    // Create User 2 and stay on their tab
+    await page.getByRole("button", { name: "+ Add User" }).click();
+    await expect(page.getByRole("button", { name: "User 2" })).toHaveClass(
+      /active/,
+    );
+
+    // Switch to RBAC
+    await page.getByRole("radio", { name: "RBAC" }).click();
+
+    // User 2 should still be the active tab
+    await expect(page.getByRole("button", { name: "User 2" })).toHaveClass(
+      /active/,
+    );
+    await expect(page.getByText("User 2's Folder")).toBeVisible();
+  });
+});
+
 for (const impl of DEMO_IMPLEMENTATIONS) {
   test.describe(`Permission Demo - ${impl}`, () => {
     test.beforeEach(async ({ page }) => {

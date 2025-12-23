@@ -419,13 +419,16 @@
       const stats = { reads: 0, writes: 0, scanned: 0 };
       let statsStartTime = Date.now();
 
+      function resetStats() {
+        stats.reads = 0;
+        stats.writes = 0;
+        stats.scanned = 0;
+        statsStartTime = Date.now();
+      }
+
       function resetStatsIfNeeded() {
-        const now = Date.now();
-        if (now - statsStartTime >= 60000) {
-          stats.reads = 0;
-          stats.writes = 0;
-          stats.scanned = 0;
-          statsStartTime = now;
+        if (Date.now() - statsStartTime >= 60000) {
+          resetStats();
         }
       }
 
@@ -472,7 +475,6 @@
             name TEXT NOT NULL,
             parent_id INTEGER,
             owner_id INTEGER NOT NULL,
-            ancestor_path TEXT DEFAULT '',
             FOREIGN KEY (parent_id) REFERENCES resources(id),
             FOREIGN KEY (owner_id) REFERENCES users(id)
           )
@@ -566,9 +568,7 @@
         users: [],
         resources: [],
         shares: [],
-        visibleIds: [],
         permissions: {}, // RBAC: { resourceId: 'owner' | 'shared' | 'path_only' }
-        dirty: true,
       };
 
       // DOM elements
@@ -577,10 +577,68 @@
       const actionsEl = document.getElementById("actions");
       const treeEl = document.getElementById("tree");
 
-      // Helper to parse ancestor_path string into array of IDs
-      function parseAncestorPath(path) {
-        if (!path) return [];
-        return path.split(",").filter(Boolean).map(Number);
+      // Helper to get ancestors via recursive query
+      async function getAncestorIds(resourceId) {
+        const ancestors = await sqlQuery(
+          `
+          WITH RECURSIVE ancestors AS (
+            SELECT parent_id FROM resources WHERE id = ?
+            UNION ALL
+            SELECT r.parent_id FROM resources r JOIN ancestors a ON r.id = a.parent_id
+            WHERE r.parent_id IS NOT NULL
+          )
+          SELECT parent_id as id FROM ancestors WHERE parent_id IS NOT NULL
+        `,
+          [resourceId],
+        );
+        return ancestors.map((a) => a.id);
+      }
+
+      // Helper to get descendants via recursive query
+      async function getDescendantIds(resourceId) {
+        const descendants = await sqlQuery(
+          `
+          WITH RECURSIVE tree AS (
+            SELECT id FROM resources WHERE parent_id = ?
+            UNION ALL
+            SELECT r.id FROM resources r JOIN tree t ON r.parent_id = t.id
+          )
+          SELECT id FROM tree
+        `,
+          [resourceId],
+        );
+        return descendants.map((d) => d.id);
+      }
+
+      // Helper to get full descendant resources via recursive query
+      async function getDescendants(resourceId) {
+        return await sqlQuery(
+          `
+          WITH RECURSIVE tree AS (
+            SELECT id FROM resources WHERE parent_id = ?
+            UNION ALL
+            SELECT r.id FROM resources r JOIN tree t ON r.parent_id = t.id
+          )
+          SELECT r.* FROM resources r JOIN tree t ON r.id = t.id
+        `,
+          [resourceId],
+        );
+      }
+
+      // Helper to get full ancestor resources via recursive query
+      async function getAncestors(resourceId) {
+        return await sqlQuery(
+          `
+          WITH RECURSIVE ancestors AS (
+            SELECT parent_id FROM resources WHERE id = ?
+            UNION ALL
+            SELECT r.parent_id FROM resources r JOIN ancestors a ON r.id = a.parent_id
+            WHERE r.parent_id IS NOT NULL
+          )
+          SELECT r.* FROM resources r JOIN ancestors a ON r.id = a.parent_id
+        `,
+          [resourceId],
+        );
       }
 
       // RBAC: Grant permission for a new resource to its owner
@@ -595,11 +653,6 @@
       // - Shared resource + descendants: 'shared' (read access)
       // - Ancestors: 'path_only' (visible but no access)
       async function grantPermissionsOnShare(resourceId, userId) {
-        const resource = await sqlQueryOne(
-          `SELECT id, ancestor_path FROM resources WHERE id = ?`,
-          [resourceId],
-        );
-
         // Add the shared resource itself with 'shared' access
         await sqlRun(
           `INSERT OR IGNORE INTO permissions (user_id, resource_id, access_type) VALUES (?, ?, 'shared')`,
@@ -607,7 +660,7 @@
         );
 
         // Add ancestors for path visibility (path_only - no actual access)
-        const ancestorIds = parseAncestorPath(resource.ancestor_path);
+        const ancestorIds = await getAncestorIds(resourceId);
         for (const ancestorId of ancestorIds) {
           await sqlRun(
             `INSERT OR IGNORE INTO permissions (user_id, resource_id, access_type) VALUES (?, ?, 'path_only')`,
@@ -616,22 +669,24 @@
         }
 
         // Add all descendants with 'shared' access
-        const descendants = await sqlQuery(
-          `
-          WITH RECURSIVE tree AS (
-            SELECT id FROM resources WHERE parent_id = ?
-            UNION ALL
-            SELECT r.id FROM resources r JOIN tree t ON r.parent_id = t.id
-          )
-          SELECT id FROM tree
-        `,
-          [resourceId],
-        );
-        for (const desc of descendants) {
+        const descendantIds = await getDescendantIds(resourceId);
+        for (const descId of descendantIds) {
           await sqlRun(
             `INSERT OR IGNORE INTO permissions (user_id, resource_id, access_type) VALUES (?, ?, 'shared')`,
-            [userId, desc.id],
+            [userId, descId],
           );
+        }
+      }
+
+      // RBAC: Full rebuild of ALL permissions (used when switching to RBAC mode)
+      async function rebuildAllPermissions() {
+        // Clear all permissions
+        await sqlRun(`DELETE FROM permissions`);
+
+        // Rebuild for each user
+        const users = await sqlQuery(`SELECT id FROM users`);
+        for (const user of users) {
+          await rebuildUserPermissions(user.id);
         }
       }
 
@@ -677,7 +732,7 @@
         // Standard user: shared resources + ancestors + descendants
         const sharedResources = await sqlQuery(
           `
-          SELECT r.id, r.ancestor_path
+          SELECT r.id
           FROM shares s
           JOIN resources r ON s.resource_id = r.id
           WHERE s.user_id = ?
@@ -692,8 +747,9 @@
             [userId, resource.id],
           );
 
-          // Ancestors get 'path_only' access
-          for (const ancestorId of parseAncestorPath(resource.ancestor_path)) {
+          // Ancestors get 'path_only' access (recursive query)
+          const ancestorIds = await getAncestorIds(resource.id);
+          for (const ancestorId of ancestorIds) {
             await sqlRun(
               `INSERT OR IGNORE INTO permissions (user_id, resource_id, access_type) VALUES (?, ?, 'path_only')`,
               [userId, ancestorId],
@@ -701,35 +757,35 @@
           }
 
           // Descendants get 'shared' access
-          const descendants = await sqlQuery(
-            `
-            WITH RECURSIVE tree AS (
-              SELECT id FROM resources WHERE parent_id = ?
-              UNION ALL
-              SELECT r.id FROM resources r JOIN tree t ON r.parent_id = t.id
-            )
-            SELECT id FROM tree
-          `,
-            [resource.id],
-          );
-          for (const desc of descendants) {
+          const descendantIds = await getDescendantIds(resource.id);
+          for (const descId of descendantIds) {
             await sqlRun(
               `INSERT OR IGNORE INTO permissions (user_id, resource_id, access_type) VALUES (?, ?, 'shared')`,
-              [userId, desc.id],
+              [userId, descId],
             );
           }
         }
       }
 
-      // Get visible resource IDs - different implementation based on mode
-      async function getVisibleResourceIds(userId) {
+      // Get visible resources and shares - different implementation based on mode
+      async function getVisibleData(userId) {
         if (implementationMode === "rbac") {
-          // RBAC: Single query to get pre-computed permissions via JOIN
-          const permissions = await sqlQuery(
-            `SELECT resource_id FROM permissions WHERE user_id = ?`,
+          // RBAC: Single query to get resources via pre-computed permissions
+          const resources = await sqlQuery(
+            `SELECT r.* FROM resources r
+             JOIN permissions p ON r.id = p.resource_id
+             WHERE p.user_id = ?`,
             [userId],
           );
-          return permissions.map((p) => p.resource_id);
+          // Get shares for visible resources
+          const resourceIds = resources.map((r) => r.id);
+          const shares =
+            resourceIds.length > 0
+              ? await sqlQuery(
+                  `SELECT * FROM shares WHERE resource_id IN (${resourceIds.join(",")})`,
+                )
+              : [];
+          return { resources, shares };
         }
 
         // ==========================================
@@ -742,42 +798,33 @@
         ]);
 
         if (user.type === "admin") {
-          // Admin: Fetch all resources
-          const allResources = await sqlQuery(`SELECT id FROM resources`);
-          return allResources.map((r) => r.id);
+          // Admin: Fetch all resources and shares
+          const resources = await sqlQuery(`SELECT * FROM resources`);
+          const shares = await sqlQuery(`SELECT * FROM shares`);
+          return { resources, shares };
         }
 
-        const visibleIds = new Set();
+        // Use Map to collect resources (deduplicates by id)
+        const resourceMap = new Map();
 
         // Query 1: Get owned resources
         const ownedResources = await sqlQuery(
-          `SELECT id FROM resources WHERE owner_id = ?`,
+          `SELECT * FROM resources WHERE owner_id = ?`,
           [userId],
         );
 
         // N+1 Problem: For each owned resource, fetch descendants recursively
         for (const resource of ownedResources) {
-          visibleIds.add(resource.id);
+          resourceMap.set(resource.id, resource);
 
-          // Recursive query for each owned resource
-          const descendants = await sqlQuery(
-            `
-            WITH RECURSIVE tree AS (
-              SELECT id FROM resources WHERE parent_id = ?
-              UNION ALL
-              SELECT r.id FROM resources r JOIN tree t ON r.parent_id = t.id
-            )
-            SELECT id FROM tree
-          `,
-            [resource.id],
-          );
-          descendants.forEach((r) => visibleIds.add(r.id));
+          const descendants = await getDescendants(resource.id);
+          descendants.forEach((r) => resourceMap.set(r.id, r));
         }
 
         // Query 2: Get resources shared with user
         const sharedResources = await sqlQuery(
           `
-          SELECT r.id, r.ancestor_path
+          SELECT r.*
           FROM shares s
           JOIN resources r ON s.resource_id = r.id
           WHERE s.user_id = ?
@@ -785,31 +832,27 @@
           [userId],
         );
 
-        // N+1 Problem: For each shared resource, process ancestors and fetch descendants
+        // N+1 Problem: For each shared resource, fetch ancestors AND descendants
         for (const resource of sharedResources) {
-          visibleIds.add(resource.id);
+          resourceMap.set(resource.id, resource);
 
-          // Add ancestors (parsed from stored path)
-          parseAncestorPath(resource.ancestor_path).forEach((id) =>
-            visibleIds.add(id),
-          );
+          // Recursive query to get ancestors (for path visibility)
+          const ancestors = await getAncestors(resource.id);
+          ancestors.forEach((r) => resourceMap.set(r.id, r));
 
-          // Another query for descendants of each shared resource
-          const descendants = await sqlQuery(
-            `
-            WITH RECURSIVE tree AS (
-              SELECT id FROM resources WHERE parent_id = ?
-              UNION ALL
-              SELECT r.id FROM resources r JOIN tree t ON r.parent_id = t.id
-            )
-            SELECT id FROM tree
-          `,
-            [resource.id],
-          );
-          descendants.forEach((r) => visibleIds.add(r.id));
+          // Another recursive query for descendants of each shared resource
+          const descendants = await getDescendants(resource.id);
+          descendants.forEach((r) => resourceMap.set(r.id, r));
         }
 
-        return Array.from(visibleIds);
+        const resources = Array.from(resourceMap.values());
+        if (resources.length === 0) return { resources: [], shares: [] };
+
+        const resourceIds = resources.map((r) => r.id);
+        const shares = await sqlQuery(
+          `SELECT * FROM shares WHERE resource_id IN (${resourceIds.join(",")})`,
+        );
+        return { resources, shares };
       }
 
       async function getCounters() {
@@ -844,46 +887,66 @@
         );
       }
 
-      // Check if resource is only visible as ancestor (using cache)
-      function isAncestorOnlyCached(resourceId, userId) {
-        const user = cache.users.find((u) => u.id === userId);
-        if (user.type === "admin") return false;
+      // Create a new user with their root folder
+      async function createUserWithRootFolder() {
+        const counters = await getCounters();
+        counters.user++;
+        counters.resource++;
 
-        const resource = cache.resources.find((r) => r.id === resourceId);
-        if (resource.owner_id === userId) return false;
+        const userId = counters.user;
+        const userName = `User ${counters.user}`;
+        const folderId = counters.resource;
 
-        // Check if directly shared with user
-        if (
-          cache.shares.some(
-            (s) => s.resource_id === resourceId && s.user_id === userId,
-          )
-        ) {
-          return false;
+        await sqlRun(
+          `INSERT INTO users (id, name, type) VALUES (?, ?, 'standard')`,
+          [userId, userName],
+        );
+
+        await sqlRun(
+          `INSERT INTO resources (id, type, name, parent_id, owner_id)
+           VALUES (?, 'folder', ?, NULL, ?)`,
+          [folderId, `${userName}'s Folder`, userId],
+        );
+
+        await updateCounters(counters);
+
+        if (implementationMode === "rbac") {
+          await grantPermissionOnCreate(folderId, userId);
         }
 
-        // Check if this resource is an ancestor of a shared resource
-        const userShares = cache.shares.filter((s) => s.user_id === userId);
-        for (const share of userShares) {
-          const sharedResource = cache.resources.find(
-            (r) => r.id === share.resource_id,
-          );
-          if (sharedResource) {
-            const ancestorIds = parseAncestorPath(sharedResource.ancestor_path);
-            if (ancestorIds.includes(resourceId)) {
-              return true;
-            }
-          }
-        }
+        return { userId, folderId };
+      }
 
-        return false;
+      // Create a new resource (folder or file)
+      async function createResource(type, parentId) {
+        const counters = await getCounters();
+        counters[type]++;
+        counters.resource++;
+
+        const name =
+          type === "folder"
+            ? `Folder ${counters.folder}`
+            : `File ${counters.file}`;
+
+        await sqlRun(
+          `INSERT INTO resources (id, type, name, parent_id, owner_id)
+           VALUES (?, ?, ?, ?, ?)`,
+          [counters.resource, type, name, parentId, activeUserId],
+        );
+        await updateCounters(counters);
+
+        if (implementationMode === "rbac") {
+          await grantPermissionOnCreate(counters.resource, activeUserId);
+        }
       }
 
       // Refresh cache from DB (called when data changes)
+      // Only caches data visible to the current user (like a real app would)
       async function refreshCache() {
         cache.users = await sqlQuery(`SELECT * FROM users`);
-        cache.resources = await sqlQuery(`SELECT * FROM resources`);
-        cache.shares = await sqlQuery(`SELECT * FROM shares`);
-        cache.visibleIds = await getVisibleResourceIds(activeUserId);
+        const { resources, shares } = await getVisibleData(activeUserId);
+        cache.resources = resources;
+        cache.shares = shares;
 
         // RBAC: Load permissions with access_type for O(1) lookups
         if (implementationMode === "rbac") {
@@ -898,8 +961,6 @@
         } else {
           cache.permissions = {};
         }
-
-        cache.dirty = false;
       }
 
       // Render functions
@@ -920,13 +981,9 @@
         tabsEl.querySelectorAll(".tab[data-user-id]").forEach((tab) => {
           tab.addEventListener("click", async () => {
             activeUserId = parseInt(tab.dataset.userId);
-            // Refresh cache for new user's visibility and permissions
             await refreshCache();
-            if (
-              !cache.visibleIds.includes(selectedResourceId) &&
-              cache.visibleIds.length > 0
-            ) {
-              selectedResourceId = cache.visibleIds[0];
+            if (cache.resources.length > 0) {
+              selectedResourceId = cache.resources[0].id;
             }
             await render();
           });
@@ -935,34 +992,9 @@
         tabsEl
           .querySelector(".tab.add-user")
           .addEventListener("click", async () => {
-            const counters = await getCounters();
-            counters.user++;
-            counters.resource++;
-
-            const newUserId = counters.user;
-            const newUserName = `User ${counters.user}`;
-
-            await sqlRun(
-              `INSERT INTO users (id, name, type) VALUES (?, ?, 'standard')`,
-              [newUserId, newUserName],
-            );
-
-            const newFolderName = `${newUserName}'s Folder`;
-            await sqlRun(
-              `INSERT INTO resources (id, type, name, parent_id, ancestor_path, owner_id)
-               VALUES (?, 'folder', ?, NULL, '', ?)`,
-              [counters.resource, newFolderName, newUserId],
-            );
-
-            await updateCounters(counters);
-
-            // RBAC: Initialize permissions for new user (owns their root folder)
-            if (implementationMode === "rbac") {
-              await grantPermissionOnCreate(counters.resource, newUserId);
-            }
-
-            activeUserId = newUserId;
-            selectedResourceId = counters.resource;
+            const { userId, folderId } = await createUserWithRootFolder();
+            activeUserId = userId;
+            selectedResourceId = folderId;
             await refreshCache();
             await render();
           });
@@ -1041,66 +1073,14 @@
 
         addFolderBtn.addEventListener("click", async () => {
           if (!canCreate) return;
-          const counters = await getCounters();
-          counters.folder++;
-          counters.resource++;
-
-          // Build ancestor path: parent's path + parent's id
-          const ancestorPath = selected.ancestor_path
-            ? `${selected.ancestor_path},${selected.id}`
-            : `${selected.id}`;
-
-          await sqlRun(
-            `INSERT INTO resources (id, type, name, parent_id, ancestor_path, owner_id)
-             VALUES (?, 'folder', ?, ?, ?, ?)`,
-            [
-              counters.resource,
-              `Folder ${counters.folder}`,
-              selected.id,
-              ancestorPath,
-              activeUserId,
-            ],
-          );
-          await updateCounters(counters);
-
-          // RBAC: Grant permission for the new resource
-          if (implementationMode === "rbac") {
-            await grantPermissionOnCreate(counters.resource, activeUserId);
-          }
-
+          await createResource("folder", selected.id);
           await refreshCache();
           await render();
         });
 
         addFileBtn.addEventListener("click", async () => {
           if (!canCreate) return;
-          const counters = await getCounters();
-          counters.file++;
-          counters.resource++;
-
-          // Build ancestor path: parent's path + parent's id
-          const ancestorPath = selected.ancestor_path
-            ? `${selected.ancestor_path},${selected.id}`
-            : `${selected.id}`;
-
-          await sqlRun(
-            `INSERT INTO resources (id, type, name, parent_id, ancestor_path, owner_id)
-             VALUES (?, 'file', ?, ?, ?, ?)`,
-            [
-              counters.resource,
-              `File ${counters.file}`,
-              selected.id,
-              ancestorPath,
-              activeUserId,
-            ],
-          );
-          await updateCounters(counters);
-
-          // RBAC: Grant permission for the new resource
-          if (implementationMode === "rbac") {
-            await grantPermissionOnCreate(counters.resource, activeUserId);
-          }
-
+          await createResource("file", selected.id);
           await refreshCache();
           await render();
         });
@@ -1128,37 +1108,9 @@
             shareDropdown.querySelectorAll(".share-option").forEach((opt) => {
               opt.addEventListener("click", async (e) => {
                 e.stopPropagation();
-                let targetUserId;
-
-                if (opt.dataset.newUser) {
-                  const counters = await getCounters();
-                  counters.user++;
-                  counters.resource++;
-
-                  const newUserId = counters.user;
-                  const newUserName = `User ${counters.user}`;
-
-                  await sqlRun(
-                    `INSERT INTO users (id, name, type) VALUES (?, ?, 'standard')`,
-                    [newUserId, newUserName],
-                  );
-
-                  await sqlRun(
-                    `INSERT INTO resources (id, type, name, parent_id, ancestor_path, owner_id)
-                     VALUES (?, 'folder', ?, NULL, '', ?)`,
-                    [counters.resource, `${newUserName}'s Folder`, newUserId],
-                  );
-
-                  await updateCounters(counters);
-                  targetUserId = newUserId;
-
-                  // RBAC: Grant permission for new user's root folder
-                  if (implementationMode === "rbac") {
-                    await grantPermissionOnCreate(counters.resource, newUserId);
-                  }
-                } else {
-                  targetUserId = parseInt(opt.dataset.userId);
-                }
+                const targetUserId = opt.dataset.newUser
+                  ? (await createUserWithRootFolder()).userId
+                  : parseInt(opt.dataset.userId);
 
                 // Check if already shared using cache
                 if (
@@ -1193,7 +1145,7 @@
       }
 
       async function renderTree() {
-        if (cache.visibleIds.length === 0) {
+        if (cache.resources.length === 0) {
           treeEl.innerHTML =
             '<div class="empty-message">No files or folders to display</div>';
           return;
@@ -1201,7 +1153,7 @@
 
         function renderNode(parentId) {
           const children = cache.resources.filter(
-            (r) => r.parent_id === parentId && cache.visibleIds.includes(r.id),
+            (r) => r.parent_id === parentId,
           );
 
           if (children.length === 0) return "";
@@ -1271,11 +1223,7 @@
         sqlRunSync(`DELETE FROM users`);
         sqlRunSync(`DELETE FROM counters`);
 
-        // Reset stats
-        stats.reads = 0;
-        stats.writes = 0;
-        stats.scanned = 0;
-        statsStartTime = Date.now();
+        resetStats();
 
         // Reset UI state
         activeUserId = 1;
@@ -1288,8 +1236,8 @@
 
         // Create initial root folder
         await sqlRun(
-          `INSERT INTO resources (id, type, name, parent_id, ancestor_path, owner_id)
-           VALUES (1, 'folder', 'User 1''s Folder', NULL, '', 1)`,
+          `INSERT INTO resources (id, type, name, parent_id, owner_id)
+           VALUES (1, 'folder', 'User 1''s Folder', NULL, 1)`,
         );
 
         // Create initial counters
@@ -1315,7 +1263,19 @@
         document.querySelectorAll('input[name="impl"]').forEach((radio) => {
           radio.addEventListener("change", async () => {
             implementationMode = radio.value;
-            await initDB();
+
+            // Reset stats when switching modes (to compare performance)
+            resetStats();
+            updateStatsDisplay();
+
+            // When switching to RBAC, rebuild permissions table from current data
+            if (implementationMode === "rbac") {
+              await rebuildAllPermissions();
+            }
+
+            // Refresh cache and re-render with same data
+            await refreshCache();
+            renderFromCache();
           });
         });
 
