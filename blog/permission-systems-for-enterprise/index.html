@@ -85,6 +85,12 @@
         right: 0;
         height: 45vh;
         background: var(--base00);
+        transition: transform 0.3s ease;
+        border-top: 1px solid var(--base02);
+      }
+
+      .demo-panel.hidden {
+        transform: translateY(100%);
       }
 
       .demo-panel iframe {
@@ -94,6 +100,41 @@
         margin: 0 auto;
         display: block;
         border: none;
+      }
+
+      .demo-toggle {
+        position: fixed;
+        bottom: 1rem;
+        right: 1rem;
+        width: var(--icon-size-desktop);
+        height: var(--icon-size-desktop);
+        border-radius: 50%;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        color: var(--base05);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        user-select: none;
+        z-index: 100;
+        transition: background-color 0.2s ease, transform 0.2s ease, bottom 0.3s ease;
+      }
+
+      .demo-toggle:hover {
+        background-color: var(--base01);
+      }
+
+      .demo-toggle:not(.demo-collapsed) {
+        bottom: calc(45vh + 1rem);
+      }
+
+      .demo-toggle-icon {
+        transition: transform 0.3s ease;
+      }
+
+      .demo-toggle.demo-collapsed .demo-toggle-icon {
+        transform: rotate(180deg);
       }
 
       /* Side-by-side layout (wide screens) */
@@ -111,7 +152,8 @@
           margin-right: 0;
         }
 
-        .demo-panel {
+        .demo-panel,
+        .demo-panel.hidden {
           flex: 0 1 800px;
           position: sticky;
           top: 0;
@@ -124,12 +166,25 @@
           margin-left: 0;
           margin-right: auto;
           background: transparent;
+          transform: none;
+          border-top: none;
         }
 
         .demo-panel iframe {
           height: 85vh;
           max-height: 800px;
           max-width: none;
+        }
+
+        .demo-toggle {
+          display: none;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .demo-toggle {
+          width: var(--icon-size-mobile);
+          height: var(--icon-size-mobile);
         }
       }
     </style>
@@ -596,13 +651,24 @@ await sqlRun(
           </p>
         </div>
       </div>
-      <div class="demo-panel">
+      <div class="demo-panel" id="demoPanel">
         <iframe src="./demo.html" title="Permission System Demo"></iframe>
+      </div>
+      <div class="demo-toggle" id="demoToggle">
+        <svg class="demo-toggle-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6,9 12,15 18,9" />
+        </svg>
       </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script>
+      document.getElementById('demoToggle').addEventListener('click', () => {
+        document.getElementById('demoPanel').classList.toggle('hidden');
+        document.getElementById('demoToggle').classList.toggle('demo-collapsed');
+      });
+    </script>
   </body>
 </html>
