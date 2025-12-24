@@ -69,7 +69,7 @@
       }
 
       .demo-container {
-        max-width: 600px;
+        max-width: 800px;
         width: 100%;
         margin: 0 auto;
         border: 1px solid var(--base02);
@@ -128,51 +128,45 @@
         padding: 1rem;
         background-color: var(--base01);
         border-bottom: 1px solid var(--base02);
-      }
-
-      .user-type {
         display: flex;
-        gap: 1.5rem;
-        margin-bottom: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem;
       }
 
-      .user-type label {
+      .admin-toggle {
         display: flex;
         align-items: center;
         gap: 0.5rem;
         cursor: pointer;
-        font-size: 0.95rem;
+        font-size: 0.85rem;
       }
 
-      .user-type input[type="radio"] {
+      .admin-toggle input[type="checkbox"] {
         appearance: none;
         width: 18px;
         height: 18px;
         border: 2px solid var(--base03);
-        border-radius: 50%;
+        border-radius: 4px;
         cursor: pointer;
         position: relative;
       }
 
-      .user-type input[type="radio"]:checked {
+      .admin-toggle input[type="checkbox"]:checked {
         border-color: var(--base0D);
+        background-color: var(--base0D);
       }
 
-      .user-type input[type="radio"]:checked::after {
+      .admin-toggle input[type="checkbox"]:checked::after {
         content: "";
         position: absolute;
-        top: 3px;
-        left: 3px;
-        width: 8px;
-        height: 8px;
-        background-color: var(--base0D);
-        border-radius: 50%;
-      }
-
-      .actions {
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
+        top: 50%;
+        left: 50%;
+        width: 5px;
+        height: 9px;
+        border: solid var(--base00);
+        border-width: 0 2px 2px 0;
+        transform: translate(-50%, -60%) rotate(45deg);
       }
 
       .btn {
@@ -318,6 +312,14 @@
         color: var(--base0D);
       }
 
+      .status-bar .stat-label-short {
+        display: none;
+      }
+
+      .status-bar .stat-label-full {
+        display: inline;
+      }
+
       .impl-toggle {
         margin-left: auto;
         display: flex;
@@ -359,9 +361,12 @@
 
       .source-link {
         margin-left: 0.5rem;
-        color: var(--base03);
+        color: var(--base04);
         text-decoration: none;
-        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.25rem;
       }
 
       .source-link:hover {
@@ -382,13 +387,25 @@
           padding: 0.75rem;
         }
 
-        .user-type {
-          gap: 1rem;
-        }
-
         .btn {
           padding: 0.4rem 0.75rem;
           font-size: 0.8rem;
+        }
+
+        .status-bar .stat-label-short {
+          display: inline;
+        }
+
+        .status-bar .stat-label-full {
+          display: none;
+        }
+
+        .btn .btn-label-full {
+          display: none;
+        }
+
+        .source-link .source-label {
+          display: none;
         }
       }
 
@@ -408,18 +425,15 @@
   <body>
     <div class="demo-container">
       <div class="tabs" id="tabs"></div>
-      <div class="controls">
-        <div class="user-type" id="userType"></div>
-        <div class="actions" id="actions"></div>
-      </div>
+      <div class="controls" id="controls"></div>
       <div class="tree" id="tree"></div>
       <div class="status-bar" id="statusBar">
         <span id="statOperation">Ready</span>
         <div class="stat">
-          reads: <span class="stat-value" id="statReads">0</span>
+          <span class="stat-label-full">reads:</span><span class="stat-label-short">r:</span> <span class="stat-value" id="statReads">0</span>
         </div>
         <div class="stat">
-          writes: <span class="stat-value" id="statWrites">0</span>
+          <span class="stat-label-full">writes:</span><span class="stat-label-short">w:</span> <span class="stat-value" id="statWrites">0</span>
         </div>
         <div class="impl-toggle">
           <label>
@@ -435,7 +449,7 @@
           href="https://github.com/eliOcs/eliOcs.github.io/blob/main/blog/permission-systems-for-enterprise/demo.html"
           target="_blank"
           class="source-link"
-          >View source</a
+          ><span class="source-label">source </span><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 256 256"><path d="M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z"></path></svg></a
         >
       </div>
     </div>
@@ -933,8 +947,7 @@
         // DOM elements
         const elements = {
           tabs: document.getElementById("tabs"),
-          userType: document.getElementById("userType"),
-          actions: document.getElementById("actions"),
+          controls: document.getElementById("controls"),
           tree: document.getElementById("tree"),
         };
 
@@ -1037,39 +1050,8 @@
             });
         };
 
-        const renderUserType = () => {
+        const renderControls = () => {
           const user = state.users.find((u) => u.id === state.activeUserId);
-          elements.userType.innerHTML = `
-            <label>
-              <input type="radio" name="userType" value="admin" ${user.type === "admin" ? "checked" : ""}>
-              Admin
-            </label>
-            <label>
-              <input type="radio" name="userType" value="standard" ${user.type === "standard" ? "checked" : ""}>
-              Standard
-            </label>
-          `;
-
-          elements.userType
-            .querySelectorAll('input[type="radio"]')
-            .forEach((radio) => {
-              radio.addEventListener("change", async () => {
-                Analytics.startOperation(`Set ${radio.value}`);
-                await Sql.run(`UPDATE users SET type = ? WHERE id = ?`, [
-                  radio.value,
-                  state.activeUserId,
-                ]);
-                if (state.mode === "rbac") {
-                  await RbacBackend.rebuildForUser(state.activeUserId);
-                }
-                await refreshCache();
-                render();
-                Analytics.endOperation();
-              });
-            });
-        };
-
-        const renderActions = () => {
           const selected = state.resources.find(
             (r) => r.id === state.selectedResourceId,
           );
@@ -1099,14 +1081,35 @@
             }
           }
 
-          elements.actions.innerHTML = `
-            <button class="btn" id="addFolderBtn" ${!canCreate ? "disabled" : ""}>+ Add Folder</button>
-            <button class="btn" id="addFileBtn" ${!canCreate ? "disabled" : ""}>+ Add File</button>
+          elements.controls.innerHTML = `
+            <label class="admin-toggle">
+              <input type="checkbox" id="adminCheckbox" ${user.type === "admin" ? "checked" : ""}>
+              Admin
+            </label>
+            <button class="btn" id="addFolderBtn" ${!canCreate ? "disabled" : ""}>+ <span class="btn-label-full">Add </span>Folder</button>
+            <button class="btn" id="addFileBtn" ${!canCreate ? "disabled" : ""}>+ <span class="btn-label-full">Add </span>File</button>
             <div class="share-container">
               <button class="btn" id="shareBtn" ${!canShare ? "disabled" : ""}>Share</button>
               <div class="share-dropdown" id="shareDropdown"></div>
             </div>
           `;
+
+          document
+            .getElementById("adminCheckbox")
+            .addEventListener("change", async (e) => {
+              const newType = e.target.checked ? "admin" : "standard";
+              Analytics.startOperation(`Set ${newType}`);
+              await Sql.run(`UPDATE users SET type = ? WHERE id = ?`, [
+                newType,
+                state.activeUserId,
+              ]);
+              if (state.mode === "rbac") {
+                await RbacBackend.rebuildForUser(state.activeUserId);
+              }
+              await refreshCache();
+              render();
+              Analytics.endOperation();
+            });
 
           document
             .getElementById("addFolderBtn")
@@ -1242,8 +1245,7 @@
 
         const render = () => {
           renderTabs();
-          renderUserType();
-          renderActions();
+          renderControls();
           renderTree();
         };
 

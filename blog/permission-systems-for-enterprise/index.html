@@ -56,71 +56,80 @@
       content="Permission checks that query on every request will break at scale. Learn how pre-computing permissions at write-time enables O(1) reads, with working SQL examples and an interactive demo."
     />
     <style>
-      .split-layout {
-        display: flex;
-        flex-direction: row;
-        min-height: 100vh;
-        justify-content: center;
-        gap: 3rem;
-      }
-
-      .blog-content {
-        flex: 0 1 800px;
-        max-width: 800px;
-        padding: 2rem 1rem;
-      }
-
-      .demo-panel {
-        flex: 0 0 auto;
-        position: sticky;
-        top: 0;
-        height: 100vh;
-        display: flex;
-        align-items: center;
-      }
-
-      .demo-panel iframe {
-        width: 634px;
-        height: 85vh;
-        max-height: 800px;
-        border: none;
-      }
-
       /* Override default body padding when using split layout */
       body:has(.split-layout) {
         padding: 0;
         max-width: none;
       }
 
-      @media (max-width: 1200px) {
+      /* Stacked layout (default - narrow screens) */
+      .split-layout {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        padding-bottom: 45vh;
+      }
+
+      .blog-content {
+        flex: 1;
+        max-width: 800px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+      }
+
+      .demo-panel {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 45vh;
+        background: var(--base00);
+      }
+
+      .demo-panel iframe {
+        width: 100%;
+        height: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        display: block;
+        border: none;
+      }
+
+      /* Side-by-side layout (wide screens) */
+      @media (min-width: 1700px) {
         .split-layout {
-          flex-direction: column;
+          flex-direction: row;
           min-height: 100vh;
-          gap: 0.5rem;
+          padding-bottom: 0;
+          gap: 3rem;
         }
 
         .blog-content {
-          flex: 1;
-          width: 100%;
-          max-width: 800px;
-          margin: 0 auto;
-          padding: 2rem 1rem;
+          flex: 0 1 800px;
+          margin-left: auto;
+          margin-right: 0;
         }
 
         .demo-panel {
-          flex: 0 0 auto;
+          flex: 0 1 800px;
           position: sticky;
-          bottom: 0;
-          height: auto;
-          min-height: 0;
-          padding-right: 0;
+          top: 0;
+          left: auto;
+          right: auto;
+          bottom: auto;
+          height: 100vh;
+          display: flex;
+          align-items: center;
+          margin-left: 0;
+          margin-right: auto;
+          background: transparent;
         }
 
         .demo-panel iframe {
-          width: 100%;
-          height: 45vh;
-          min-height: 350px;
-          aspect-ratio: auto;
+          height: 85vh;
+          max-height: 800px;
+          max-width: none;
         }
       }
     </style>

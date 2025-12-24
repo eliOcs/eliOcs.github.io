@@ -206,8 +206,11 @@ pre {
   overflow-x: auto;
 }
 
-pre code {
+pre code,
+pre code[class*="language-"],
+code[class*="language-"] {
   border-radius: 8px;
+  font-size: 0.95rem !important;
 }
 
 .selfie {
@@ -294,6 +297,12 @@ a:has(.blog-post-preview):hover {
   p {
     font-size: 1rem;
     text-align: justify;
+  }
+
+  pre code,
+  pre code[class*="language-"],
+  code[class*="language-"] {
+    font-size: 0.8rem !important;
   }
 
   .selfie {

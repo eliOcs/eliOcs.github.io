@@ -168,8 +168,8 @@ test.describe("Permission Demo - Mode Switching & Data Sync", () => {
 
   test("admin status is preserved when switching modes", async ({ page }) => {
     // Make User 1 an admin
-    await page.getByRole("radio", { name: "Admin" }).click();
-    await expect(page.getByRole("radio", { name: "Admin" })).toBeChecked();
+    await page.getByRole("checkbox", { name: "Admin" }).click();
+    await expect(page.getByRole("checkbox", { name: "Admin" })).toBeChecked();
 
     // Create User 2 with their own folder (User 2's tab becomes active)
     await page.getByRole("button", { name: "+ Add User" }).click();
@@ -183,7 +183,7 @@ test.describe("Permission Demo - Mode Switching & Data Sync", () => {
 
     // Switch back to User 1 (admin)
     await page.getByRole("button", { name: "User 1" }).click();
-    await expect(page.getByRole("radio", { name: "Admin" })).toBeChecked();
+    await expect(page.getByRole("checkbox", { name: "Admin" })).toBeChecked();
 
     // Admin can see User 2's resources
     await expect(page.getByText("User 2's Root Folder")).toBeVisible();
@@ -193,7 +193,7 @@ test.describe("Permission Demo - Mode Switching & Data Sync", () => {
     await page.getByRole("radio", { name: "RBAC" }).click();
 
     // Admin status should be preserved
-    await expect(page.getByRole("radio", { name: "Admin" })).toBeChecked();
+    await expect(page.getByRole("checkbox", { name: "Admin" })).toBeChecked();
 
     // Admin should still see all resources
     await expect(page.getByText("User 2's Root Folder")).toBeVisible();
@@ -234,8 +234,8 @@ for (const impl of DEMO_IMPLEMENTATIONS) {
       // One user tab visible
       await expect(page.getByRole("button", { name: "User 1" })).toBeVisible();
 
-      // User type is standard by default
-      await expect(page.getByRole("radio", { name: "Standard" })).toBeChecked();
+      // User type is standard by default (admin checkbox unchecked)
+      await expect(page.getByRole("checkbox", { name: "Admin" })).not.toBeChecked();
 
       // Root folder is visible and selected
       const rootFolder = page.getByText("User 1's Root Folder");
@@ -319,7 +319,7 @@ for (const impl of DEMO_IMPLEMENTATIONS) {
 
       // Switch to User 1 and make them admin
       await page.getByRole("button", { name: "User 1" }).click();
-      await page.getByRole("radio", { name: "Admin" }).click();
+      await page.getByRole("checkbox", { name: "Admin" }).click();
 
       // User 1 should now see User 2's resources
       await expect(page.getByText("User 2's Root Folder")).toBeVisible();
