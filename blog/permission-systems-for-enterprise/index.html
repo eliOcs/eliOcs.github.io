@@ -18,7 +18,7 @@
     <title>Blog > Permission Systems for Enterprise that Scale</title>
     <meta
       name="description"
-      content="Permission checks that query on every request will break at scale. Learn how pre-computing permissions at write-time enables O(1) reads, with working SQL examples and an interactive demo."
+      content="Permission checks that query on every request will break at scale. Learn how pre-computing permissions at write-time enables fast reads, with working SQL examples and an interactive demo."
     />
     <meta name="author" content="Elio Capella Sánchez" />
 
@@ -38,7 +38,7 @@
     />
     <meta
       property="og:description"
-      content="Permission checks that query on every request will break at scale. Learn how pre-computing permissions at write-time enables O(1) reads, with working SQL examples and an interactive demo."
+      content="Permission checks that query on every request will break at scale. Learn how pre-computing permissions at write-time enables fast reads, with working SQL examples and an interactive demo."
     />
 
     <!-- Twitter -->
@@ -53,7 +53,7 @@
     />
     <meta
       property="twitter:description"
-      content="Permission checks that query on every request will break at scale. Learn how pre-computing permissions at write-time enables O(1) reads, with working SQL examples and an interactive demo."
+      content="Permission checks that query on every request will break at scale. Learn how pre-computing permissions at write-time enables fast reads, with working SQL examples and an interactive demo."
     />
     <style>
       /* Override default body padding when using split layout */
@@ -118,7 +118,10 @@
         justify-content: center;
         user-select: none;
         z-index: 100;
-        transition: background-color 0.2s ease, transform 0.2s ease, bottom 0.3s ease;
+        transition:
+          background-color 0.2s ease,
+          transform 0.2s ease,
+          bottom 0.3s ease;
       }
 
       .demo-toggle:hover {
@@ -655,7 +658,17 @@ await sqlRun(
         <iframe src="./demo.html" title="Permission System Demo"></iframe>
       </div>
       <div class="demo-toggle" id="demoToggle">
-        <svg class="demo-toggle-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+          class="demo-toggle-icon"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <polyline points="6,9 12,15 18,9" />
         </svg>
       </div>
@@ -665,9 +678,11 @@ await sqlRun(
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
     <script>
-      document.getElementById('demoToggle').addEventListener('click', () => {
-        document.getElementById('demoPanel').classList.toggle('hidden');
-        document.getElementById('demoToggle').classList.toggle('demo-collapsed');
+      document.getElementById("demoToggle").addEventListener("click", () => {
+        document.getElementById("demoPanel").classList.toggle("hidden");
+        document
+          .getElementById("demoToggle")
+          .classList.toggle("demo-collapsed");
       });
     </script>
   </body>
