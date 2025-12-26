@@ -108,6 +108,11 @@ body {
   top: 0.5rem;
   right: 0;
   z-index: 100;
+  color: var(--base05);
+}
+
+.download-nav:hover {
+  color: var(--base05);
 }
 
 h1 {
