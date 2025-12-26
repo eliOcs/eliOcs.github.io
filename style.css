@@ -179,17 +179,19 @@ a:focus:not(:focus-visible) {
 
 b,
 strong {
-  font-weight: inherit;
-  text-decoration: underline;
-  text-decoration-color: var(--base0A);
-  text-underline-offset: 3px;
+  font-weight: 600;
 }
 
 em {
-  font-style: normal;
-  text-decoration: underline;
-  text-decoration-color: var(--base0B);
-  text-underline-offset: 3px;
+  font-style: italic;
+}
+
+code {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.9em;
+  background-color: var(--base01);
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
 }
 
 img {
@@ -664,11 +666,11 @@ a:hover h3 {
   body {
     background-color: white;
     color: var(--base05);
-    font-size: 12pt;
+    font-size: 9pt;
     font-weight: 400;
     line-height: 1.4;
     margin: 0;
-    padding: 0.5in;
+    padding: 0.4in;
     max-width: none;
   }
 
@@ -689,80 +691,90 @@ a:hover h3 {
   }
 
   h1 {
-    font-size: 20pt;
-    margin-bottom: 0.5in;
+    font-size: 14pt;
+    margin: 0 0 0.08in 0;
     padding: 0;
     text-align: center;
     page-break-after: avoid;
+    color: #000000;
+    text-underline-offset: 0.2rem;
+    text-decoration-thickness: 0.125rem;
   }
 
   h2 {
-    font-size: 14pt;
-    margin: 0.3in 0 0.1in 0;
+    font-size: 12pt;
+    margin: 0.25in 0 0 0;
     page-break-after: avoid;
+    color: #000000;
+    text-underline-offset: 0.15rem;
+    text-decoration-thickness: 0.125rem;
   }
 
   h3 {
-    font-size: 12pt;
-    margin: 0.15in 0 0.05in 0;
+    font-size: 10pt;
+    margin: 0.15in 0 0 0;
     page-break-after: avoid;
+    color: #000000;
+    text-underline-offset: 0.15rem;
+    text-decoration-thickness: 0.1rem;
   }
 
   p {
-    margin-bottom: 0.1in;
-    font-size: 11pt;
+    margin-bottom: 0.08in;
+    font-size: 9pt;
     font-weight: 400;
     text-align: left;
     orphans: 3;
     widows: 3;
   }
 
+  .page-header {
+    margin-bottom: 0.12in;
+  }
+
+  .page-header + p {
+    text-align: center;
+    margin: 0;
+  }
+
   ul {
-    font-size: 11pt;
+    font-size: 9pt;
     font-weight: 400;
-    padding-left: 0.3in;
-    margin: 0.05in 0 0.15in 0;
+    padding-left: 0.35in;
+    margin: 0 0 0.05in 0;
   }
 
   li {
-    margin-bottom: 0.05in;
+    margin-bottom: 0.03in;
     line-height: 1.3;
     font-weight: 400;
     page-break-inside: avoid;
   }
 
   .job-header-container {
-    margin: 0.1in 0;
+    margin: 0.18in 0 0 0;
     page-break-inside: avoid;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: flex-start !important;
-    flex-direction: row !important;
-    gap: 0.3in;
+    flex-direction: row;
+    gap: 2rem;
+    align-items: flex-start;
   }
 
   .job-title-company {
-    flex: 1 1 0 !important;
-    min-width: 0 !important;
-  }
-
-  .job-title-company h3 {
-    margin: 0 0 0.05in 0;
+    flex: 1 1 auto;
   }
 
   .job-period-location {
-    font-size: 10pt;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 0.02in;
-    text-align: right !important;
-    flex-shrink: 0 !important;
-    white-space: nowrap;
+    font-size: 9pt;
+    flex-direction: column;
+    text-align: right;
+    flex-shrink: 0;
+    max-width: 35%;
+    color: #000000;
   }
 
   .contact-info {
-    font-size: 11pt;
-    margin-bottom: 0.2in;
+    font-size: 9pt;
+    margin-bottom: 0;
   }
 
   .contact-info a[href*="linkedin"] {
@@ -771,13 +783,8 @@ a:hover h3 {
 
   .contact-info a[href*="linkedin"]::before {
     content: "\002B\0033\0034\0020\0036\0032\0037\0020\0034\0034\0035\0020\0038\0031\0031";
-    font-size: 11pt;
+    font-size: 9pt;
     color: var(--base05);
-  }
-
-  /* Ensure good page breaks */
-  .job-header-container {
-    page-break-inside: avoid;
   }
 
   /* Keep job sections together */
