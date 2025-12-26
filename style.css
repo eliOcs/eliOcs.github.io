@@ -174,6 +174,15 @@ a:focus:not(:focus-visible) {
 b,
 strong {
   font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--base0A);
+  text-underline-offset: 3px;
+}
+
+em {
+  text-decoration: underline;
+  text-decoration-color: var(--base0B);
+  text-underline-offset: 3px;
 }
 
 img {
