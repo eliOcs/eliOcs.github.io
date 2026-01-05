@@ -83,6 +83,8 @@ The "Remote" Keyword: Ensure the word "Remote" appears frequently in job titles 
 
 Inspiration -> https://hashref.com/
 
+Inspiration -> https://gemini.google.com/app/363ad07ccfd6380b
+
 Dedicated page (/services or /hire-me) that acts as a sales brochure.
 
 Value Proposition: "I bridge the gap between technical execution and strategic business goals."
