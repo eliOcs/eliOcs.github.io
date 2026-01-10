@@ -2,31 +2,12 @@
 
 Goal "Silicon Valley-caliber leader based in Europe.".
 
-- "How we built AI-powered review at Filestage"
-  BRIEF:
-  When we built AI-powered image analysis for Filestage, the "perfect" solution would have been a custom-trained model, GPU infrastructure, a dedicated vector database, and a new ML pipeline. That would have taken months.
-  We scoped down to one specific use case: checking for mandatory images. In packaging design, certain icons must always be present, eg: recycling symbols, vegan certifications, compliance marks. Our AI reviewer would automatically verify these.
-
-We shipped in weeks by making deliberate trade-offs:
-
-- Used DINOv2 (open-source vision model) instead of training our own: accurate enough for real customer files, skipped months of ML work
-- Ran inference on CPU instead of GPU: sufficient for our volume, reused existing background job infrastructure with zero new ops
-- Stored feature vectors in MongoDB instead of a dedicated vector database: leveraged its recently added vector search, no new infrastructure to operate
-- Simple cosine similarity with a fixed threshold instead of sophisticated matching logic
-
-The goal was real user feedback fast. We validated the approach worked, discovered edge cases from actual customer documents, and learned where accuracy needed improvement.
-
-Next steps if usage grows: GPU inference for throughput and video support. Our trade-offs made sense: we shipped, learned, and can invest where it actually matters.
-
 - Realibility mesures that work: monitoring, alerts, health metrics, reduce noise with SLO (advanced). Root cause analysis.
 - Writing good unit tests: mock the edges of your system not the implementation details or internal layers. Don't write unit tests per function or file write them per feature or behavior. In memory databases. HTTP mocking libraries. Why I dislike jest. Testing that you can trust. Why I think 100% coverage is a good idea.
 - Default to action, product minded
 - Pen tests in startups
 - Moving up to enterprise customers: SSO, compliance, security, audits
 - Hiring remotely
-- Roles and permissions:
-  https://github.com/PostHog/posthog/blob/master/ee/models/rbac/access_control.py
-  https://www.figma.com/blog/how-we-rolled-out-our-own-permissions-dsl-at-figma/
 
 # Resume
 
