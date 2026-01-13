@@ -24,40 +24,11 @@ Next steps if usage grows: GPU inference for throughput and video support. Our t
 - Pen tests in startups
 - Moving up to enterprise customers: SSO, compliance, security, audits
 - Hiring remotely
-- Roles and permissions:
-  https://github.com/PostHog/posthog/blob/master/ee/models/rbac/access_control.py
-  https://www.figma.com/blog/how-we-rolled-out-our-own-permissions-dsl-at-figma/
 
 # Resume
 
 - B2B Contractor (Autónomo)
 - Add testimonials
-
-# Improvements
-
-The Conversion Asset: "How I Build Engineering Culture"
-Optimization Requirement: It needs to be tightly coupled with the resume. The resume should link directly to this post as evidence of "Leadership Philosophy."
-
-3.3 The Technical Credibility Asset: "Simple JavaScript Toolkit"
-Optimization Requirement: This post should be shared in niche communities (e.g., functional programming subreddits, JavaScript newsletters) rather than broad channels.
-
-# Promotion
-
-Show more blog posts on the end of the page.
-
-Best time to post:
-12:00 PM and 3:00 PM CET
-The comment section on Hacker News is where the real value is captured. The author must remain active in the thread for the first 4-6 hours.
-
-r/ExperiencedDevs: This is a high-value community for Senior+ engineers and managers. The content here must be framed as a "Case Study" or "Lessons Learned," not a blog promotion.
-
-Strategy: Post a text-only thread titled "Case Study: Integrating AI agents into a legacy migration workflow (900+ files)." Copy the core insights of the blog post into the Reddit thread itself. Do not force users to click away to read the value. Put the link at the bottom: "Full write-up with code samples here: [Link]." This "value-first" approach is respected and often leads to high engagement.
-
-r/EngineeringManagers: This is the target for the "Culture" post.
-
-Strategy: Start a discussion. Title: "How do you measure 'culture' in a remote team? My attempt at a framework." Share the key points from the "How I Build Engineering Culture" post (Kindness, Pragmatism). Ask for feedback. This positions the candidate as a thought leader seeking peer review, which is a powerful networking stance.
-
-r/reactjs / r/javascript: These are larger, noisier communities. Direct links are more acceptable here, but the title must be technical. "We migrated to RTL v14 using this specific AI workflow.".
 
 # Optimizations
 
@@ -93,28 +64,76 @@ Staff+ Individual Contributor: For scale-ups needing high-level architectural ha
 
 Logistics: "Based in Madrid (CET). Available for 4 hours of daily EST overlap. Seamless B2B invoicing via US-compliant contractor agreements." This answers the "logistics" question before it is even asked.
 
-# Promoting in newsletters
+This is a great angle. "Software Craftsmanship" can sometimes scare business owners who worry it means "slow perfectionism." The trick is to reframe craftsmanship as predictability, low risk, and long-term speed.
 
-Software Lead Weekly: Curated by Oren Ellenbogen. This is the "bible" for engineering managers.
+Given your background (CTO, stabilizing platforms, reducing complexity), your copy should position you not just as a coder, but as a Master Builder—someone who doesn't just lay bricks, but ensures the building won't collapse in a year.
 
-Action: Submit the "How I Build Engineering Culture" post directly via the suggestion form or email. The focus on "Kindness" and "Pragmatism" aligns perfectly with the newsletter's ethos.
+Here is a content strategy and specific copy for a "Hire Me" page that sells craftsmanship as a business asset.
 
-Pointer.io: A reading club for developers and leaders.
+1. The Hook (The Hero Section)
+   Goal: Stop the scroll by addressing the pain of "non-craft" software (chaos, bugs, burnout).
 
-Action: Submit the "Simple JavaScript Toolkit" or the "AI Migration" post. They value high-quality, non-promotional technical writing.
+Headline Options:
 
-The Pragmatic Engineer (Gergely Orosz): The largest newsletter in the tech space.
+Option A (Direct): "I build boring software. It works, it scales, and it lets you sleep at night."
 
-Action: While direct submission is difficult, engaging with Gergely's content on LinkedIn/Twitter by sharing the "AI Migration" case study as a response to his posts on "Developer Productivity" or "AI Tools" can attract his attention.
+Option B (Value-led): "Stop fighting your codebase. Start shipping again."
 
-# Positioning for Head of Engineering roles
+Option C (Craft-focused): "Engineering Craftsmanship for teams that are done with chaos."
 
-8.1 The "Manager of Managers" Signal
-In the "Culture" post and resume, emphasize experience with hiring, firing, budgeting, and strategy.
+Sub-headline: "Your startup doesn't need more 'rockstars' breaking things fast. It needs an experienced engineering leader to stabilize your platform, mentor your team, and build a technical foundation that actually supports your growth."
 
-Content Tweak: Add a section to the Culture post about "Making Hard Decisions." Discuss how to handle underperformance or budget cuts with kindness. This shows the "grit" required for leadership roles.
+2. The Philosophy (Reframing "Craftsmanship")
+   Goal: Define craftsmanship not as 'art', but as 'professionalism'.
 
-8.2 The "Business Alignment" Signal
-Engineers talk about code; leaders talk about business.
+Section Title: Why I Practice Software Craftsmanship
 
-Content Tweak: In the "AI Migration" post, translate the technical achievement into business terms. "By reducing the migration time, we unblocked the product roadmap for Q4, allowing the sales team to demo the new features 2 months early." This language resonates with CEOs who sign the €120k checks.
+"In an industry obsessed with moving fast and breaking things, I choose a different path: Move deliberately and build things that last."
+
+My Core Tenets:
+
+Code is a Liability: Every line of code we write is something we have to maintain. I specialize in reducing complexity (like the time I deleted 25k LOC while increasing feature velocity), not adding to it.
+
+Calm > Chaos: High-output teams aren't the ones pulling all-nighters; they are the ones with automated tests, clear documentation, and zero fear of deploying on Fridays.
+
+Mentorship is Multiplicative: I don't just fix your code; I elevate your team. I teach your engineers how to fish—instilling patterns of TDD, clean architecture, and ownership that last long after I’m gone.
+
+Stability is a Feature: 99.9% uptime isn't an accident. It's a discipline.
+
+3. The Services (What you actually do)
+   Goal: Productize your skills into clear engagements.
+
+1. The "Stabilization" Audit (Fractional CTO) For Series A/B startups feeling the growing pains. "You’ve hit product-market fit, but your tech stack is creaking under the load. I will come in, audit your architecture and team processes, and implement the 'adult' infrastructure (CI/CD, Security, Monitoring) needed to scale to the next level."
+
+1. The "Craftsman" Team Lead (Interim Leadership) For teams that need a culture reset. "Drop me into a struggling team. I will act as a player-coach, introducing code reviews, pairing sessions, and architectural standards. I won't just tell them what to do; I’ll get in the trenches and show them what 'Good' looks like."
+
+1. Robotics & Deep Tech Infrastructure For hardware companies needing software maturity. "You have brilliant robotics prototypes, but your cloud infrastructure and deployment pipelines are an afterthought. I bridge the gap between hardware innovation and software reliability, ensuring your fleet is secure (ISO 27017) and your data pipelines flow smoothly."
+
+1. The "Trust Signals" (Resume Highlights)
+   Goal: Prove you've done this before.
+
+"I don't speak in theory. I speak in shipped production code."
+
+Reliability: Improved platform uptime to 99.9% for 22k+ active users.
+
+Scale: Architected multi-region AWS infrastructure handling data residency across the EU and US.
+
+Leadership: Scaled engineering teams from 6 to 22, managing the transition from 'friends in a room' to 'structured departments'.
+
+Security: Led the implementation of ISO 27001 & 27017 certification—security isn't a blocker, it's a quality gate.
+
+5. The Footer / Call to Action
+   Goal: Filter for the right clients (those who respect the craft).
+
+"I am not the cheapest engineer you can hire. I am the one you hire when you can't afford to get it wrong again."
+
+[Button: Let’s Build Something Solid]
+
+Bonus: Visual Ideas for the Page
+Since you love craftsmanship, the design should reflect that.
+
+Typography: Use a clean, monospaced font for headers (like JetBrains Mono or Fira Code) paired with a highly readable serif for body text. It signals "I write code, but I read books."
+
+Imagery: Avoid stock photos of people pointing at whiteboards. Use diagrams of architectures you've designed, or a blurred screenshot of a clean VS Code setup.
+
+Color Palette: "Calm" colors. Deep blues, paper whites, slate grays. Avoid "Panic Red" or "Startup Hyper-Neon."
