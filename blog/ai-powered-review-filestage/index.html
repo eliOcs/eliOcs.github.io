@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Literata:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style.css" />
+    <title>Blog > How We Built AI-Powered Review at Filestage</title>
+    <meta
+      name="description"
+      content="How we shipped AI-powered text and image review at Filestage in under a month with sub-30-second processing—using AWS Textract, DINOv2, CPU inference, and MongoDB vector search instead of custom ML infrastructure."
+    />
+    <meta name="author" content="Elio Capella Sánchez" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article" />
+    <meta property="article:published_time" content="2026-01-09T00:00:00Z" />
+    <meta
+      property="og:url"
+      content="https://eliocapella.com/blog/ai-powered-review-filestage/"
+    />
+    <meta
+      property="og:title"
+      content="How We Built AI-Powered Review at Filestage"
+    />
+    <meta
+      property="og:description"
+      content="How we shipped AI-powered text and image review at Filestage in under a month with sub-30-second processing—using AWS Textract, DINOv2, CPU inference, and MongoDB vector search instead of custom ML infrastructure."
+    />
+    <!-- TODO: Add og:image when you have a featured image -->
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https://eliocapella.com/blog/ai-powered-review-filestage/"
+    />
+    <meta
+      property="twitter:title"
+      content="How We Built AI-Powered Review at Filestage"
+    />
+    <meta
+      property="twitter:description"
+      content="How we shipped AI-powered text and image review at Filestage in under a month with sub-30-second processing—using AWS Textract, DINOv2, CPU inference, and MongoDB vector search instead of custom ML infrastructure."
+    />
+    <!-- TODO: Add twitter:image when you have a featured image -->
+  </head>
+  <body>
+    <div class="page-header">
+      <a href="/" class="home-nav">
+        <img src="/selfie.jpg" alt="Go to home page" />
+      </a>
+      <h1>How We Built AI-Powered Review at Filestage</h1>
+      <p class="post-date">January 9, 2026</p>
+    </div>
+
+    <p>
+      Looking back at 2025, forcing AI into everything was clearly a trend. At
+      <a href="https://www.filestage.io" target="_blank">Filestage</a> we also
+      had our fair share of that. We tried to be deliberate and didn't rush to
+      add AI into our product. We carefully thought about the use cases where it
+      actually provided value to our customers. We settled on
+      <a href="https://filestage.io/ai-reviewer/" target="_blank"
+        >AI Reviewers</a
+      >
+      to save time when reviewing files.
+    </p>
+    <p>
+      Operating without dedicated ML engineers or GPU infrastructure forced
+      <strong>disciplined trade-offs</strong>—every infrastructure choice had to
+      justify its complexity. We don't have to invent a novel foundation model
+      but rather use the available AI models and tools. That's why we focused on
+      specific use cases we were confident we could ship quickly and validate
+      with real customers.
+    </p>
+    <p>
+      We prioritized getting feedback from our customers as soon as possible
+      instead of building the perfect solution. By focusing on very specific use
+      cases we could select the best AI models and approaches for each. Our
+      first MVP was ready in <strong>less than a month</strong>, with reviews
+      completing in <strong>under 30 seconds</strong>.
+    </p>
+
+    <h2>1. Text Review</h2>
+    <p>
+      This was our first and most obvious attempt to leverage AI. Currently LLM
+      foundation models have gotten really good at text-based tasks so we were
+      confident that if we were able to extract the text from the files we
+      should be able to provide solid review comments.
+    </p>
+    <p>
+      Although we programmed it in a way that would make it easy for us to
+      create multiple AI Reviewers with different prompts, we started with the
+      simple use case of <em>spelling and grammar</em>. Spelling checks have
+      been with us for decades and can be achieved without AI, but it allowed us
+      to test the pipeline end to end. We knew we could later add different
+      prompts to easily cover other cases like:
+      <em>avoiding forbidden terms</em> or helping with the enforcement of a
+      <em>consistent tone of voice</em>.
+    </p>
+
+    <figure>
+      <img
+        src="./ai-spelling-grammar-check.png"
+        alt="AI spelling and grammar check Filestage"
+      />
+      <figcaption>AI spelling and grammar check Filestage</figcaption>
+    </figure>
+
+    <h3>Text Extraction</h3>
+    <p>
+      We allow users to upload many file types at Filestage (websites, PDF,
+      Microsoft Office, ...) and extracting text from each file format has its
+      own challenges. We started targeting PDFs because they usually contain the
+      most text and there are more tools available out there. We also already
+      convert many file types into PDFs to make them web compatible. After
+      evaluating multiple tools we settled on
+      <a href="https://aws.amazon.com/textract/" target="_blank">AWS Textract</a
+      >. Although OCR has existed for a long time, the new machine learning
+      approach is more accurate and can deal better with structured data like
+      tables and forms inside documents.
+    </p>
+
+    <h3>Text-based over Multimodal</h3>
+    <p>
+      But why even extract the text in the first place? Just pick a multimodal
+      LLM and problem solved. Well... currently text-based performance is
+      <strong>drastically better</strong> than multimodal performance and it is
+      <em>faster and cheaper</em>. After testing many files our accuracy with
+      the text-based approach was much better, although the pipeline complexity
+      was higher due to the extra steps involved.
+    </p>
+
+    <h3>Positioning comments in the original file</h3>
+    <p>
+      Another obvious downside of text-based is that once you extract the text
+      the corresponding coordinates of each piece of text in the original
+      document are gone, you strip out everything to obtain the text only. At
+      Filestage comments need to be placed accordingly in the original
+      documents. We ended up processing the LLM output to identify the offending
+      piece of text, searching for it with our PDF processing library (we use
+      <a href="https://apryse.com/products/core-sdk/pdf" target="_blank"
+        >Apryse</a
+      >) to obtain the coordinates.
+    </p>
+    <p>
+      This sounds straightforward but several edge cases made it tricky: the
+      same text can appear <em>multiple times</em> in a document, a text extract
+      can be <em>split across multiple pages</em>, and the LLM occasionally
+      <em>hallucinates</em> parts of the text which makes finding the original
+      source harder. We handled these with heuristics that worked well enough
+      for the MVP.
+    </p>
+
+    <h2>2. Mandatory Image Verification</h2>
+    <p>
+      For our first visual use case we focused on checking if particular images
+      were present in designs. For example, it can be particularly helpful in
+      packaging design: due to regulations you need to make sure the
+      <em>recycle icon</em> is present in every design. The icon has more or
+      less always the same shape but depending on the design it can have
+      <em>different colors</em> or sometimes be only <em>outlined</em> and other
+      times <em>filled in</em>, which is why it is better solved with AI. Our AI
+      reviewer goal was to automatically verify the images uploaded by the
+      customer were present.
+    </p>
+
+    <figure>
+      <img
+        src="./ai-image-checker-example.png"
+        alt="AI mandatory image verification at Filestage"
+      />
+      <figcaption>AI mandatory image verification at Filestage</figcaption>
+    </figure>
+
+    <h3>DINOv2 over Custom Training</h3>
+    <p>
+      We researched the models available with our sample test files and icons we
+      wanted to verify. We ultimately chose
+      <a href="https://github.com/facebookresearch/dinov2" target="_blank"
+        >DINOv2</a
+      >
+      (open-source vision model) instead of training our own. With our customer
+      data it was <em>accurate enough</em>, this
+      <strong>skipped months of work</strong> and let us verify with customers
+      sooner.
+    </p>
+
+    <h3>CPU Inference over GPU</h3>
+    <p>
+      This was the first time we ran our own AI workloads in production and
+      therefore we hadn't had the requirement before of needing GPUs in our
+      backend servers. Instead of trying to optimize too early we tested CPU
+      inference. Because our flow was asynchronous anyway and the volume was
+      going to be low at the beginning, we decided to move forward with it. This
+      allowed us to
+      <strong>reuse our existing background job infrastructure</strong>.
+    </p>
+    <p>
+      This minimised the ops work necessary, though I still had to adapt our
+      backend infrastructure to run Python workloads alongside our existing
+      Node.js services, and efficiently download the model parameters (a few
+      GBs) into our instances.
+    </p>
+
+    <h3>MongoDB Vector Search over Dedicated Vector DB</h3>
+    <p>
+      Every time a user uploads a file we generate embeddings for the uploaded
+      file, these are then used when processing the image to find coincidences.
+      Setting up a new vector database would delay us and add a new moving part
+      to our infrastructure, so we decided to test out the recently released
+      <a href="https://filestage.io/ai-reviewer/"
+        >vector search from MongoDB Atlas</a
+      >, which is our current and <em>only</em> database in our backend.
+      <strong>No new infrastructure to operate.</strong>
+    </p>
+
+    <h3>Simple Matching over Sophisticated Logic</h3>
+    <p>
+      Rather than training a classifier or using multiple weighted similarity
+      measures, we used <em>simple cosine similarity</em> with a
+      <em>single threshold</em> to find a match. If users needed different
+      sensitivity levels, we could expose the threshold as a configuration
+      option rather than building complex per-icon-type logic upfront.
+    </p>
+
+    <h2>What's Next</h2>
+    <p>
+      We constantly need to be testing and
+      <a href="https://lmarena.ai/leaderboard/" target="_blank"
+        >benchmarking new model releases</a
+      >. Better models allow us to rework our current AI reviewers, automate
+      more complex use cases, and maybe even deal with other file types like
+      video which require much more processing.
+    </p>
+    <p>
+      Customer feedback is the other critical part. We need to closely monitor
+      the accuracy of our AI reviewers and make sure the feedback loop with
+      customers is tight so we can learn what new use cases we can implement and
+      what the key challenges in adoption are.
+    </p>
+    <p>
+      Finally we need to make sure costs and performance are up to our
+      standards. If the usage continues to grow we will switch to
+      <strong>GPU inference</strong> and we may introduce <em>caching</em> to
+      optimize the LLM API calls.
+    </p>
+
+    <h2>What I Learned</h2>
+    <p>
+      <strong>Gather real customer examples early.</strong> Having actual
+      customer files with their expected review comments let us verify accuracy
+      quickly across different approaches. Without this ground truth, we
+      would've been guessing.
+    </p>
+    <p>
+      <strong>Software engineers can build AI pipelines</strong>, but it's
+      important to learn deeply how LLMs and other models work behind the scenes
+      to improve accuracy and make better tool choices. I found
+      <a
+        href="https://www.oreilly.com/library/view/ai-engineering/9781098166298/"
+        target="_blank"
+        >AI Engineering</a
+      >
+      by Chip Huyen particularly helpful for building this understanding.
+    </p>
+    <p>
+      <strong>Customer feedback beats perfection.</strong> When testing novel
+      approaches that need validation, keep pushing to deliver. The real edge
+      cases only surface with real usage.
+    </p>
+    <p>
+      There is no doubt AI can empower users to do more with your product. I
+      highly encourage you to take the time to do the thought experiment of how
+      you would develop your product from scratch now that AI is readily
+      available. At the same time, don't force AI into your product if you don't
+      see a fit. Listen to your customers carefully, don't just follow trends
+      blindly.
+    </p>
+
+    <figure>
+      <img
+        src="./internet-rage-against-gemini-gmail-integration.png"
+        alt="Internet rage against Gemini to Gmail integration"
+      />
+      <figcaption>Internet rage against Gemini to Gmail integration</figcaption>
+    </figure>
+  </body>
+</html>

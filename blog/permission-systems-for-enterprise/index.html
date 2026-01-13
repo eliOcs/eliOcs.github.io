@@ -533,6 +533,55 @@ allow if {
             filters.
           </p>
 
+          <h2>Most advanced appraoches (Zanzibar and ReBAC)?</h2>
+          <p>
+            The state of the art of authorization handling is
+            <a
+              href="https://research.google/pubs/zanzibar-googles-consistent-global-authorization-system/"
+              target="_blank"
+              >Google Zanzibar</a
+            >
+            (behind Google Drive or YouTube). It uses
+            <strong>Relationship-Based Access Control (ReBAC)</strong>, modeling
+            permissions as a graph where access flows through relationships.
+            There are Open-source implementations available like
+            <a href="https://openfga.dev/" target="_blank">OpenFGA</a> or
+            <a href="https://authzed.com/spicedb" target="_blank">SpiceDB</a>.
+          </p>
+          <p>
+            Similarly to the ABAC, ReBAC excels at
+            <strong>check queries</strong> but
+            <strong>list queries</strong> remain hard.
+            <a
+              href="https://openfga.dev/docs/interacting/search-with-permissions"
+              target="_blank"
+              >OpenFGA's documentation</a
+            >
+            recommends consuming a change stream to build a
+            <em>local permissions index</em> which is essentially what we
+            described with RBAC.
+          </p>
+          <p>
+            Google solved this with
+            <a
+              href="https://authzed.com/blog/what-is-google-zanzibar"
+              target="_blank"
+              >Leopard</a
+            >, a system that pre-computes relationships and keeps them in
+            memory. SpiceDB offers something similar with
+            <a
+              href="https://authzed.com/products/authzed-materialize"
+              target="_blank"
+              >Materialize</a
+            >.
+          </p>
+          <p>
+            These systems can make sense but being honest you're adding another
+            moving part to the infrastructure you have to manage, for most SaaS
+            apps and scale it will be
+            <strong>hard to justify using them</strong>.
+          </p>
+
           <h2>Optimizing for hierarchical data</h2>
           <p>
             Both approaches still rely on recursive queries to traverse the
@@ -646,11 +695,12 @@ await sqlRun(
             pagination.
           </p>
           <p>
-            The main risk with pre-computed permissions is data getting
-            <strong>out of sync</strong>. Plan for this by building a rebuild
-            script from day one that can recompute all permissions from the
-            source of truth. When bugs happen, and they will, you'll be glad you
-            have it.
+            With proper transactions, pre-computed permissions won't drift
+            during normal operations. The risk is subtler: bugs in your
+            permission logic, schema migrations, or new features that need
+            backfilling. Build a rebuild script from day one that can recompute
+            all permissions from the source of truth. You'll use it more than
+            you expect.
           </p>
         </div>
       </div>
