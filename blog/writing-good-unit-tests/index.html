@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Literata:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style.css" />
+    <title>Blog > Writing Good Unit Tests</title>
+    <meta
+      name="description"
+      content="Write tests that let you refactor and deploy with confidence. Test behaviors not functions, mock only at system edges, use in-memory databases, and record HTTP fixtures."
+    />
+    <meta name="author" content="Elio Capella Sánchez" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article" />
+    <meta
+      property="article:published_time"
+      content="2026-01-23T00:00:00+01:00"
+    />
+    <meta
+      property="og:url"
+      content="https://eliocapella.com/blog/writing-good-unit-tests/"
+    />
+    <meta property="og:title" content="Writing Good Unit Tests" />
+    <meta
+      property="og:description"
+      content="Write tests that let you refactor and deploy with confidence. Test behaviors not functions, mock only at system edges, use in-memory databases, and record HTTP fixtures."
+    />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https://eliocapella.com/blog/writing-good-unit-tests/"
+    />
+    <meta property="twitter:title" content="Writing Good Unit Tests" />
+    <meta
+      property="twitter:description"
+      content="Write tests that let you refactor and deploy with confidence. Test behaviors not functions, mock only at system edges, use in-memory databases, and record HTTP fixtures."
+    />
+  </head>
+  <body>
+    <div class="page-header">
+      <a href="/" class="home-nav">
+        <img src="/selfie.jpg" alt="Go to home page" />
+      </a>
+      <h1>Writing Good Unit Tests</h1>
+      <p class="post-date">January 23, 2026</p>
+    </div>
+    <p>
+      In my first job as a software engineer the project I was working on grew
+      out of control. As often happens, use cases were added without proper
+      refactoring and with more users we were drowning in support tickets and
+      nothing seemed to work. It was clear we needed to push for quality so we
+      started adding unit tests.<br />
+      The tech lead at the time mandated high test coverage. But here's the
+      reality:
+      <strong
+        >writing good unit tests after the code is done is really hard</strong
+      >. You start chasing coverage which becomes a
+      <em>vanity metric</em> instead of prioritizing
+      <strong>deployment confidence</strong> and behavioral integrity.
+    </p>
+
+    <h2>Test Behaviors, Not Functions</h2>
+    <p>
+      Stop strictly mirroring your <code>src/</code> folder in your
+      <code>tests/</code> folder. Keep asking yourself:
+      <strong
+        >Can I refactor the internal logic without touching the test
+        suite?</strong
+      >
+      If the answer is no, you are testing implementation details. You are
+      testing the <em>structure</em>, not the <em>behavior</em>. This is very
+      common when you retrofit tests onto an existing code base, looking for
+      line coverage rather than confirming business logic.
+    </p>
+    <pre><code class="language-js">/* cart.js */
+export function applyDiscount(subtotal) {
+  return subtotal > 100 ? subtotal * 0.9 : subtotal;
+}
+
+export function calculateTotal(items) {
+  let total = items.reduce((sum, item) => sum + item.price, 0);
+  return applyDiscount(total);
+}
+
+/* cart.test.js */
+import * as cart from "./cart.js";
+
+// ❌ Tests the internal function
+it('should apply a 10% discount for orders over 100', () => {
+  expect(cart.applyDiscount(110)).toBe(99);
+});
+
+// ✅ Better, test the discount behaviour is applied when calculating the cart total
+it('should calculate total with discount for high value carts', () => {
+  const items = [{ price: 50 }, { price: 60 }];
+  expect(cart.calculateTotal(items)).toBe(99);
+});
+</code></pre>
+    <p>
+      By testing the public interface, you avoid exporting the
+      <code>applyDiscount</code> function.
+      <strong>Never change visibility modifiers just to satisfy a test.</strong>
+    </p>
+
+    <h2>Mock the Edges, Not the Internals</h2>
+    <p>
+      It is common to split the code into many technical layers like:
+      controllers, views, stores, etc. It can be tempting to mock each of these
+      layers and test each part independently but once again this is another way
+      of <strong>coupling your tests to your implementation</strong>. If you are
+      writing unit tests for a browser application try
+      <strong>only mocking the API</strong> (network calls) and try to mimic the
+      user with UI events to test the behaviors. You will need much less code
+      and you will gain much more confidence in the test suite.
+    </p>
+    <pre><code class="language-jsx">/* useUsers.js */
+import { useState, useEffect } from 'react';
+
+export const useUsers = () => {
+  const [users, setUsers] = useState([]);
+  
+  useEffect(() => {
+    fetch('/api/users')
+      .then(res => res.json())
+      .then(data => setUsers(data));
+  }, []);
+
+  return { users };
+};
+
+/* UserList.jsx */
+import React from 'react';
+import { useUsers } from './useUsers';
+
+export const UserList = () => {
+  const { users } = useUsers();
+
+  if (users.length === 0) return <div>Loading...</div>;
+
+  return (
+    <ul>
+      {users.map(user => <li key={user.id}>{user.name}</li>)}
+    </ul>
+  );
+};
+
+/* UserList.test.jsx */
+import { render, screen } from '@testing-library/react';
+import { UserList } from './UserList';
+import * as userHook from './useUsers';
+
+// ❌ Mocking the Internals
+jest.spyOn(userHook, 'useUsers').mockReturnValue({
+  users: [{ id: 1, name: 'Alice' }]
+});
+
+test('renders users', () => {
+  render(<UserList />);
+  expect(screen.getByText('Alice')).toBeInTheDocument();
+});
+
+// ✅ Mock the edges (HTTP request)
+global.fetch = jest.fn(() =>
+  Promise.resolve({
+    json: () => Promise.resolve([{ id: 1, name: 'Alice' }]),
+  })
+);
+
+test('renders users', async () => {
+  render(<UserList />);
+
+  expect(screen.getByText('Loading...')).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(screen.getByText('Alice')).toBeInTheDocument();
+  });
+  
+  expect(global.fetch).toHaveBeenCalledWith('/api/users');
+});
+</code></pre>
+    <p>
+      If you decide to replace the hook with React Query, inline the hook, or
+      update the React version
+      <strong>you won't need to touch this test</strong>. The test isn't brittle
+      anymore, this brings so much peace of mind moving forward. One single test
+      is testing both files so you need fewer tests too.
+    </p>
+    <p>
+      What constitutes a <strong>system edge</strong>? As we covered in this
+      example, in a browser app your code at one edge receives
+      <em>user inputs</em> and at the other edge it sends and receives
+      <em>HTTP requests</em>. Any third-party service (eg: if you use
+      <a href="https://stripe.com/" target="_blank">Stripe</a> for billing),
+      time, randomness or I/O would be other examples.
+    </p>
+
+    <h2>Pragmatism Over Dogma: In-Memory Databases</h2>
+    <p>
+      A great part of the backend application is just having a layer on top of a
+      database. If we are dogmatic we could treat the database as a system edge
+      too, we should mock that! <strong>Be pragmatic instead</strong>: can I
+      spin up an in-memory database which allows me to still run
+      <em>thousands of tests in milliseconds</em>? Yes. Does it introduce
+      flakiness? No, network requests are involved but inside the same machine
+      so no latency, dropped packets, or network errors.
+    </p>
+    <pre><code class="language-js">/* app.js */
+const express = require('express');
+const mongoose = require('mongoose');
+
+const UserSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true },
+});
+const User = mongoose.model('User', UserSchema);
+
+const app = express();
+app.use(express.json());
+
+app.post('/signup', async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.create({ email });
+    res.status(201).json({ id: user._id, email: user.email });
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(409).json({ error: 'User already exists' });
+    }
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+module.exports = app;
+
+/* app.test.js */
+// ❌ Mocking Mongoose
+const request = require('supertest');
+const mongoose = require('mongoose');
+
+jest.mock('mongoose', () => {
+  const mUser = {
+    create: jest.fn(),
+  };
+  return {
+    Schema: jest.fn(),
+    model: jest.fn(() => mUser),
+    connect: jest.fn(),
+  };
+});
+
+const app = require('./app');
+
+describe('POST /signup (Mocked)', () => {
+  test('should return 201', async () => {
+    const MockedUser = mongoose.model('User');
+    MockedUser.create.mockResolvedValueOnce({ email: 'test@example.com' });
+    await request(app).post('/signup').send({ email: 'test@example.com' }).expect(201);
+  });
+});
+
+// ✅ In-memory database to verify the E2E behaviour
+const assert = require('assert');
+const request = require('supertest'); 
+const mongoose = require('mongoose');
+const { MongoMemoryServer } = require('mongodb-memory-server');
+const app = require('./app');
+
+let mongoServer;
+
+beforeAll(async () => {
+  mongoServer = await MongoMemoryServer.create();
+  await mongoose.connect(mongoServer.getUri());
+});
+
+afterAll(async () => {
+  await mongoose.disconnect();
+  await mongoServer.stop();
+});
+
+afterEach(async () => {
+  await mongoose.connection.db.dropDatabase();
+});
+
+describe('POST /signup', () => {
+  test('should create a user and return 201', async () => {
+    await request(app)
+      .post('/signup')
+      .send({ email: 'leader@example.com' })
+      .expect(201);
+
+    const userInDb = await mongoose.model('User').findOne({ email: 'leader@example.com' });
+    assert(userInDb);
+  });
+
+  test('should return 409 if user already exists', async () => {
+    await mongoose.model('User').create({ email: 'leader@example.com' });
+
+    await request(app)
+      .post('/signup')
+      .send({ email: 'leader@example.com' })
+      .expect(409);
+  });
+});
+</code></pre>
+    <p>
+      In my experience, in-memory databases have been performing great and
+      delivering <strong>great deployment confidence</strong> compared to
+      mocking database clients to assert queries.
+    </p>
+    <p>
+      Again, many engineers will be triggered by this post arguing that I'm
+      advocating for integration tests and not unit tests. I think of automated
+      tests on a <strong>spectrum</strong> where at one end you have fast
+      reliable tests which don't give you a lot of confidence and on the other
+      side slow and flaky tests which give you a lot of confidence.
+      <strong
+        >Whenever you can push test confidence without any relevant slowness or
+        unreliability, go for it!</strong
+      >
+    </p>
+
+    <h2>HTTP Mocking Done Right</h2>
+    <p>
+      Whenever I can I like to
+      <strong
+        >mock the I/O calls rather than stub a third party dependency</strong
+      >. When I implemented SSO authentication at
+      <a href="https://filestage.io">Filestage</a> I used the
+      <a href="https://www.npmjs.com/package/openid-client">OpenId Client</a>
+      npm package. To ensure maximum confidence in the test implementation once
+      I got the code working I
+      <strong>recorded the HTTP requests</strong> involved using
+      <a href="https://www.npmjs.com/package/nock">Nock</a> and used those
+      fixtures in the automated tests (similar tools can be found in other
+      languages like <a href="https://github.com/vcr/vcr">VCR</a> for Ruby).
+    </p>
+    <pre><code class="language-js">/* fixtures.js: created automatically when recording */
+exports.jwks = function () {
+  return nock("https://filestage-test-idp.eu.auth0.com")
+    .get("/.well-known/jwks.json")
+    .reply(200, {
+      keys: [
+        {
+          kty: "RSA",
+          use: "sig",
+          /* ... */
+        }
+      ]
+    });
+};
+
+/* sso.test.js */
+describe("finishLogin", function () {
+  it("should return user and state from response", async function () {
+    fixtures.jwks();
+    fixtures.backchannel.token();
+    assert.deepEqual(
+      await ssoService.finishLogin(
+        sso.connection,
+        fixtures.backchannel.response,
+        {},
+      ),
+      {
+        state: {
+          iframeSupport: false,
+        },
+        user: {
+          email: "test-idp-openid@filestage.io",
+          fullName: "Test IDP OpenId",
+          id: "auth0|6620da84985864790ec52d49",
+          picture:
+            "https://s.gravatar.com/avatar/8e539f47059edf49f18f82096f51edf7?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fte.png",
+        },
+      },
+    );
+  });
+});
+</code></pre>
+    <p>
+      This really paid off as it is common in the JavaScript ecosystem to do a
+      full rewrite of the library API breaking all the existing code:
+    </p>
+    <figure>
+      <img
+        src="./breaking-changes-example.png"
+        alt="Breaking changes in OpenId client"
+      />
+      <figcaption>Breaking changes in OpenId client</figcaption>
+    </figure>
+    <p>
+      Thanks to the confidence in the test suite I could
+      <strong>brute-force the update</strong> to the new library with an AI
+      agent.
+    </p>
+    <h2>Why I Dislike the Jest/jsdom combo</h2>
+    <p>
+      Don't get me wrong there are many things
+      <a href="https://jestjs.io/" target="_blank">Jest</a> got right: parallel
+      testing, mocking of modules and a familiar API. But the React ecosystem
+      pushed for tests using
+      <a href="https://github.com/jsdom/jsdom" target="_blank">jsdom</a>:
+    </p>
+    <figure>
+      <img
+        src="./jest-jsdom-recomendation.png"
+        alt="Jest + jsdom continues to be the recommended approach in the create react app utility"
+      />
+      <figcaption>
+        Jest + jsdom continues to be the recommended approach in the create
+        react app utility
+      </figcaption>
+    </figure>
+    <p>
+      The industry followed, and the performance penalty was immediate. Before
+      React we were using Angular 1.x and the testing approach was to use Karma
+      which ran a
+      <em>real browser</em> to run the tests. This meant that you had access to
+      all available real browser APIs, you could even test multiple browsers to
+      verify compatibility. Once we started to grow our test base in Jest I
+      noticed that
+      <strong>some test components took several seconds to run</strong> when our
+      whole Angular with over 2000 tests took 30 seconds to execute. This has
+      been the biggest step back I've experienced in testing. To this day I
+      regret this decision, thankfully alternatives are just starting to be
+      published like
+      <a href="https://vitest.dev/guide/browser/" target="_blank"
+        >Vitest latest browser mode</a
+      >.
+    </p>
+
+    <h2>The Case for 100% Coverage</h2>
+    <p>
+      Tests are a very polarizing topic, some engineers hate them and view them
+      as a useless chore and others couldn't work without them. I actually rely
+      on tests because I can execute them to <strong>verify my beliefs</strong>,
+      <strong>prevent bugs from being reintroduced</strong> once they have been
+      fixed and produce more decoupled code.<br />I'm all in on tests and I like
+      enforcing 100% coverage. At the same time coverage is a
+      <em>vanity metric</em> and can introduce incentives to create useless
+      tests. I see that, but it can also create incentives to
+      <strong>remove unnecessary branches or pieces of code</strong> just to
+      avoid writing tests for them. Since we introduced this habit into the team
+      a lot of the testing skeptics have actually found themselves in situations
+      where they found bugs while they were adding the tests and have changed
+      their opinion. A lot of useless tests were introduced for sure but this
+      also served as a great learning experience and the quality of our tests is
+      clearly improving.
+    </p>
+
+    <h2>Conclusion</h2>
+    <p>
+      <strong>Test behaviors, not implementation details.</strong> Record HTTP
+      fixtures from real integrations. Run tests in real browsers when possible.
+      Aim for 100% coverage not as a goal but as a forcing function for cleaner
+      code.
+    </p>
+    <p>
+      <strong>Can you refactor with confidence?</strong> If your tests break
+      every time you rename a function or move code between files, they're
+      testing structure, not behavior.
+    </p>
+    <p>
+      The Ultimate Litmus Test:
+      <strong>Can you deploy on a Friday evening?</strong> If your test suite
+      gives you the confidence to ship at 5 PM on a Friday, you've built
+      something valuable.
+    </p>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-jsx.min.js"></script>
+  </body>
+</html>
