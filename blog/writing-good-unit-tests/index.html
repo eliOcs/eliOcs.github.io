@@ -213,7 +213,9 @@ test('renders users', async () =&gt; {
     </p>
 
     <h2 id="in-memory-databases">
-      <a href="#in-memory-databases">Pragmatism Over Dogma: In-Memory Databases</a>
+      <a href="#in-memory-databases"
+        >Pragmatism Over Dogma: In-Memory Databases</a
+      >
     </h2>
     <p>
       A great part of the backend application is just having a layer on top of a
@@ -273,7 +275,10 @@ describe('POST /signup (Mocked)', () => {
   test('should return 201', async () => {
     const MockedUser = mongoose.model('User');
     MockedUser.create.mockResolvedValueOnce({ email: 'test@example.com' });
-    await request(app).post('/signup').send({ email: 'test@example.com' }).expect(201);
+    await request(app)
+      .post('/signup')
+      .send({ email: 'test@example.com' })
+      .expect(201);
   });
 });
 
@@ -307,7 +312,8 @@ describe('POST /signup', () => {
       .send({ email: 'leader@example.com' })
       .expect(201);
 
-    const userInDb = await mongoose.model('User').findOne({ email: 'leader@example.com' });
+    const userInDb = await mongoose.model('User')
+      .findOne({ email: 'leader@example.com' });
     assert(userInDb);
   });
 
@@ -476,15 +482,22 @@ describe("finishLogin", function () {
       <a href="#conclusion">Conclusion</a>
     </h2>
     <p>
-      <strong>Test behaviors, not implementation details.</strong> Record HTTP
-      fixtures from real integrations. Run tests in real browsers when possible.
-      Aim for 100% coverage not as a goal but as a forcing function for cleaner
-      code.
+      <strong>Test behaviors, not implementation details.</strong> Avoid tests
+      that mirror your code structure. Try to start with the tests first,
+      which makes it much easier. If you want to dig deeper in that rabbit hole,
+      look into
+      <a
+        href="https://martinfowler.com/bliki/TestDrivenDevelopment.html"
+        target="_blank"
+        >TDD</a
+      >.
     </p>
     <p>
-      <strong>Can you refactor with confidence?</strong> If your tests break
-      every time you rename a function or move code between files, they're
-      testing structure, not behavior.
+      <strong>Can you refactor with confidence?</strong> Mock the edges of your
+      system not your internal layers, use HTTP fixtures, in-memory databases, use
+      a browser instead of mocking it. If your tests break every time you rename
+      a function or move code between files, they're testing structure, not
+      behavior.
     </p>
     <p>
       The Ultimate Litmus Test:
