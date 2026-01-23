@@ -73,7 +73,9 @@
       <strong>deployment confidence</strong> and behavioral integrity.
     </p>
 
-    <h2>Test Behaviors, Not Functions</h2>
+    <h2 id="test-behaviors-not-functions">
+      <a href="#test-behaviors-not-functions">Test Behaviors, Not Functions</a>
+    </h2>
     <p>
       Stop strictly mirroring your <code>src/</code> folder in your
       <code>tests/</code> folder. Keep asking yourself:
@@ -116,7 +118,9 @@ it('should calculate total with discount for high value carts', () => {
       <strong>Never change visibility modifiers just to satisfy a test.</strong>
     </p>
 
-    <h2>Mock the Edges, Not the Internals</h2>
+    <h2 id="mock-the-edges">
+      <a href="#mock-the-edges">Mock the Edges, Not the Internals</a>
+    </h2>
     <p>
       It is common to split the code into many technical layers like:
       controllers, views, stores, etc. It can be tempting to mock each of these
@@ -208,7 +212,9 @@ test('renders users', async () => {
       time, randomness or I/O would be other examples.
     </p>
 
-    <h2>Pragmatism Over Dogma: In-Memory Databases</h2>
+    <h2 id="in-memory-databases">
+      <a href="#in-memory-databases">Pragmatism Over Dogma: In-Memory Databases</a>
+    </h2>
     <p>
       A great part of the backend application is just having a layer on top of a
       database. If we are dogmatic we could treat the database as a system edge
@@ -332,7 +338,9 @@ describe('POST /signup', () => {
       >
     </p>
 
-    <h2>HTTP Mocking Done Right</h2>
+    <h2 id="http-mocking">
+      <a href="#http-mocking">HTTP Mocking Done Right</a>
+    </h2>
     <p>
       Whenever I can I like to
       <strong
@@ -405,7 +413,9 @@ describe("finishLogin", function () {
       <strong>brute-force the update</strong> to the new library with an AI
       agent.
     </p>
-    <h2>Why I Dislike the Jest/jsdom combo</h2>
+    <h2 id="jest-jsdom">
+      <a href="#jest-jsdom">Why I Dislike the Jest/jsdom combo</a>
+    </h2>
     <p>
       Don't get me wrong there are many things
       <a href="https://jestjs.io/" target="_blank">Jest</a> got right: parallel
@@ -441,7 +451,9 @@ describe("finishLogin", function () {
       >.
     </p>
 
-    <h2>The Case for 100% Coverage</h2>
+    <h2 id="100-coverage">
+      <a href="#100-coverage">The Case for 100% Coverage</a>
+    </h2>
     <p>
       Tests are a very polarizing topic, some engineers hate them and view them
       as a useless chore and others couldn't work without them. I actually rely
@@ -460,7 +472,9 @@ describe("finishLogin", function () {
       clearly improving.
     </p>
 
-    <h2>Conclusion</h2>
+    <h2 id="conclusion">
+      <a href="#conclusion">Conclusion</a>
+    </h2>
     <p>
       <strong>Test behaviors, not implementation details.</strong> Record HTTP
       fixtures from real integrations. Run tests in real browsers when possible.

@@ -72,7 +72,7 @@
       ideas to JavaScript.
     </p>
 
-    <h2>Object and Methods vs Values and Functions</h2>
+    <h2 id="values-and-functions"><a href="#values-and-functions">Object and Methods vs Values and Functions</a></h2>
     <p>
       With the increasing popularity of React this functional programming
       paradigm has already been pushed pretty hard. Approaches are similar but
@@ -151,7 +151,7 @@ const wishlistTotal = Cart.calculateTotal(wishlist);
       code easier to understand.
     </p>
 
-    <h2>Switch vs Polymorphism</h2>
+    <h2 id="switch-vs-polymorphism"><a href="#switch-vs-polymorphism">Switch vs Polymorphism</a></h2>
     <p>
       One of the great things of OOP is polymorphism. It allows you to decouple
       different implementations and avoid switch statements which eventually
@@ -245,7 +245,7 @@ const Cart = {
 const cartTotal = Cart.calculateTotal(cart.items, cart.taxRate);  // Returns 1130
 </code></pre>
 
-    <h2>Controlled vs Uncontrolled State</h2>
+    <h2 id="controlled-state"><a href="#controlled-state">Controlled vs Uncontrolled State</a></h2>
     <p>
       We've all been told that <strong>global state is bad</strong> and it is
       indeed true that it makes things harder to understand. The reality is that
@@ -321,7 +321,7 @@ function addItem(item) {
       root cause.
     </p>
 
-    <h2>Iterative loops vs Collection pipelines</h2>
+    <h2 id="collection-pipelines"><a href="#collection-pipelines">Iterative loops vs Collection pipelines</a></h2>
     <p>
       Similar to switch statements, iterative loops can get out of hand pretty
       quickly. As you start adding more and more logic you are reusing the loop
@@ -349,7 +349,7 @@ const squaresOfEvens = numbers
 console.log(squaresOfEvens); // [4, 16]
 </code></pre>
 
-    <h2>Conditionals vs Rules</h2>
+    <h2 id="conditionals-vs-rules"><a href="#conditionals-vs-rules">Conditionals vs Rules</a></h2>
     <p>
       Similarly to switch statements and loops, conditionals can get out of hand
       pretty quickly. If the logic gets complex you start getting
@@ -404,7 +404,7 @@ checkRules({ project, user, subscription }, [
 addProjectCollaborator(project, collaborator);
 </code></pre>
 
-    <h2>Syntax vs Data</h2>
+    <h2 id="syntax-vs-data"><a href="#syntax-vs-data">Syntax vs Data</a></h2>
     <p>
       This might be the <em>hardest one to grasp</em>. If you've never played
       with Lisp where code are just nested lists or MongoDB queries which are
@@ -460,7 +460,7 @@ routes.forEach(({ method, path, handler }) => {
       choice <strong>always try to model with data first</strong>.
     </p>
 
-    <h2>ORM vs SQL</h2>
+    <h2 id="orm-vs-sql"><a href="#orm-vs-sql">ORM vs SQL</a></h2>
     <p>
       Tied to the last point we talked about, ORMs are a great example of
       <strong>syntax over data</strong>. They try to abstract away the database
@@ -525,7 +525,7 @@ const users = await Users().where('age', '>', 18);
       Much easier to compose and move around behaviour.
     </p>
 
-    <h2>Concurrency vs Sequential</h2>
+    <h2 id="concurrency"><a href="#concurrency">Concurrency vs Sequential</a></h2>
     <p>
       Having
       <strong
@@ -566,7 +566,7 @@ while (accountQueue.hasPendingTasks()) {
       in most cases <strong>the simplicity is worth it</strong>.
     </p>
 
-    <h2>Conclusion</h2>
+    <h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
     <p>
       <strong>Simple doesn't mean familiar</strong>. That is the true lesson
       here, our experience leaves a heavy bias on our decision making.

@@ -87,7 +87,7 @@
       <em>How hard could it be...</em>
     </p>
 
-    <h2>Step 1: Preparing a migration guide</h2>
+    <h2 id="step-1"><a href="#step-1">Step 1: Preparing a migration guide</a></h2>
     <p>
       At first, I naively told
       <a href="https://www.claude.com/product/claude-code" target="_blank"
@@ -115,7 +115,7 @@
       manual debugging to fix.
     </p>
 
-    <h2>Step 2: Splitting into small changes</h2>
+    <h2 id="step-2"><a href="#step-2">Step 2: Splitting into small changes</a></h2>
     <p>
       This update would require <strong>thousands of changes</strong> and would
       require days even with AI, increasing the possibility for the team to
@@ -135,7 +135,7 @@
       guide in md format in our repo.
     </p>
 
-    <h2>Step 3: Automating the code changes</h2>
+    <h2 id="step-3"><a href="#step-3">Step 3: Automating the code changes</a></h2>
     <p>
       I decided to first focus on the easy part. I gave the migration guide to
       Claude Code and told it to built a <strong>codemod</strong>. I used
@@ -231,7 +231,7 @@ describe("migrate-to-userevent-v14 codemod", () => {
     </figure>
     <p>The second PR was ready, the first codemod iteration and its tests.</p>
 
-    <h2>Step 4: The actual migration</h2>
+    <h2 id="step-4"><a href="#step-4">Step 4: The actual migration</a></h2>
     <p>
       Now the fun part begins, I gave Claude Code this prompt to start
       migrating:
@@ -279,7 +279,7 @@ Improve the migration guide if you find any patterns repeated in the codebase th
       PR for each.
     </p>
 
-    <h2>Current AI shortcomings</h2>
+    <h2 id="current-ai-shortcomings"><a href="#current-ai-shortcomings">Current AI shortcomings</a></h2>
     <p>
       I've been thoroughly impressed by the AI performance for this use case,
       the ability to <strong>debug and fix tests</strong> has really surprised
@@ -327,7 +327,7 @@ Improve the migration guide if you find any patterns repeated in the codebase th
       team.
     </p>
 
-    <h2>Conclusion</h2>
+    <h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
     <p>
       It took me <strong>one week</strong> to do this migration. It consisted of
       <strong>50 PRs</strong> and each one took around half an hour. There were
