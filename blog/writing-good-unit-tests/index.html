@@ -134,13 +134,13 @@ it('should calculate total with discount for high value carts', () => {
     <pre><code class="language-jsx">/* useUsers.js */
 import { useState, useEffect } from 'react';
 
-export const useUsers = () => {
+export const useUsers = () =&gt; {
   const [users, setUsers] = useState([]);
-  
-  useEffect(() => {
+
+  useEffect(() =&gt; {
     fetch('/api/users')
-      .then(res => res.json())
-      .then(data => setUsers(data));
+      .then(res =&gt; res.json())
+      .then(data =&gt; setUsers(data));
   }, []);
 
   return { users };
@@ -150,15 +150,15 @@ export const useUsers = () => {
 import React from 'react';
 import { useUsers } from './useUsers';
 
-export const UserList = () => {
+export const UserList = () =&gt; {
   const { users } = useUsers();
 
-  if (users.length === 0) return <div>Loading...</div>;
+  if (users.length === 0) return &lt;div&gt;Loading...&lt;/div&gt;;
 
   return (
-    <ul>
-      {users.map(user => <li key={user.id}>{user.name}</li>)}
-    </ul>
+    &lt;ul&gt;
+      {users.map(user =&gt; &lt;li key={user.id}&gt;{user.name}&lt;/li&gt;)}
+    &lt;/ul&gt;
   );
 };
 
@@ -172,27 +172,27 @@ jest.spyOn(userHook, 'useUsers').mockReturnValue({
   users: [{ id: 1, name: 'Alice' }]
 });
 
-test('renders users', () => {
-  render(<UserList />);
+test('renders users', () =&gt; {
+  render(&lt;UserList /&gt;);
   expect(screen.getByText('Alice')).toBeInTheDocument();
 });
 
 // ✅ Mock the edges (HTTP request)
-global.fetch = jest.fn(() =>
+global.fetch = jest.fn(() =&gt;
   Promise.resolve({
-    json: () => Promise.resolve([{ id: 1, name: 'Alice' }]),
+    json: () =&gt; Promise.resolve([{ id: 1, name: 'Alice' }]),
   })
 );
 
-test('renders users', async () => {
-  render(<UserList />);
+test('renders users', async () =&gt; {
+  render(&lt;UserList /&gt;);
 
   expect(screen.getByText('Loading...')).toBeInTheDocument();
 
-  await waitFor(() => {
+  await waitFor(() =&gt; {
     expect(screen.getByText('Alice')).toBeInTheDocument();
   });
-  
+
   expect(global.fetch).toHaveBeenCalledWith('/api/users');
 });
 </code></pre>
