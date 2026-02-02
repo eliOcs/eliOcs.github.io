@@ -156,6 +156,35 @@ h2 {
   text-underline-offset: 4px;
 }
 
+/* Anchor links for headers */
+h2[id] {
+  position: relative;
+}
+
+h2[id] a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+h2[id] a:hover {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+h2[id] a::before {
+  content: "#";
+  position: absolute;
+  left: -1.25rem;
+  color: var(--base03);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+h2[id]:hover a::before,
+h2[id] a:focus::before {
+  opacity: 1;
+}
+
 p {
   margin-bottom: var(--spacing-medium);
   font-size: var(--font-size-large);
@@ -316,6 +345,10 @@ a:has(.blog-post-preview):hover {
 
   h2 {
     font-size: 1.25rem;
+  }
+
+  h2[id] a::before {
+    display: none;
   }
 
   p {
