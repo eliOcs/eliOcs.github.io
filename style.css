@@ -189,6 +189,34 @@ h2[id] a:focus::before {
   opacity: 1;
 }
 
+h3[id] {
+  position: relative;
+}
+
+h3[id] a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+h3[id] a:hover {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+h3[id] a::before {
+  content: "#";
+  position: absolute;
+  left: -1.1rem;
+  color: var(--base03);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+h3[id]:hover a::before,
+h3[id] a:focus::before {
+  opacity: 1;
+}
+
 p {
   margin-bottom: var(--spacing-medium);
   font-size: var(--font-size-large);
@@ -213,6 +241,42 @@ a:focus {
 
 a:focus:not(:focus-visible) {
   outline: none;
+}
+
+sup {
+  font-size: 0.75em;
+  line-height: 0;
+}
+
+.footnote-ref {
+  margin-left: 0.1em;
+}
+
+.footnote-ref a {
+  text-decoration: none;
+}
+
+.footnotes {
+  margin-top: 3rem;
+}
+
+.footnotes ol {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.footnotes li {
+  color: var(--base04);
+}
+
+.footnotes p {
+  margin-bottom: 0;
+  font-size: 1rem;
+}
+
+.footnote-backref {
+  margin-left: 0.35rem;
+  text-decoration: none;
 }
 
 b,
@@ -360,6 +424,10 @@ a:has(.blog-post-preview):hover {
   }
 
   h2[id] a::before {
+    display: none;
+  }
+
+  h3[id] a::before {
     display: none;
   }
 
