@@ -9,6 +9,7 @@
 - Pen tests in startups
 - Moving up to enterprise customers: SSO, compliance, security, audits
 - Hiring remotely
+- Way of work: https://addyosmani.com/blog/21-lessons/
 
 # Resume
 
