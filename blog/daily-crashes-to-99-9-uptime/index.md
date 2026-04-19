@@ -10,14 +10,14 @@ years later at may 2025 we reached our lowest technical tickets count with only
 3 and had consistently achieved 99.9% uptime. It was all about building feedback
 loops that reinforced our reliability.
 
-## Reliability wasn’t owned by the system
+## Reliability wasn’t owned
 
 We were in the classic chaotic software project state. Engineers were constantly
-fire fighting to fix issues but fixes were not systematic or long lasting. No
-one could answer if we were improving, we were only sure our customers were
-angry. Years later when I stumbled upon
+fire fighting to fix issues but fixes were not long lasting. No knew if we were
+improving, the only thing we were sure about is that our customers were angry.
+Years later when I stumbled upon
 [The Phoenix Projec](https://itrevolution.com/product/the-phoenix-project/) book
-I couldn't stop laughing because it reminded so much of what we went through.
+I couldn't stop smiling because it reminded so much of what we went through.
 
 ## What we tried that didn’t work
 
