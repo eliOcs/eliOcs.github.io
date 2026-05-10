@@ -360,6 +360,19 @@ code[class*="language-"] {
   transition: background-color 0.2s ease;
 }
 
+.project-entry h2 {
+  margin: 0 0 0.5rem 0;
+}
+
+.project-summary {
+  color: var(--base04);
+}
+
+.source-code-link {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.95rem;
+}
+
 a .blog-post-preview {
   cursor: pointer;
 }
@@ -446,6 +459,10 @@ a:has(.blog-post-preview):hover {
     float: none;
     display: block;
     margin: 1.5rem auto;
+  }
+
+  .project-entry {
+    margin: 2rem 0 2.5rem 0;
   }
 }
 
@@ -596,6 +613,11 @@ a:hover h3 {
 .image-gallery img:hover {
   transform: scale(1.05);
   opacity: 0.8;
+}
+
+.image-gallery img:focus {
+  outline: 2px solid var(--base0D);
+  outline-offset: 2px;
 }
 
 /* Modal styles for full-size images */
