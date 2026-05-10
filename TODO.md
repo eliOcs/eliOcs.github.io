@@ -4,7 +4,15 @@
 
 # Blog
 
-- Realibility mesures that work: monitoring, alerts, health metrics, reduce noise with SLO (advanced). Root cause analysis.
+- vertical slices
+- How to get a team to embrace ai
+- "Scaling an engineering team from 6 to 22 — what I'd do differently" — your
+  most distinctive story. Specific, opinionated, full of concrete decisions.
+  Ship by week 8.
+- "Reliability transformation at a B2B SaaS — a 9-year case study" — pairs
+  perfectly with HoE positioning. Ship by week 12.
+- Realibility mesures that work: monitoring, alerts, health metrics, reduce
+  noise with SLO (advanced). Root cause analysis.
 - Default to action, product minded
 - Pen tests in startups
 - Moving up to enterprise customers: SSO, compliance, security, audits
@@ -18,4 +26,5 @@
 
 # Work with me
 
-- Add testimonials / case studies, inspiration: https://turbopuffer.com/customers/cursor
+- Add testimonials / case studies, inspiration:
+  https://turbopuffer.com/customers/cursor
