@@ -235,7 +235,9 @@ for (const impl of DEMO_IMPLEMENTATIONS) {
       await expect(page.getByRole("button", { name: "User 1" })).toBeVisible();
 
       // User type is standard by default (admin checkbox unchecked)
-      await expect(page.getByRole("checkbox", { name: "Admin" })).not.toBeChecked();
+      await expect(
+        page.getByRole("checkbox", { name: "Admin" }),
+      ).not.toBeChecked();
 
       // Root folder is visible and selected
       const rootFolder = page.getByText("User 1's Root Folder");
