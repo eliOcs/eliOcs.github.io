@@ -4,6 +4,7 @@
 
 # Blog
 
+- add drawings with: https://excalidraw.com/
 - vertical slices
 - How to get a team to embrace ai
 - "Scaling an engineering team from 6 to 22 — what I'd do differently" — your
