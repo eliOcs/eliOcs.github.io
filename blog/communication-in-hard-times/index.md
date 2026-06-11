@@ -5,18 +5,19 @@ development department at Filestage: three in the first wave and five in the
 second. In total, the department went from twenty-two people to fourteen.
 
 I was part of the leadership team that made the decision, and I was responsible
-for deciding what this meant for development. Some people had joined only months
-before. One had been with us for six years, long before the 2021 and 2022 hiring
-spree and before our Series A investment. It was one of the hardest moments of
-my career.
+for deciding what this meant for development. Some people had joined only a few
+months before. One had been with us for six years, long before the 2021 and 2022
+hiring spree and before our Series A investment. It was one of the hardest
+moments of my career.
 
 Growth had slowed down, the funding market had changed, and the plan that had
 seemed reasonable during the SaaS boom was no longer safe. We first reduced
 costs to create a more sustainable plan for 2023. A few months later, we had to
 reduce costs again and reach profitability before we ran out of options.
 
-Layoffs are painful, but if you ever have to communicate bad news, I hope this
-helps you do it with honesty, clarity, and respect.
+Layoffs are awful. There is no inspiring way to tell people they are losing
+their jobs. But if you ever have to communicate bad news, I hope this helps you
+do it with honesty, clarity, and respect.
 
 ## The business reality
 
@@ -24,8 +25,8 @@ At the beginning of 2022, growth looked healthy. MRR was still increasing month
 after month, but around summer we started falling behind our targets. By October
 2022, the curve had flattened.
 
-That was the difficult part: revenue did not collapse overnight. The line was
-still going up, but our plan depended on a growth curve that was no longer true.
+That was the tricky part: revenue did not collapse overnight. The line was still
+going up, but our plan depended on a growth curve that was no longer true.
 
 ![MRR growth flattening out](./mrr-chart-2022.png)
 
@@ -53,11 +54,13 @@ it.
 
 That false confidence is dangerous. The question is not only "are we growing?"
 but "are we growing faster than we should expect, given the market we are in?"
+If you do not ask that second question, growth can make you feel safe while the
+business is actually getting more fragile.
 
 ## What we tried before people
 
 The CFO calculated the cost reduction we needed to make. Before touching the
-team, we went through the rest of our costs and reduced as much as we could.
+team, we went through the rest of our costs and reduced everything we could.
 
 Across both waves, we reviewed our tool stack and cancelled or downgraded tools
 that were not essential. We reduced infrastructure costs, including moving away
@@ -70,7 +73,8 @@ In the second wave, eight people outside the development department agreed to
 reduce their hours until we reached break-even. I am still grateful for that. It
 helped reduce the number of people who had to leave.
 
-But it was still not enough. That is when we had to look at the team again.
+But it was still not enough. That is when we had to look at the team again. It
+still hurts to write that sentence.
 
 ## How we made the decision
 
@@ -87,7 +91,7 @@ without immediately hurting revenue generation.
 Thankfully, knowledge of our codebase and domain was well shared across the
 team. I did not have to keep people only because they were the single person who
 understood a critical system. That made the decision simpler in one way and more
-painful in another: it came down mostly to business-critical impact, recent
+painful in another. It came down mostly to business-critical impact, recent
 performance, cost, and whether a specialization was still affordable in the new
 operating model.
 
@@ -125,8 +129,8 @@ model the company can afford, not the operating model everyone wishes they still
 had.
 
 The important thing is that "not affordable anymore" does not mean "not
-valuable." Some people can be valuable and still be part of the cost structure
-the company can no longer sustain.
+valuable." Someone can do valuable work and still be part of a cost structure
+the company can no longer sustain. Both things can be true at the same time.
 
 ## The announcement
 
@@ -170,7 +174,8 @@ that person directly. Once they were back, we spoke with them. In total, five
 people left the development department in that wave.
 
 This kind of detail matters. Even when the decision is painful, people deserve
-to hear it directly and with dignity.
+to hear it directly and with dignity. You will not make the day easy, but you
+can avoid making it worse.
 
 ## Supporting the people who left
 
@@ -222,12 +227,14 @@ code. Instead, we added them reactively when fixing bugs or building new
 features. We reduced expectations around the speed of new feature development.
 
 Leadership in this kind of moment is mostly subtraction. You have to decide what
-no longer gets done.
+no longer gets done. Otherwise the work does not disappear, it just becomes
+pressure on the people who stayed.
 
 ## Rebuilding trust
 
 You cannot ask people to simply trust you again after layoffs. Trust has to be
-earned again through consistent transparency.
+earned again through consistent transparency. And yes, it is slower than you
+would like.
 
 We shared more financial context with the company. We explained our target for
 profitability and showed how we were progressing toward it. As the months went
