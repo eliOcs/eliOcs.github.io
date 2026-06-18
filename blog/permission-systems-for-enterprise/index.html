@@ -222,7 +222,11 @@
             created or that have been shared with them.
           </p>
 
-          <h2 id="naive-approach"><a href="#naive-approach">The Naive Approach (read-time permission queries)</a></h2>
+          <h2 id="naive-approach">
+            <a href="#naive-approach"
+              >The Naive Approach (read-time permission queries)</a
+            >
+          </h2>
 
           <p>
             Your first intuition will be to query the database on every request
@@ -331,7 +335,9 @@ for (const resource of sharedResources) {
             <strong>bottleneck</strong> as you scale.
           </p>
 
-          <h2 id="rbac"><a href="#rbac">RBAC (write-time permission queries)</a></h2>
+          <h2 id="rbac">
+            <a href="#rbac">RBAC (write-time permission queries)</a>
+          </h2>
           <p>
             Because we normally develop apps that
             <strong>read more than they write</strong>, it makes sense to
@@ -412,7 +418,9 @@ for (const descId of descendantIds) {
             permissions table can get out of sync with the actual data.
           </p>
 
-          <h2 id="posthog-example"><a href="#posthog-example">Real-world example: PostHog</a></h2>
+          <h2 id="posthog-example">
+            <a href="#posthog-example">Real-world example: PostHog</a>
+          </h2>
           <p>
             Although this is a simple example, while browsing the
             <a href="https://posthog.com/" target="_blank">PostHog</a> source
@@ -533,7 +541,11 @@ allow if {
             filters.
           </p>
 
-          <h2 id="zanzibar-rebac"><a href="#zanzibar-rebac">Most advanced appraoches (Zanzibar and ReBAC)?</a></h2>
+          <h2 id="zanzibar-rebac">
+            <a href="#zanzibar-rebac"
+              >Most advanced appraoches (Zanzibar and ReBAC)?</a
+            >
+          </h2>
           <p>
             The state of the art of authorization handling is
             <a
@@ -582,7 +594,9 @@ allow if {
             <strong>hard to justify using them</strong>.
           </p>
 
-          <h2 id="hierarchical-data"><a href="#hierarchical-data">Optimizing for hierarchical data</a></h2>
+          <h2 id="hierarchical-data">
+            <a href="#hierarchical-data">Optimizing for hierarchical data</a>
+          </h2>
           <p>
             Both approaches still rely on recursive queries to traverse the
             folder hierarchy. In SaaS applications with deeply nested
@@ -702,6 +716,24 @@ await sqlRun(
             all permissions from the source of truth. You'll use it more than
             you expect.
           </p>
+          <section class="wwm-final-cta">
+            <h2>Let's build something solid.</h2>
+            <p>
+              Stop firefighting. Start shipping with confidence. Let's talk
+              about what predictable delivery looks like for your team.
+            </p>
+            <div class="wwm-cta-group">
+              <a
+                href="https://calendar.app.google/uNTLT3EEhmUARbzo6"
+                target="_blank"
+                class="wwm-cta-primary"
+                >Book a call</a
+              >
+              <a href="mailto:me@eliocapella.com" class="wwm-cta-secondary"
+                >Email me</a
+              >
+            </div>
+          </section>
         </div>
       </div>
       <div class="demo-panel" id="demoPanel">
@@ -735,24 +767,5 @@ await sqlRun(
           .classList.toggle("demo-collapsed");
       });
     </script>
-
-    <section class="wwm-final-cta">
-      <h2>Let's build something solid.</h2>
-      <p>
-        Stop firefighting. Start shipping with confidence. Let's talk about what
-        predictable delivery looks like for your team.
-      </p>
-      <div class="wwm-cta-group">
-        <a
-          href="https://calendar.app.google/uNTLT3EEhmUARbzo6"
-          target="_blank"
-          class="wwm-cta-primary"
-          >Book a call</a
-        >
-        <a href="mailto:me@eliocapella.com" class="wwm-cta-secondary"
-          >Email me</a
-        >
-      </div>
-    </section>
   </body>
 </html>
