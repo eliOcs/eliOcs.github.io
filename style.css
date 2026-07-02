@@ -134,6 +134,7 @@ h1 {
 
 .page-header h1 {
   margin-bottom: 0;
+  text-transform: capitalize;
 }
 
 .post-date {
@@ -384,6 +385,7 @@ a .blog-post-preview:hover {
 a .blog-post-preview h2 {
   color: var(--base05);
   margin: 0;
+  text-transform: capitalize;
 }
 
 a .blog-post-preview:hover h2 {
