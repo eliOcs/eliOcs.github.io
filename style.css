@@ -480,7 +480,8 @@ h3 {
   text-underline-offset: 3px;
 }
 
-ul {
+ul,
+ol {
   font-size: var(--font-size-large);
   padding-left: var(--spacing-xlarge);
   margin: var(--spacing-medium) 0 var(--spacing-xlarge) 0;
@@ -1216,7 +1217,8 @@ a:hover h3 {
     margin: 0;
   }
 
-  ul {
+  ul,
+  ol {
     font-size: 9pt;
     font-weight: var(--font-weight-normal);
     padding-left: 0.35in;
