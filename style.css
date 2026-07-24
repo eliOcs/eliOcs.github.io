@@ -446,8 +446,13 @@ a:has(.blog-post-preview):hover {
     display: none;
   }
 
-  p {
+  p,
+  body ul,
+  body ol {
     font-size: 1rem;
+  }
+
+  p {
     text-align: justify;
   }
 
