@@ -212,3 +212,25 @@ test("structured data identifies the site owner and every blog post", async ({
     });
   }
 });
+
+test("indexable pages expose a consistent primary navigation", async ({
+  page,
+}) => {
+  for (const path of INDEXABLE_PAGES) {
+    await page.goto(path);
+
+    const navigation = page.locator('nav[aria-label="Primary"]');
+    await expect(navigation, `${path} should have one primary nav`).toHaveCount(
+      1,
+    );
+    await expect(navigation.locator("a")).toHaveCount(5);
+    await expect(navigation.locator('a[aria-current="page"]')).toHaveCount(1);
+    await expect(navigation.locator("a")).toContainText([
+      "Home",
+      "Writing",
+      "Projects",
+      "Resume",
+      "Work with me",
+    ]);
+  }
+});
