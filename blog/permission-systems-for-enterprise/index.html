@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Literata:wght@300;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&amp;family=Literata:wght@300;500&amp;display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/style.css" />
@@ -22,7 +22,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
     />
-    <title>Blog > Permission Systems for Enterprise that Scale</title>
+    <title>Permission Systems for Enterprise that Scale — Elio Capella Sánchez</title>
     <meta
       name="description"
       content="Permission checks that query on every request will break at scale. Learn how pre-computing permissions at write-time enables fast reads, with working SQL examples and an interactive demo."
@@ -49,17 +49,17 @@
     />
 
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta
-      property="twitter:url"
+      name="twitter:url"
       content="https://eliocapella.com/blog/permission-systems-for-enterprise/"
     />
     <meta
-      property="twitter:title"
+      name="twitter:title"
       content="Permission Systems for Enterprise that Scale"
     />
     <meta
-      property="twitter:description"
+      name="twitter:description"
       content="Permission checks that query on every request will break at scale. Learn how pre-computing permissions at write-time enables fast reads, with working SQL examples and an interactive demo."
     />
     <style>
@@ -240,11 +240,15 @@
         <div class="blog-content-inner">
           <article>
           <header class="page-header">
-            <a href="/" class="home-nav">
-              <img src="/selfie.jpg" alt="Go to home page" />
+      <a href="/" class="home-nav" aria-label="Back to homepage">
+        <img width="300" height="300" src="/selfie.jpg" alt="" />
             </a>
             <h1>Permission Systems for Enterprise that Scale</h1>
-      <p class="post-date"><time datetime="2025-12-12">December 12, 2025</time></p>
+      <p class="post-date">
+        By <a href="/" rel="author">Elio Capella Sánchez</a>
+        <span aria-hidden="true">·</span>
+        <time datetime="2025-12-12">December 12, 2025</time>
+      </p>
           </header>
 
           <p>

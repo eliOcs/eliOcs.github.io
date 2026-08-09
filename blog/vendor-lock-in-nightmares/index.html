@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Literata:wght@300;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&amp;family=Literata:wght@300;500&amp;display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/style.css" />
@@ -18,7 +18,7 @@
       title="Elio Capella Sánchez's blog"
       href="/feed.xml"
     />
-    <title>Blog > Vendor lock in nightmares</title>
+    <title>Vendor lock in nightmares — Elio Capella Sánchez</title>
     <meta
       name="description"
       content="Painful lessons learned from vendor lock-in with Transloadit, Auth0, and MongoDB Atlas - including unexpected price increases, reliability issues, and migration challenges."
@@ -43,18 +43,18 @@
     />
 
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta
-      property="twitter:url"
+      name="twitter:url"
       content="https://eliocapella.com/blog/vendor-lock-in-nightmares/"
     />
-    <meta property="twitter:title" content="Vendor lock in nightmares" />
+    <meta name="twitter:title" content="Vendor lock in nightmares" />
     <meta
-      property="twitter:description"
+      name="twitter:description"
       content="Painful lessons learned from vendor lock-in with Transloadit, Auth0, and MongoDB Atlas - including unexpected price increases, reliability issues, and migration challenges."
     />
     <meta
-      property="twitter:image"
+      name="twitter:image"
       content="https://eliocapella.com/blog/vendor-lock-in-nightmares/transloadit-outages.png"
     />
     <script type="application/ld+json">
@@ -98,11 +98,15 @@
     <main>
       <article>
     <header class="page-header">
-      <a href="/" class="home-nav">
-        <img src="/selfie.jpg" alt="Go to home page" />
+      <a href="/" class="home-nav" aria-label="Back to homepage">
+        <img width="300" height="300" src="/selfie.jpg" alt="" />
       </a>
       <h1>Vendor lock in nightmares</h1>
-      <p class="post-date"><time datetime="2025-08-22">August 22, 2025</time></p>
+      <p class="post-date">
+        By <a href="/" rel="author">Elio Capella Sánchez</a>
+        <span aria-hidden="true">·</span>
+        <time datetime="2025-08-22">August 22, 2025</time>
+      </p>
     </header>
     <p>
       At <a href="https://filestage.io" target="_blank">Filestage</a> we've
@@ -148,7 +152,7 @@
       middle, etc. It was a nightmare.
     </p>
     <figure>
-      <img
+      <img width="2762" height="1108" loading="lazy"
         src="./transloadit-outages.png"
         alt="More than half of our outage history log is related to Transloadit"
       />
@@ -201,7 +205,7 @@
       and is still present in their pricing page today.
     </p>
     <figure>
-      <img
+      <img width="2575" height="1422" loading="lazy"
         src="./auth0-pricing-model.png"
         alt="Higher price per active user for B2B applications"
       />
@@ -265,7 +269,7 @@
       pricing and good reliability but we are always at their mercy.
     </p>
     <figure>
-      <img
+      <img width="1458" height="348" loading="lazy"
         src="./mongodb-atlas-admin-access.png"
         alt="Unable to do some admin tasks on MongoDB Atlas"
       />
@@ -289,7 +293,7 @@
       a very frustrating experience.
     </p>
     <figure>
-      <img
+      <img width="1718" height="1140" loading="lazy"
         src="./mongodb-altas-pricing-model.png"
         alt="Support pricing increases with your usage"
       />
@@ -304,7 +308,7 @@
       the last 3 months to reenroll, ludicrous.
     </p>
     <figure>
-      <img
+      <img width="1174" height="702" loading="lazy"
         src="./mongodb-atlas-support-reenable-fee.png"
         alt="MongoDB Atlast support reenrollment fee"
       />

@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Literata:wght@300;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&amp;family=Literata:wght@300;500&amp;display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/style.css" />
@@ -26,7 +26,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/diff-highlight/prism-diff-highlight.min.css"
     />
-    <title>Blog > Migrating 6000 React tests using AI Agents and ASTs</title>
+    <title>Migrating 6000 React tests using AI Agents and ASTs — Elio Capella Sánchez</title>
     <meta
       name="description"
       content="How I used AI to migrate 970 test files with 6000+ test cases from React Testing Library v13 to v14 in one week, through 50 PRs that would have taken months manually."
@@ -54,21 +54,21 @@
     />
 
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta
-      property="twitter:url"
+      name="twitter:url"
       content="https://eliocapella.com/blog/ai-library-migration-guide/"
     />
     <meta
-      property="twitter:title"
+      name="twitter:title"
       content="Migrating 6000 React tests using AI Agents and ASTs"
     />
     <meta
-      property="twitter:description"
+      name="twitter:description"
       content="How I used AI to migrate 970 test files with 6000+ test cases from React Testing Library v13 to v14 in one week, through 50 PRs that would have taken months manually."
     />
     <meta
-      property="twitter:image"
+      name="twitter:image"
       content="https://eliocapella.com/blog/ai-library-migration-guide/migration-on-the-works.png"
     />
     <script type="application/ld+json">
@@ -112,11 +112,15 @@
     <main>
       <article>
     <header class="page-header">
-      <a href="/" class="home-nav">
-        <img src="/selfie.jpg" alt="Go to home page" />
+      <a href="/" class="home-nav" aria-label="Back to homepage">
+        <img width="300" height="300" src="/selfie.jpg" alt="" />
       </a>
       <h1>Migrating 6000 React tests using AI Agents and ASTs</h1>
-      <p class="post-date"><time datetime="2025-11-21">November 21, 2025</time></p>
+      <p class="post-date">
+        By <a href="/" rel="author">Elio Capella Sánchez</a>
+        <span aria-hidden="true">·</span>
+        <time datetime="2025-11-21">November 21, 2025</time>
+      </p>
     </header>
     <p>
       The internet is flooded with very impressive vibe-style coding demos, but
@@ -195,7 +199,7 @@
       takes care of then getting that new AST and generating the output code.
     </p>
     <figure>
-      <img
+      <img width="1684" height="657" loading="lazy"
         src="./ast-example.png"
         alt="Sample of an AST structure in astexplorer.net"
       />
@@ -313,7 +317,7 @@ Improve the migration guide if you find any patterns repeated in the codebase th
       ended up with <strong>992</strong> and <strong>14 test cases</strong>.
     </p>
     <figure>
-      <img
+      <img width="1271" height="668" loading="lazy"
         src="./migration-on-the-works.png"
         alt="Claude Code CLI agentic AI migrating tests"
       />
@@ -353,8 +357,9 @@ Improve the migration guide if you find any patterns repeated in the codebase th
       migration I had multiple outages.
     </p>
     <figure>
-      <img
-        width="60%"
+      <img height="1016" loading="lazy"
+        width="1095"
+        class="image-narrow"
         src="./sample-outages.png"
         alt="Claude Code status page with multiple outages"
       />

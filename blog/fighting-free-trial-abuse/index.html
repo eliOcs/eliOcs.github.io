@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Literata:wght@300;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&amp;family=Literata:wght@300;500&amp;display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/style.css" />
@@ -18,7 +18,7 @@
       title="Elio Capella Sánchez's blog"
       href="/feed.xml"
     />
-    <title>Blog > Fighting free trial abuse</title>
+    <title>Fighting free trial abuse — Elio Capella Sánchez</title>
     <meta
       name="description"
       content="Before we started our open trial at Filestage I wouldn't have imagined the amount of effort it would take us to fight spammers and other misuse of the platform. The internet is wild."
@@ -42,14 +42,14 @@
     />
 
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary" />
     <meta
-      property="twitter:url"
+      name="twitter:url"
       content="https://eliocapella.com/blog/fighting-free-trial-abuse/"
     />
-    <meta property="twitter:title" content="Fighting free trial abuse" />
+    <meta name="twitter:title" content="Fighting free trial abuse" />
     <meta
-      property="twitter:description"
+      name="twitter:description"
       content="Before we started our open trial at Filestage I wouldn't have imagined the amount of effort it would take us to fight spammers and other misuse of the platform. The internet is wild."
     />
     <script type="application/ld+json">
@@ -92,11 +92,15 @@
     <main>
       <article>
     <header class="page-header">
-      <a href="/" class="home-nav">
-        <img src="/selfie.jpg" alt="Go to home page" />
+      <a href="/" class="home-nav" aria-label="Back to homepage">
+        <img width="300" height="300" src="/selfie.jpg" alt="" />
       </a>
       <h1>Fighting free trial abuse</h1>
-      <p class="post-date"><time datetime="2025-07-22">July 22, 2025</time></p>
+      <p class="post-date">
+        By <a href="/" rel="author">Elio Capella Sánchez</a>
+        <span aria-hidden="true">·</span>
+        <time datetime="2025-07-22">July 22, 2025</time>
+      </p>
     </header>
     <p>
       Before we started our open trial at
@@ -124,7 +128,7 @@
       accessing our site.
     </p>
     <figure>
-      <img
+      <img width="1536" height="1024" loading="lazy"
         src="./blocked-by-chrome.png"
         alt="Chrome blocking Filestage, this is what our customers saw"
       />
@@ -166,7 +170,7 @@
       <b>on the weekends</b> for us it has been a recurring trend.
     </p>
     <figure>
-      <img
+      <img width="2982" height="1238" loading="lazy"
         src="./hotlinking-india.png"
         alt="Videos uploaded to Filestage being hotlinked in a blog"
       />
@@ -197,7 +201,7 @@
       >.
     </p>
     <figure>
-      <img
+      <img width="1204" height="968" loading="lazy"
         src="./spam-email-screenshot.png"
         alt="Spam emails sent from Filestage"
       />
@@ -223,7 +227,7 @@
       any of our input fields.
     </p>
     <figure>
-      <img
+      <img width="1370" height="564" loading="lazy"
         src="./field-validation-code.png"
         alt="Checking for spam in input fields"
       />

@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Literata:wght@300;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&amp;family=Literata:wght@300;500&amp;display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/style.css" />
@@ -18,7 +18,7 @@
       title="Elio Capella Sánchez's blog"
       href="/feed.xml"
     />
-    <title>Blog > AI Slop Proof</title>
+    <title>AI Slop Proof — Elio Capella Sánchez</title>
     <meta
       name="description"
       content="AI slop is code that is hard to trust, hard to change, and hard to recover. Keep it under control with guardrails for readability, reliability, performance, shipping, and observability."
@@ -42,14 +42,14 @@
     />
 
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta
-      property="twitter:url"
+      name="twitter:url"
       content="https://eliocapella.com/blog/ai-slop-proof/"
     />
-    <meta property="twitter:title" content="AI Slop Proof" />
+    <meta name="twitter:title" content="AI Slop Proof" />
     <meta
-      property="twitter:description"
+      name="twitter:description"
       content="AI slop is code that is hard to trust, hard to change, and hard to recover. Keep it under control with guardrails for readability, reliability, performance, shipping, and observability."
     />
     <script type="application/ld+json">
@@ -92,11 +92,15 @@
     <main>
       <article>
     <header class="page-header">
-      <a href="/" class="home-nav">
-        <img src="/selfie.jpg" alt="Go to home page" />
+      <a href="/" class="home-nav" aria-label="Back to homepage">
+        <img width="300" height="300" src="/selfie.jpg" alt="" />
       </a>
       <h1>AI Slop Proof</h1>
-      <p class="post-date"><time datetime="2026-03-12">March 12, 2026</time></p>
+      <p class="post-date">
+        By <a href="/" rel="author">Elio Capella Sánchez</a>
+        <span aria-hidden="true">·</span>
+        <time datetime="2026-03-12">March 12, 2026</time>
+      </p>
     </header>
     <p>
       Why does McDonald's taste the same in every country? How have they managed

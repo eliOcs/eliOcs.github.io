@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Literata:wght@300;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&amp;family=Literata:wght@300;500&amp;display=swap"
       rel="stylesheet"
     />
     <link
@@ -22,7 +22,7 @@
       title="Elio Capella Sánchez's blog"
       href="/feed.xml"
     />
-    <title>Blog > Writing Good Unit Tests</title>
+    <title>Writing Good Unit Tests — Elio Capella Sánchez</title>
     <meta
       name="description"
       content="Write tests that let you refactor and deploy with confidence. Test behaviors not functions, mock only at system edges, use in-memory databases, and record HTTP fixtures."
@@ -46,14 +46,14 @@
     />
 
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta
-      property="twitter:url"
+      name="twitter:url"
       content="https://eliocapella.com/blog/writing-good-unit-tests/"
     />
-    <meta property="twitter:title" content="Writing Good Unit Tests" />
+    <meta name="twitter:title" content="Writing Good Unit Tests" />
     <meta
-      property="twitter:description"
+      name="twitter:description"
       content="Write tests that let you refactor and deploy with confidence. Test behaviors not functions, mock only at system edges, use in-memory databases, and record HTTP fixtures."
     />
     <script type="application/ld+json">
@@ -96,11 +96,15 @@
     <main>
       <article>
     <header class="page-header">
-      <a href="/" class="home-nav">
-        <img src="/selfie.jpg" alt="Go to home page" />
+      <a href="/" class="home-nav" aria-label="Back to homepage">
+        <img width="300" height="300" src="/selfie.jpg" alt="" />
       </a>
       <h1>Writing Good Unit Tests</h1>
-      <p class="post-date"><time datetime="2026-01-23">January 23, 2026</time></p>
+      <p class="post-date">
+        By <a href="/" rel="author">Elio Capella Sánchez</a>
+        <span aria-hidden="true">·</span>
+        <time datetime="2026-01-23">January 23, 2026</time>
+      </p>
     </header>
     <p>
       In my first job as a software engineer the project I was working on grew
@@ -452,7 +456,7 @@ describe("finishLogin", function () {
       full rewrite of the library API breaking all the existing code:
     </p>
     <figure>
-      <img
+      <img width="2394" height="810" loading="lazy"
         src="./breaking-changes-example.png"
         alt="Breaking changes in OpenId client"
       />
@@ -474,7 +478,7 @@ describe("finishLogin", function () {
       <a href="https://github.com/jsdom/jsdom" target="_blank">jsdom</a>:
     </p>
     <figure>
-      <img
+      <img width="1684" height="582" loading="lazy"
         src="./jest-jsdom-recomendation.png"
         alt="Jest + jsdom continues to be the recommended approach in the create react app utility"
       />

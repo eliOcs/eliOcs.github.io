@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Literata:wght@300;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&amp;family=Literata:wght@300;500&amp;display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/style.css" />
@@ -18,7 +18,7 @@
       title="Elio Capella Sánchez's blog"
       href="/feed.xml"
     />
-    <title>Elio Capella Sánchez - Resume - Mar 2026</title>
+    <title>Resume — Elio Capella Sánchez</title>
     <meta
       name="description"
       content="Resume of Elio Capella Sánchez - Head of Engineering at Filestage.io with over 17 years of experience in software development, team leadership, and startup environments."
@@ -36,15 +36,15 @@
     <meta property="og:image" content="https://eliocapella.com/selfie.jpg" />
 
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://eliocapella.com/resume/" />
-    <meta property="twitter:title" content="Elio Capella Sánchez - Resume" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://eliocapella.com/resume/" />
+    <meta name="twitter:title" content="Elio Capella Sánchez - Resume" />
     <meta
-      property="twitter:description"
+      name="twitter:description"
       content="Resume of Elio Capella Sánchez - Head of Engineering at Filestage.io with over 17 years of experience in software development, team leadership, and startup environments."
     />
     <meta
-      property="twitter:image"
+      name="twitter:image"
       content="https://eliocapella.com/selfie.jpg"
     />
   </head>
@@ -62,8 +62,8 @@
     </header>
     <main>
     <header class="page-header">
-      <a href="/" class="home-nav">
-        <img src="/selfie.jpg" alt="Go to home page" />
+      <a href="/" class="home-nav" aria-label="Back to homepage">
+        <img width="300" height="300" src="/selfie.jpg" alt="" />
       </a>
       <a
         href="#"
@@ -90,13 +90,13 @@
         </svg>
       </a>
       <h1>Elio Capella Sánchez</h1>
-      <div class="contact-info">
+      <address class="contact-info">
         <a href="mailto:me@eliocapella.com">me@eliocapella.com</a> •
         <a href="https://www.linkedin.com/in/eliocapella/" target="_blank"
           >LinkedIn</a
         >
         • Madrid, Spain
-      </div>
+      </address>
     </header>
     <p>
       I'm a technology leader and Computer Science Engineer with
@@ -107,7 +107,8 @@
       <strong>I care about people first and results always</strong>.
     </p>
 
-    <h2>Work Experience</h2>
+    <section aria-labelledby="work-experience">
+    <h2 id="work-experience">Work Experience</h2>
 
     <div class="job-header-container">
       <div class="job-title-company">
@@ -118,7 +119,7 @@
           class="job-header-link"
         >
           <div class="job-header">
-            <img src="./filestage-logo.jpeg" alt="Filestage" />
+            <img width="100" height="100" src="./filestage-logo.jpeg" alt="Filestage" />
             <span class="job-company"
               ><strong>Filestage</strong> - manage feedback on creative
               assets</span
@@ -127,7 +128,7 @@
         </a>
       </div>
       <div class="job-period-location">
-        <span>2020 - Present, <strong>5 yrs 1 mo</strong></span>
+        <span><time datetime="2020">2020</time> – Present</span>
         <span>Remote</span>
       </div>
     </div>
@@ -176,23 +177,23 @@
     </ul>
 
     <div class="image-gallery">
-      <img
+      <img width="1412" height="1206" loading="lazy"
         src="./filestage-stage-3/great-customer-satisfaction.png"
         alt="NPS scores showing great customer satisfaction"
       />
-      <img
+      <img width="600" height="371" loading="lazy"
         src="./filestage-stage-3/reduction-incomming-bugs.png"
         alt="Chart showing the reduction of incoming technical tickets"
       />
-      <img
+      <img width="2226" height="1208" loading="lazy"
         src="./filestage-stage-3/satisfaction-history.png"
         alt="Results of the team satisfaction survey over time"
       />
-      <img
+      <img width="2070" height="1342" loading="lazy"
         src="./filestage-stage-3/ai-reviewer-types.png"
         alt="Example use case of Text and visual AI reviewers"
       />
-      <img
+      <img width="1600" height="727" loading="lazy"
         src="./filestage-stage-3/ai-reviewer-comment.png"
         alt="Example of AI generated comments on the file viewer"
       />
@@ -207,7 +208,7 @@
           class="job-header-link"
         >
           <div class="job-header">
-            <img src="./filestage-logo.jpeg" alt="Filestage" />
+            <img width="100" height="100" src="./filestage-logo.jpeg" alt="Filestage" />
             <span class="job-company"
               ><strong>Filestage</strong> - manage feedback on creative
               assets</span
@@ -216,7 +217,7 @@
         </a>
       </div>
       <div class="job-period-location">
-        <span>2018 - 2020, <strong>2 yrs 2 mos</strong></span>
+        <span><time datetime="2018">2018</time> – <time datetime="2020">2020</time></span>
         <span>Remote</span>
       </div>
     </div>
@@ -259,15 +260,15 @@
       </li>
     </ul>
     <div class="image-gallery">
-      <img
+      <img width="1976" height="1528" loading="lazy"
         src="./filestage-stage-2/top-contributor.png"
         alt="Leading individual contributor across multiple years"
       />
-      <img
+      <img width="1408" height="1270" loading="lazy"
         src="./filestage-stage-2/pr-checks.png"
         alt="Automated checks per PR: E2E tests, unit tests, linting, etc."
       />
-      <img
+      <img width="2562" height="1296" loading="lazy"
         src="./filestage-stage-2/e2e-test.png"
         alt="An example of an end-to-end test using browser automation"
       />
@@ -282,7 +283,7 @@
           class="job-header-link"
         >
           <div class="job-header">
-            <img src="./filestage-logo.jpeg" alt="Filestage" />
+            <img width="100" height="100" src="./filestage-logo.jpeg" alt="Filestage" />
             <span class="job-company"
               ><strong>Filestage</strong> - manage feedback on creative
               assets</span
@@ -291,7 +292,7 @@
         </a>
       </div>
       <div class="job-period-location">
-        <span>2016 - 2018, <strong>1 yr 10 mos</strong></span>
+        <span><time datetime="2016">2016</time> – <time datetime="2018">2018</time></span>
         <span>Remote</span>
       </div>
     </div>
@@ -315,19 +316,19 @@
       </li>
     </ul>
     <div class="image-gallery">
-      <img
+      <img width="2934" height="1662" loading="lazy"
         src="./filestage-stage-1/file-view.png"
         alt="Screenshot of the file viewer with comments"
       />
-      <img
+      <img width="1498" height="650" loading="lazy"
         src="./filestage-stage-1/project-dashboard-view.png"
         alt="Screenshot of the project dashboard view"
       />
-      <img
+      <img width="2106" height="828" loading="lazy"
         src="./filestage-stage-1/uptime-history.png"
         alt="Solid uptime history over time"
       />
-      <img
+      <img width="2064" height="826" loading="lazy"
         src="./filestage-stage-1/monitoring-alarms.png"
         alt="Example alarm notification in Slack"
       />
@@ -337,7 +338,7 @@
       <div class="job-title-company">
         <h3>Technical Founder</h3>
         <div class="job-header">
-          <img src="./histories-logo.jpeg" alt="Histories" />
+          <img width="100" height="100" src="./histories-logo.jpeg" alt="Histories" />
           <span class="job-company"
             ><strong>Histories</strong> - Amazing historical facts near
             you</span
@@ -345,7 +346,7 @@
         </div>
       </div>
       <div class="job-period-location">
-        <span>2014 - 2016, <strong>1 yr 11 mos</strong></span>
+        <span><time datetime="2014">2014</time> – <time datetime="2016">2016</time></span>
         <span>Madrid, Spain</span>
       </div>
     </div>
@@ -372,31 +373,31 @@
       </li>
     </ul>
     <div class="image-gallery">
-      <img
+      <img width="1672" height="1142" loading="lazy"
         src="./histories/positive-reviews.png"
         alt="Screenshot of the reviews of the app in the Google Play Store"
       />
-      <img
+      <img width="1080" height="1920" loading="lazy"
         src="./histories/collections.png"
         alt="Screenshot of the iOS app, collection list screen"
       />
-      <img
+      <img width="1080" height="1920" loading="lazy"
         src="./histories/locked-stories.png"
         alt="Screenshot of the iOS app, locked stories on the map"
       />
-      <img
+      <img width="1080" height="1920" loading="lazy"
         src="./histories/map.png"
         alt="Screenshot of the iOS app, map screen"
       />
-      <img
+      <img width="1080" height="1920" loading="lazy"
         src="./histories/profile.png"
         alt="Screenshot of the iOS app, profile screen"
       />
-      <img
+      <img width="1080" height="1920" loading="lazy"
         src="./histories/stories.png"
         alt="Screenshot of the iOS app, story list screen"
       />
-      <img
+      <img width="1080" height="1920" loading="lazy"
         src="./histories/story-detail.png"
         alt="Screenshot of the iOS app, story detail screen"
       />
@@ -406,14 +407,14 @@
       <div class="job-title-company">
         <h3>Technical Founder</h3>
         <div class="job-header">
-          <img src="./kolobee-logo.jpeg" alt="Kolobee" />
+          <img width="100" height="100" src="./kolobee-logo.jpeg" alt="Kolobee" />
           <span class="job-company"
             ><strong>Kolobee</strong> - Tourism apps</span
           >
         </div>
       </div>
       <div class="job-period-location">
-        <span>2013 - 2014, <strong>1 yr 5 mos</strong></span>
+        <span><time datetime="2013">2013</time> – <time datetime="2014">2014</time></span>
         <span>Madrid, Spain</span>
       </div>
     </div>
@@ -432,23 +433,23 @@
       </li>
     </ul>
     <div class="image-gallery">
-      <img
+      <img width="1080" height="1920" loading="lazy"
         src="./kolobee-stage-2/android-map.png"
         alt="Screenshot of the android template app, map screen"
       />
-      <img
+      <img width="1080" height="1920" loading="lazy"
         src="./kolobee-stage-2/android-menu.png"
         alt="Screenshot of the android template app, menu screen"
       />
-      <img
+      <img width="1080" height="1920" loading="lazy"
         src="./kolobee-stage-2/android-point-detail-1.png"
         alt="Screenshot of the android template app, detail screen 1/2"
       />
-      <img
+      <img width="1080" height="1920" loading="lazy"
         src="./kolobee-stage-2/android-point-detail-2.png"
         alt="Screenshot of the android template app, detail screen 2/2"
       />
-      <img
+      <img width="1080" height="1920" loading="lazy"
         src="./kolobee-stage-2/android-point-list.png"
         alt="Screenshot of the android template app, point list screen"
       />
@@ -458,14 +459,14 @@
       <div class="job-title-company">
         <h3>Technical Founder</h3>
         <div class="job-header">
-          <img src="./kolobee-logo.jpeg" alt="Kolobee" />
+          <img width="100" height="100" src="./kolobee-logo.jpeg" alt="Kolobee" />
           <span class="job-company"
             ><strong>Kolobee</strong> - Interesting things nearby</span
           >
         </div>
       </div>
       <div class="job-period-location">
-        <span>2012 - 2013, <strong>1 yr 1 mo</strong></span>
+        <span><time datetime="2012">2012</time> – <time datetime="2013">2013</time></span>
         <span>Madrid, Spain</span>
       </div>
     </div>
@@ -480,43 +481,43 @@
       </li>
     </ul>
     <div class="image-gallery">
-      <img
+      <img width="640" height="1136" loading="lazy"
         src="./kolobee-stage-1/ios-collection-list.jpg"
         alt="screenshot of the iOS app, collection list screen"
       />
-      <img
+      <img width="640" height="1136" loading="lazy"
         src="./kolobee-stage-1/ios-map.jpg"
         alt="screenshot of the iOS app, map screen"
       />
-      <img
+      <img width="640" height="1136" loading="lazy"
         src="./kolobee-stage-1/ios-point-detail.jpg"
         alt="screenshot of the iOS app, point detail screen"
       />
-      <img
+      <img width="640" height="1136" loading="lazy"
         src="./kolobee-stage-1/ios-point-list.jpg"
         alt="screenshot of the iOS app, point list screen"
       />
-      <img
+      <img width="934" height="1560" loading="lazy"
         src="./kolobee-stage-1/web-point-detail.png"
         alt="screenshot of the browser app, point detail page"
       />
-      <img
+      <img width="1000" height="844" loading="lazy"
         src="./kolobee-stage-1/web-collection-list-1.png"
         alt="screenshot of the browser app, collection page 1/2"
       />
-      <img
+      <img width="995" height="1156" loading="lazy"
         src="./kolobee-stage-1/web-collection-list-2.png"
         alt="screenshot of the browser app, colletion page 2/2"
       />
-      <img
+      <img width="1011" height="700" loading="lazy"
         src="./kolobee-stage-1/web-collection-map.png"
         alt="screenshot of the browser app, collection map"
       />
-      <img
+      <img width="991" height="723" loading="lazy"
         src="./kolobee-stage-1/web-create-point-1.png"
         alt="screenshot of the browser app, create point 1/2"
       />
-      <img
+      <img width="963" height="624" loading="lazy"
         src="./kolobee-stage-1/web-create-point-2.png"
         alt="screenshot of the browser app, create point 2/2"
       />
@@ -527,7 +528,7 @@
         <h3>Software developer</h3>
         <a href="https://www.bbva.com/" target="_blank" class="job-header-link">
           <div class="job-header">
-            <img src="./bbva-logo.jpeg" alt="BBVA" />
+            <img width="200" height="200" src="./bbva-logo.jpeg" alt="BBVA" />
             <span class="job-company"
               ><strong>BBVA</strong> - Corporate Investment Banking</span
             >
@@ -535,7 +536,7 @@
         </a>
       </div>
       <div class="job-period-location">
-        <span>2009 - 2012, <strong>2 yrs 6 mos</strong></span>
+        <span><time datetime="2009">2009</time> – <time datetime="2012">2012</time></span>
         <span>Madrid, Spain</span>
       </div>
     </div>
@@ -555,7 +556,7 @@
         <h3>Software developer</h3>
         <a href="https://www.afi.es/" target="_blank" class="job-header-link">
           <div class="job-header">
-            <img src="./afi-logo.jpeg" alt="Afi" />
+            <img width="200" height="200" src="./afi-logo.jpeg" alt="Afi" />
             <span class="job-company"
               ><strong>Afi</strong> - finance consultancy and training
               services</span
@@ -564,7 +565,7 @@
         </a>
       </div>
       <div class="job-period-location">
-        <span>2008 - 2009, <strong>9 mos</strong></span>
+        <span><time datetime="2008">2008</time> – <time datetime="2009">2009</time></span>
         <span>Madrid, Spain</span>
       </div>
     </div>
@@ -575,40 +576,46 @@
       </li>
     </ul>
 
-    <h2>Technical Expertise</h2>
+    </section>
+
+    <section aria-labelledby="technical-expertise">
+    <h2 id="technical-expertise">Technical Expertise</h2>
     <ul>
       <li>
-        <strong>Architecture & Platforms:</strong> AWS, Infrastructure as Code,
+        <strong>Architecture &amp; Platforms:</strong> AWS, Infrastructure as Code,
         API Design, Multi-region Deployments, Data Residency Compliance
       </li>
       <li>
         <strong>Leadership-enabling Technologies:</strong> CI/CD, Monitoring &
-        Observability, Security & Compliance (ISO 27017, SOC 2 Type II),
+        Observability, Security &amp; Compliance (ISO 27017, SOC 2 Type II),
         Performance Optimization
       </li>
       <li>
-        <strong>Core Programming:</strong> JavaScript (Browser & Node.js), Java,
+        <strong>Core Programming:</strong> JavaScript (Browser &amp; Node.js), Java,
         SQL, Bash, Swift, Python
       </li>
       <li>
-        <strong>Databases & Storage:</strong> PostgreSQL, MongoDB, SQLite, Data
+        <strong>Databases &amp; Storage:</strong> PostgreSQL, MongoDB, SQLite, Data
         Architecture
       </li>
       <li>
         <strong>Engineering Management:</strong> Team Scaling (6→22 engineers),
-        Technical Strategy, Hiring & Onboarding, Performance Management
+        Technical Strategy, Hiring &amp; Onboarding, Performance Management
       </li>
       <li>
         <strong>Development Practices:</strong> Test-Driven Development,
         Domain-Driven Design, Code Review Processes, Quality Frameworks
       </li>
       <li>
-        <strong>Project & Product:</strong> OKRs, Agile Methodologies, Technical
+        <strong>Project &amp; Product:</strong> OKRs, Agile Methodologies, Technical
         Due Diligence, Startup Environments
       </li>
     </ul>
 
-    <h2>Education</h2>
+    </section>
+
+    <section aria-labelledby="education">
+    <h2 id="education">Education</h2>
     <div class="job-header-container">
       <div class="job-title-company">
         <a
@@ -619,7 +626,7 @@
         >
         <a href="https://www.uam.es" target="_blank" class="job-header-link">
           <div class="job-header">
-            <img src="./uam-logo.svg" alt="Universidad Autónoma de Madrid" />
+            <img width="360" height="360" src="./uam-logo.svg" alt="Universidad Autónoma de Madrid" />
             <span class="job-company"
               ><strong>Universidad Autónoma de Madrid</strong></span
             >
@@ -627,12 +634,15 @@
         </a>
       </div>
       <div class="job-period-location">
-        <span>2004 - 2009</span>
+        <span><time datetime="2004">2004</time> – <time datetime="2009">2009</time></span>
         <span>Madrid, Spain</span>
       </div>
     </div>
 
-    <h2>Courses</h2>
+    </section>
+
+    <section aria-labelledby="courses">
+    <h2 id="courses">Courses</h2>
     <div class="job-header-container">
       <div class="job-title-company">
         <a
@@ -646,18 +656,22 @@
           class="job-header-link"
         >
           <div class="job-header">
-            <img src="./stanford-logo.png" alt="Stanford Online" />
+            <img width="200" height="200" src="./stanford-logo.png" alt="Stanford Online" />
             <span class="job-company"><strong>Stanford Online</strong></span>
           </div>
         </a>
       </div>
       <div class="job-period-location">
-        <span>2016</span>
+        <span><time datetime="2016">2016</time></span>
         <span>Remote</span>
       </div>
     </div>
 
-    <div class="last-updated">Last updated: March 14, 2026</div>
+    </section>
+
+    <p class="last-updated">
+      Last updated: <time datetime="2026-03-14">March 14, 2026</time>
+    </p>
 
     </main>
     <script src="/image-gallery.js" defer></script>

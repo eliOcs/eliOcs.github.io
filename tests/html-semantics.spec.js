@@ -255,3 +255,87 @@ test("interactive demo provides static context without competing for indexing", 
     "the demo should point agents back to its explanatory article",
   ).toHaveCount(1);
 });
+
+test("article bylines and avatar links expose their relationships", async ({
+  page,
+}) => {
+  for (const path of BLOG_POSTS) {
+    await page.goto(path);
+    await expect(page.locator('.post-date a[rel="author"]')).toHaveText(
+      "Elio Capella Sánchez",
+    );
+  }
+
+  for (const path of INDEXABLE_PAGES.filter((path) => path !== "/")) {
+    await page.goto(path);
+    const avatarLink = page.locator("a.home-nav");
+    await expect(avatarLink).toHaveAttribute("aria-label", "Back to homepage");
+    await expect(avatarLink.locator("img")).toHaveAttribute("alt", "");
+  }
+});
+
+test("page titles and Twitter metadata use conventional HTML forms", async ({
+  page,
+}) => {
+  for (const path of INDEXABLE_PAGES) {
+    await page.goto(path);
+
+    if (path !== "/") {
+      await expect(page).toHaveTitle(/ — Elio Capella Sánchez$/);
+    }
+    await expect(page.locator('meta[property^="twitter:"]')).toHaveCount(0);
+    await expect(page.locator('meta[name="twitter:card"]')).toHaveCount(1);
+  }
+});
+
+test("images declare intrinsic dimensions and defer non-critical media", async ({
+  page,
+}) => {
+  for (const path of PAGES) {
+    await page.goto(path);
+
+    const images = page.locator('img[src]:not([src=""])');
+    const count = await images.count();
+    for (let index = 0; index < count; index += 1) {
+      const image = images.nth(index);
+      const source = await image.getAttribute("src");
+      expect(
+        Number(await image.getAttribute("width")),
+        `${path} ${source} should declare a width`,
+      ).toBeGreaterThan(0);
+      expect(
+        Number(await image.getAttribute("height")),
+        `${path} ${source} should declare a height`,
+      ).toBeGreaterThan(0);
+
+      if (!/selfie|logo/i.test(source)) {
+        await expect(image).toHaveAttribute("loading", "lazy");
+      }
+    }
+  }
+});
+
+test("resume groups its sections and exposes contact and date semantics", async ({
+  page,
+}) => {
+  await page.goto("/resume/");
+
+  await expect(page.locator("address.contact-info")).toHaveCount(1);
+  for (const id of [
+    "work-experience",
+    "technical-expertise",
+    "education",
+    "courses",
+  ]) {
+    await expect(
+      page.locator(`section[aria-labelledby="${id}"] > h2#${id}`),
+    ).toHaveCount(1);
+  }
+  await expect(page.locator(".job-period-location time[datetime]")).toHaveCount(
+    18,
+  );
+  await expect(page.locator(".last-updated time")).toHaveAttribute(
+    "datetime",
+    "2026-03-14",
+  );
+});

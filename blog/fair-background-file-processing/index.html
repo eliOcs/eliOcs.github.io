@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Literata:wght@300;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&amp;family=Literata:wght@300;500&amp;display=swap"
       rel="stylesheet"
     />
     <link
@@ -22,7 +22,7 @@
       title="Elio Capella Sánchez's blog"
       href="/feed.xml"
     />
-    <title>Blog &gt; Fair background file processing</title>
+    <title>Fair background file processing — Elio Capella Sánchez</title>
     <meta
       name="description"
       content="How we moved from one shared background processing queue to fair per-user scheduling so one large upload batch could not block everyone else."
@@ -50,18 +50,18 @@
     />
 
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta
-      property="twitter:url"
+      name="twitter:url"
       content="https://eliocapella.com/blog/fair-background-file-processing/"
     />
-    <meta property="twitter:title" content="Fair background file processing" />
+    <meta name="twitter:title" content="Fair background file processing" />
     <meta
-      property="twitter:description"
+      name="twitter:description"
       content="How we moved from one shared background processing queue to fair per-user scheduling so one large upload batch could not block everyone else."
     />
     <meta
-      property="twitter:image"
+      name="twitter:image"
       content="https://eliocapella.com/blog/fair-background-file-processing/background-queue-alarm-metrics.png"
     />
     <script type="application/ld+json">
@@ -105,11 +105,15 @@
     <main>
       <article>
     <header class="page-header">
-      <a href="/" class="home-nav">
-        <img src="/selfie.jpg" alt="Go to home page" />
+      <a href="/" class="home-nav" aria-label="Back to homepage">
+        <img width="300" height="300" src="/selfie.jpg" alt="" />
       </a>
       <h1>Fair background file processing</h1>
-      <p class="post-date"><time datetime="2026-06-06">June 6, 2026</time></p>
+      <p class="post-date">
+        By <a href="/" rel="author">Elio Capella Sánchez</a>
+        <span aria-hidden="true">·</span>
+        <time datetime="2026-06-06">June 6, 2026</time>
+      </p>
     </header>
     <p>
       At <a href="https://www.filestage.io/" target="_blank">Filestage</a> users
@@ -148,7 +152,7 @@
       processed.
     </p>
 
-    <img src="./queue-monopoly.svg" alt="User monopolizing the queue" />
+    <img width="860" height="542" loading="lazy" src="./queue-monopoly.svg" alt="User monopolizing the queue" />
 
     <h2 id="simple-queue-implementation">
       <a href="#simple-queue-implementation">Simple queue implementation</a>
@@ -281,7 +285,7 @@ exports.stop = function () {
       the performance drop.
     </p>
 
-    <img src="./queueing-per-user.svg" alt="Queueing per user" />
+    <img width="952" height="699" loading="lazy" src="./queueing-per-user.svg" alt="Queueing per user" />
 
     <h2 id="per-user-queue-implementation">
       <a href="#per-user-queue-implementation">Per user queue implementation</a>
@@ -581,7 +585,7 @@ async function nextJob() {
       by the largest batches of uploads from single users.
     </p>
 
-    <img
+    <img width="1221" height="921" loading="lazy"
       src="./background-queue-alarm-metrics.png"
       alt="Our background processing alarm getting triggered"
     />

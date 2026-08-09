@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Literata:wght@300;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&amp;family=Literata:wght@300;500&amp;display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/style.css" />
@@ -18,7 +18,7 @@
       title="Elio Capella Sánchez's blog"
       href="/feed.xml"
     />
-    <title>Blog > Measure what matters</title>
+    <title>Measure what matters — Elio Capella Sánchez</title>
     <meta name="description" content="How to identify your team's performance issues? Five years ago I started tracking metrics for my team's performance at Filestage. Learn about satisfaction, PRs merged, technical tickets, and impact metrics." />
     <meta name="author" content="Elio Capella Sánchez" />
     
@@ -31,11 +31,11 @@
     <meta property="og:image" content="https://eliocapella.com/blog/measure-what-matters/all-hands-metrics.png" />
     
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://eliocapella.com/blog/measure-what-matters/" />
-    <meta property="twitter:title" content="Measure what matters" />
-    <meta property="twitter:description" content="How to identify your team's performance issues? Five years ago I started tracking metrics for my team's performance at Filestage. Learn about satisfaction, PRs merged, technical tickets, and impact metrics." />
-    <meta property="twitter:image" content="https://eliocapella.com/blog/measure-what-matters/all-hands-metrics.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://eliocapella.com/blog/measure-what-matters/" />
+    <meta name="twitter:title" content="Measure what matters" />
+    <meta name="twitter:description" content="How to identify your team's performance issues? Five years ago I started tracking metrics for my team's performance at Filestage. Learn about satisfaction, PRs merged, technical tickets, and impact metrics." />
+    <meta name="twitter:image" content="https://eliocapella.com/blog/measure-what-matters/all-hands-metrics.png" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -77,11 +77,15 @@
     <main>
       <article>
     <header class="page-header">
-      <a href="/" class="home-nav">
-        <img src="/selfie.jpg" alt="Go to home page" />
+      <a href="/" class="home-nav" aria-label="Back to homepage">
+        <img width="300" height="300" src="/selfie.jpg" alt="" />
       </a>
       <h1>Measure what matters</h1>
-      <p class="post-date"><time datetime="2025-07-13">July 13, 2025</time></p>
+      <p class="post-date">
+        By <a href="/" rel="author">Elio Capella Sánchez</a>
+        <span aria-hidden="true">·</span>
+        <time datetime="2025-07-13">July 13, 2025</time>
+      </p>
     </header>
     <p>
       You can measure RAM and CPU usage or the latency of the database per query
@@ -173,7 +177,7 @@
       tracking Google Sheet.
     </p>
     <figure>
-      <img
+      <img width="1806" height="872" loading="lazy"
         src="./satisfaction-officevibe.png"
         alt="Officevibe satisfaction report"
       />
@@ -210,7 +214,7 @@
       the number to a Google Sheet.
     </p>
     <figure>
-      <img src="./merged-prs-sheet.png" alt="Merged PRs metric sheet" />
+      <img width="2098" height="678" loading="lazy" src="./merged-prs-sheet.png" alt="Merged PRs metric sheet" />
       <figcaption>Merged PRs metric sheet</figcaption>
     </figure>
 
@@ -226,7 +230,7 @@
       your current situation .
     </p>
     <figure>
-      <img src="./asana-bug-board.png" alt="Asana technical ticket board" />
+      <img width="1652" height="878" loading="lazy" src="./asana-bug-board.png" alt="Asana technical ticket board" />
       <figcaption>Asana technical ticket board</figcaption>
     </figure>
     <p>
@@ -257,7 +261,7 @@
       mostly coding.
     </p>
     <figure>
-      <img
+      <img width="1073" height="385" loading="lazy"
         src="./conventional-commits.png"
         alt="conventional commits in the git log"
       />
@@ -272,7 +276,7 @@
       diminishing returns and when it's time to switch focus.
     </p>
     <figure>
-      <img
+      <img width="960" height="540" loading="lazy"
         src="./all-hands-metrics.png"
         alt="Slide presenting metrics to the rest of the team"
       />
