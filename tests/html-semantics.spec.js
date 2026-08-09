@@ -25,6 +25,8 @@ const BLOG_POSTS = PAGES.filter(
   (path) => path.startsWith("/blog/") && !path.endsWith("demo.html"),
 );
 
+const INDEXABLE_PAGES = PAGES.filter((path) => !path.endsWith("demo.html"));
+
 test("code samples preserve angle brackets and ampersands as text", async ({
   page,
 }) => {
@@ -97,4 +99,22 @@ test("blog dates expose machine-readable publication dates", async ({
   await expect(page.locator(".blog-post-preview time[datetime]")).toHaveCount(
     BLOG_POSTS.length,
   );
+});
+
+test("indexable pages declare a self-referencing canonical URL", async ({
+  page,
+}) => {
+  for (const path of INDEXABLE_PAGES) {
+    await page.goto(path);
+
+    const canonical = page.locator('link[rel="canonical"]');
+    await expect(
+      canonical,
+      `${path} should have one canonical URL`,
+    ).toHaveCount(1);
+    await expect(canonical).toHaveAttribute(
+      "href",
+      new URL(path, "https://eliocapella.com").href,
+    );
+  }
 });
