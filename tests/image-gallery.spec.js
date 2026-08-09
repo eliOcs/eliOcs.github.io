@@ -35,3 +35,37 @@ test("resume image gallery opens, navigates, and closes", async ({ page }) => {
 
   await expect(modal).toBeHidden();
 });
+
+test("resume image gallery navigation buttons move through its images", async ({
+  page,
+}) => {
+  await page.goto("/resume/");
+
+  const galleryImages = page.locator(".image-gallery").first().locator("img");
+  const modalImage = page.locator("#modalImage");
+  const previousButton = page.getByRole("button", { name: "Previous image" });
+  const nextButton = page.getByRole("button", { name: "Next image" });
+  const imageCount = await galleryImages.count();
+
+  await galleryImages.first().click();
+
+  await expect(previousButton).toBeHidden();
+  await expect(nextButton).toBeVisible();
+
+  for (let index = 1; index < imageCount; index += 1) {
+    await nextButton.click();
+    await expect(modalImage).toHaveAttribute(
+      "alt",
+      await galleryImages.nth(index).getAttribute("alt"),
+    );
+  }
+
+  await expect(nextButton).toBeHidden();
+  await expect(previousButton).toBeVisible();
+
+  await previousButton.click();
+  await expect(modalImage).toHaveAttribute(
+    "alt",
+    await galleryImages.nth(imageCount - 2).getAttribute("alt"),
+  );
+});
