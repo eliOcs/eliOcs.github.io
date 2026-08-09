@@ -9,8 +9,10 @@
     "format:check": "prettier . --check",
     "lint:html": "html-validate \"**/*.html\"",
     "test": "npm run format:check && npm run lint:html && playwright test",
+    "test:docker": "docker build -t eliocapella-tests . && docker run --rm eliocapella-tests",
     "test:visual": "playwright test tests/visual.spec.js",
-    "test:visual:update": "playwright test tests/visual.spec.js --update-snapshots"
+    "test:visual:update": "playwright test tests/visual.spec.js --update-snapshots",
+    "test:visual:update:docker": "docker build -t eliocapella-tests . && docker run --rm --volume \"$PWD/tests/visual.spec.js-snapshots:/site/tests/visual.spec.js-snapshots\" eliocapella-tests npm run test:visual:update"
   },
   "author": "",
   "license": "ISC",
