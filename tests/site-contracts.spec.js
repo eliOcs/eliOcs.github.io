@@ -1,5 +1,7 @@
 import { test, expect } from "@playwright/test";
 
+// Relationships between pages and metadata that static HTML validation cannot
+// express belong here; document validity and accessibility belong in the linter.
 const PAGES = [
   "/",
   "/projects/",
@@ -26,22 +28,6 @@ const BLOG_POSTS = PAGES.filter(
 );
 
 const INDEXABLE_PAGES = PAGES.filter((path) => !path.endsWith("demo.html"));
-
-test("code samples preserve angle brackets and ampersands as text", async ({
-  page,
-}) => {
-  await page.goto("/blog/simple-js-toolkit/");
-
-  await expect(
-    page.locator("pre").filter({ hasText: "QueryBuilder" }),
-  ).toContainText("QueryBuilder<User, {}>");
-
-  await page.goto("/blog/writing-good-unit-tests/");
-
-  await expect(
-    page.locator("pre").filter({ hasText: "gravatar.com" }),
-  ).toContainText("?s=480&r=pg&d=https%3A");
-});
 
 test("pages expose one main content landmark", async ({ page }) => {
   for (const path of PAGES) {
@@ -251,7 +237,7 @@ test("page titles and Twitter metadata use conventional HTML forms", async ({
     await page.goto(path);
 
     if (path !== "/") {
-      await expect(page).toHaveTitle(/ — Elio Capella Sánchez$/);
+      await expect(page).toHaveTitle(/ - Elio Capella Sánchez$/);
     }
     await expect(page.locator('meta[property^="twitter:"]')).toHaveCount(0);
     await expect(page.locator('meta[name="twitter:card"]')).toHaveCount(1);

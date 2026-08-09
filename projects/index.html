@@ -12,7 +12,7 @@
       title="Elio Capella Sánchez's blog"
       href="/feed.xml"
     />
-    <title>Projects — Elio Capella Sánchez</title>
+    <title>Projects - Elio Capella Sánchez</title>
     <meta
       name="description"
       content="Side projects and prototypes by Elio Capella Sánchez: products built end to end, technical lessons learned, and product judgment from real prototypes."
@@ -39,170 +39,191 @@
   </head>
   <body>
     <main>
-    <header class="page-header">
-      <a href="/" class="home-nav" aria-label="Back to homepage">
-        <img width="300" height="300" src="/selfie.jpg" alt="" />
-      </a>
-      <h1>Projects</h1>
-    </header>
-
-    <p class="project-intro">
-      These are products and prototypes I have built outside my day job. I use
-      side projects to explore ideas end to end: product discovery,
-      implementation, deployment, maintenance, and the decision of whether an
-      idea is worth continuing.
-    </p>
-
-    <article class="project-entry">
-      <header class="job-header-container">
-        <div class="job-title-company">
-          <h2>PlutonPoker</h2>
-          <p class="project-summary">
-            A browser-based Texas Hold'em app for private poker games with
-            friends.
-          </p>
-        </div>
-        <div class="job-period-location">
-          <a href="https://plutonpoker.com" target="_blank">Live product</a>
-          <a
-            href="https://github.com/eliOcs/poker"
-            target="_blank"
-            class="source-code-link"
-            >Source code</a
-          >
-        </div>
+      <header class="page-header">
+        <a href="/" class="home-nav" aria-label="Back to homepage">
+          <img width="300" height="300" src="/selfie.jpg" alt="" />
+        </a>
+        <h1>Projects</h1>
       </header>
 
-      <div class="image-gallery">
-        <img width="1280" height="720" loading="lazy"
-          src="./plutonpoker/landing-page-desktop.png"
-          alt="PlutonPoker landing page on desktop"
-        />
-        <img width="1280" height="720" loading="lazy"
-          src="./plutonpoker/table-full-ring-desktop.png"
-          alt="PlutonPoker full ring table on desktop"
-        />
-        <img width="393" height="727" loading="lazy"
-          src="./plutonpoker/table-6max-mobile.png"
-          alt="PlutonPoker six-max table on mobile"
-        />
-        <img width="1280" height="720" loading="lazy"
-          src="./plutonpoker/history-showdown-lose-desktop.png"
-          alt="PlutonPoker hand history with showdown on desktop"
-        />
-      </div>
-
-      <p>
-        I built it to remove the friction of gambling platforms: no real-money
-        accounts, no VPNs, no identity checks, and no signup required to start a
-        table.
+      <p class="project-intro">
+        These are products and prototypes I have built outside my day job. I use
+        side projects to explore ideas end to end: product discovery,
+        implementation, deployment, maintenance, and the decision of whether an
+        idea is worth continuing.
       </p>
 
-      <p>
-        The hardest part was the game engine. Poker looks simple from the UI,
-        but the rules create many edge cases: betting rounds, all-ins, side
-        pots, split pots, showdowns, player disconnects, and table recovery. The
-        backend owns the game state and the frontend renders each player's view
-        over WebSockets.
-      </p>
+      <article class="project-entry">
+        <header class="job-header-container">
+          <div class="job-title-company">
+            <h2>PlutonPoker</h2>
+            <p class="project-summary">
+              A browser-based Texas Hold'em app for private poker games with
+              friends.
+            </p>
+          </div>
+          <div class="job-period-location">
+            <a href="https://plutonpoker.com" target="_blank">Live product</a>
+            <a
+              href="https://github.com/eliOcs/poker"
+              target="_blank"
+              class="source-code-link"
+              >Source code</a
+            >
+          </div>
+        </header>
 
-      <h3>What it shows</h3>
-      <ul>
-        <li>Domain modeling for complex business rules</li>
-        <li>Realtime state synchronization</li>
-        <li>Server-authoritative application design</li>
-        <li>Test coverage for tricky edge cases</li>
-        <li>Pragmatic product design focused on removing friction</li>
-      </ul>
-
-      <h3>Lessons learned</h3>
-      <ul>
-        <li>
-          Complex rules need explicit state transitions, strong tests, and
-          recovery paths.
-        </li>
-        <li>A simple UX often depends on a much stricter backend.</li>
-        <li>
-          Multiplayer products are hard because every user action changes the
-          state other users see.
-        </li>
-      </ul>
-    </article>
-
-    <article class="project-entry">
-      <header class="job-header-container">
-        <div class="job-title-company">
-          <h2>MercurioCRM</h2>
-          <p class="project-summary">
-            An AI-native CRM prototype for extracting contacts, companies, and
-            follow-up tasks from email.
-          </p>
+        <div class="image-gallery">
+          <img
+            width="1280"
+            height="720"
+            loading="lazy"
+            src="./plutonpoker/landing-page-desktop.png"
+            alt="PlutonPoker landing page on desktop"
+          />
+          <img
+            width="1280"
+            height="720"
+            loading="lazy"
+            src="./plutonpoker/table-full-ring-desktop.png"
+            alt="PlutonPoker full ring table on desktop"
+          />
+          <img
+            width="393"
+            height="727"
+            loading="lazy"
+            src="./plutonpoker/table-6max-mobile.png"
+            alt="PlutonPoker six-max table on mobile"
+          />
+          <img
+            width="1280"
+            height="720"
+            loading="lazy"
+            src="./plutonpoker/history-showdown-lose-desktop.png"
+            alt="PlutonPoker hand history with showdown on desktop"
+          />
         </div>
-        <div class="job-period-location">
-          <span>December 2025 - February 2026</span>
-          <a
-            href="https://github.com/eliOcs/crm"
-            target="_blank"
-            class="source-code-link"
-            >Source code</a
-          >
+
+        <p>
+          I built it to remove the friction of gambling platforms: no real-money
+          accounts, no VPNs, no identity checks, and no signup required to start
+          a table.
+        </p>
+
+        <p>
+          The hardest part was the game engine. Poker looks simple from the UI,
+          but the rules create many edge cases: betting rounds, all-ins, side
+          pots, split pots, showdowns, player disconnects, and table recovery.
+          The backend owns the game state and the frontend renders each player's
+          view over WebSockets.
+        </p>
+
+        <h3>What it shows</h3>
+        <ul>
+          <li>Domain modeling for complex business rules</li>
+          <li>Realtime state synchronization</li>
+          <li>Server-authoritative application design</li>
+          <li>Test coverage for tricky edge cases</li>
+          <li>Pragmatic product design focused on removing friction</li>
+        </ul>
+
+        <h3>Lessons learned</h3>
+        <ul>
+          <li>
+            Complex rules need explicit state transitions, strong tests, and
+            recovery paths.
+          </li>
+          <li>A simple UX often depends on a much stricter backend.</li>
+          <li>
+            Multiplayer products are hard because every user action changes the
+            state other users see.
+          </li>
+        </ul>
+      </article>
+
+      <article class="project-entry">
+        <header class="job-header-container">
+          <div class="job-title-company">
+            <h2>MercurioCRM</h2>
+            <p class="project-summary">
+              An AI-native CRM prototype for extracting contacts, companies, and
+              follow-up tasks from email.
+            </p>
+          </div>
+          <div class="job-period-location">
+            <span>December 2025 - February 2026</span>
+            <a
+              href="https://github.com/eliOcs/crm"
+              target="_blank"
+              class="source-code-link"
+              >Source code</a
+            >
+          </div>
+        </header>
+
+        <div class="image-gallery">
+          <img
+            width="1714"
+            height="1200"
+            loading="lazy"
+            src="./mercuriocrm/landing-page.png"
+            alt="MercurioCRM landing page"
+          />
+          <img
+            width="2005"
+            height="951"
+            loading="lazy"
+            src="./mercuriocrm/user-config.png"
+            alt="MercurioCRM user configuration screen"
+          />
+          <img
+            width="2015"
+            height="744"
+            loading="lazy"
+            src="./mercuriocrm/tasks.png"
+            alt="MercurioCRM follow-up tasks extracted from email"
+          />
         </div>
-      </header>
 
-      <div class="image-gallery">
-        <img width="1714" height="1200" loading="lazy"
-          src="./mercuriocrm/landing-page.png"
-          alt="MercurioCRM landing page"
-        />
-        <img width="2005" height="951" loading="lazy"
-          src="./mercuriocrm/user-config.png"
-          alt="MercurioCRM user configuration screen"
-        />
-        <img width="2015" height="744" loading="lazy"
-          src="./mercuriocrm/tasks.png"
-          alt="MercurioCRM follow-up tasks extracted from email"
-        />
-      </div>
+        <p>
+          I built it to help my wife manage customer relationships at work. It
+          ingested emails through a Microsoft integration and used an LLM to
+          extract contacts, companies, and follow-up tasks.
+        </p>
 
-      <p>
-        I built it to help my wife manage customer relationships at work. It
-        ingested emails through a Microsoft integration and used an LLM to
-        extract contacts, companies, and follow-up tasks.
-      </p>
+        <p>
+          The prototype worked and was hosted, but I stopped the project after
+          validating the real constraint: the CRM did not have enough business
+          context. Important data lived in systems I could not access,
+          especially the ERP. Without those integrations, the AI could only
+          provide partial value.
+        </p>
 
-      <p>
-        The prototype worked and was hosted, but I stopped the project after
-        validating the real constraint: the CRM did not have enough business
-        context. Important data lived in systems I could not access, especially
-        the ERP. Without those integrations, the AI could only provide partial
-        value.
-      </p>
+        <h3>What it shows</h3>
+        <ul>
+          <li>AI product prototyping</li>
+          <li>Ruby on Rails product development</li>
+          <li>Microsoft integration work</li>
+          <li>LLM-based information extraction</li>
+          <li>
+            Product judgment: knowing when a working prototype is still not
+            enough
+          </li>
+        </ul>
 
-      <h3>What it shows</h3>
-      <ul>
-        <li>AI product prototyping</li>
-        <li>Ruby on Rails product development</li>
-        <li>Microsoft integration work</li>
-        <li>LLM-based information extraction</li>
-        <li>
-          Product judgment: knowing when a working prototype is still not enough
-        </li>
-      </ul>
-
-      <h3>Lessons learned</h3>
-      <ul>
-        <li>
-          AI products are only as useful as the context and actions they can
-          access.
-        </li>
-        <li>Integration access can be a bigger moat than model quality.</li>
-        <li>
-          A working prototype is not enough if the distribution and data-access
-          paths are structurally weak.
-        </li>
-      </ul>
-    </article>
-
+        <h3>Lessons learned</h3>
+        <ul>
+          <li>
+            AI products are only as useful as the context and actions they can
+            access.
+          </li>
+          <li>Integration access can be a bigger moat than model quality.</li>
+          <li>
+            A working prototype is not enough if the distribution and
+            data-access paths are structurally weak.
+          </li>
+        </ul>
+      </article>
     </main>
     <script src="/image-gallery.js" defer></script>
   </body>

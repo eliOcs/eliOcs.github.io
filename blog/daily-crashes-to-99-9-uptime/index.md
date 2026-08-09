@@ -184,7 +184,7 @@ Metrics to include:
 
 ## 11) What I’d do differently next time
 
-**Hook:** “If I could redo it, I’d do less work—and get results faster.”
+**Hook:** “If I could redo it, I’d do less work - and get results faster.”
 
 Examples:
 

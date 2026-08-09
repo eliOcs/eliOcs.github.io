@@ -1,18 +1,21 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="stylesheet" href="/style.css" />
-    <link rel="canonical" href="https://eliocapella.com/blog/vendor-lock-in-nightmares/" />
+    <link
+      rel="canonical"
+      href="https://eliocapella.com/blog/vendor-lock-in-nightmares/"
+    />
     <link
       rel="alternate"
       type="application/atom+xml"
       title="Elio Capella Sánchez's blog"
       href="/feed.xml"
     />
-    <title>Vendor lock in nightmares — Elio Capella Sánchez</title>
+    <title>Vendor lock in nightmares - Elio Capella Sánchez</title>
     <meta
       name="description"
       content="Painful lessons learned from vendor lock-in with Transloadit, Auth0, and MongoDB Atlas - including unexpected price increases, reliability issues, and migration challenges."
@@ -21,7 +24,10 @@
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="article" />
-    <meta property="article:published_time" content="2025-08-22T00:00:00+02:00" />
+    <meta
+      property="article:published_time"
+      content="2025-08-22T00:00:00+02:00"
+    />
     <meta
       property="og:url"
       content="https://eliocapella.com/blog/vendor-lock-in-nightmares/"
@@ -80,285 +86,316 @@
   <body>
     <main>
       <article>
-    <header class="page-header">
-      <a href="/" class="home-nav" aria-label="Back to homepage">
-        <img width="300" height="300" src="/selfie.jpg" alt="" />
-      </a>
-      <h1>Vendor lock in nightmares</h1>
-      <p class="post-date">
-        <time datetime="2025-08-22">August 22, 2025</time>
-      </p>
-    </header>
-    <p>
-      At <a href="https://filestage.io" target="_blank">Filestage</a> we've
-      always heavily relied on third parties to build our product, we don't want
-      to for example waste our time managing our database we want to focus on
-      our core product and concentrate on fixing fix our customer problems. I'm
-      very thankful to be able to build on the shoulders of giants, but I
-      painfully came to learn that not all vendors are at the same level.
-    </p>
-    <p>
-      Our stack from the beginning heavily relied on AWS and after years of use
-      we <strong>never experienced any downtime or problem whatsoever</strong>.
-      Like every other web app we had our servers and database in EC2, we used a
-      load balancer and S3. We got used to those levels of reliability and
-      performance and <em>oh boy, was I wrong</em>.
-    </p>
-    <h2 id="transloadit"><a href="#transloadit">Transloadit</a></h2>
-    <p>
-      <strong>The first time I started to feel the pain</strong> is when we
-      moved our video transcoding from AWS ElasticTranscoder to
-      <a href="https://transloadit.com" target="_blank">Transloadit</a>. Our
-      customers uploaded videos with many different codecs and formats that AWS
-      didn't support and we saw a quick win changing our provider. Indeed it was
-      easy to change, Transloadit has a great API and it is very easy to use. It
-      even handles file upload so we also started using that. We immediately
-      brought value to our customers it was great, the price was very
-      competitive with AWS so we were happy with the change.
-    </p>
-    <p>
-      But then we started to see some problems, Transloadit was a small
-      bootstrapped startup at the time and was gaining traction and having
-      struggles to scale.
-      <strong>Suddenly our jobs took a lot of time to process</strong>, because
-      our application's core is about uploading and sharing files so our
-      customers started complaining all of a sudden.
-      <strong>Worst of all, we couldn't do anything about it</strong>, we could
-      only pass the complaints to Transloadit and wait for them to fix it.
-      <em
-        >We were at their mercy, we had no control over the situation and we
-        were losing customers because of it</em
-      >. Unfortunately this situation repeated itself many times, and in many
-      different ways, sometimes videos had the wrong color or freezed in the
-      middle, etc. It was a nightmare.
-    </p>
-    <figure>
-      <img width="2762" height="1108" loading="lazy"
-        src="./transloadit-outages.png"
-        alt="More than half of our outage history log is related to Transloadit"
-      />
-      <figcaption>
-        More than half of our outage history log is related to Transloadit
-      </figcaption>
-    </figure>
-    <p>
-      We worked a lot in the things we could change, we tried to decouple our UX
-      as much as possible from the transcoding process. If non critical tasks
-      like thumbnail generation we just failed silently, while the transcoding
-      is taking place we allowed the user to continue using the app, if the file
-      was webcompatible we loaded the original file, if the transcoding failed
-      we let the user retry, etc. Eventually we also migrated some transcoding
-      processes to our own implementation using opensource tools like:
-      imagemagick, ffmpeg, etc.
-    </p>
+        <header class="page-header">
+          <a href="/" class="home-nav" aria-label="Back to homepage">
+            <img width="300" height="300" src="/selfie.jpg" alt="" />
+          </a>
+          <h1>Vendor lock in nightmares</h1>
+          <p class="post-date">
+            <time datetime="2025-08-22">August 22, 2025</time>
+          </p>
+        </header>
+        <p>
+          At <a href="https://filestage.io" target="_blank">Filestage</a> we've
+          always heavily relied on third parties to build our product, we don't
+          want to for example waste our time managing our database we want to
+          focus on our core product and concentrate on fixing fix our customer
+          problems. I'm very thankful to be able to build on the shoulders of
+          giants, but I painfully came to learn that not all vendors are at the
+          same level.
+        </p>
+        <p>
+          Our stack from the beginning heavily relied on AWS and after years of
+          use we
+          <strong>never experienced any downtime or problem whatsoever</strong>.
+          Like every other web app we had our servers and database in EC2, we
+          used a load balancer and S3. We got used to those levels of
+          reliability and performance and <em>oh boy, was I wrong</em>.
+        </p>
+        <h2 id="transloadit"><a href="#transloadit">Transloadit</a></h2>
+        <p>
+          <strong>The first time I started to feel the pain</strong> is when we
+          moved our video transcoding from AWS ElasticTranscoder to
+          <a href="https://transloadit.com" target="_blank">Transloadit</a>. Our
+          customers uploaded videos with many different codecs and formats that
+          AWS didn't support and we saw a quick win changing our provider.
+          Indeed it was easy to change, Transloadit has a great API and it is
+          very easy to use. It even handles file upload so we also started using
+          that. We immediately brought value to our customers it was great, the
+          price was very competitive with AWS so we were happy with the change.
+        </p>
+        <p>
+          But then we started to see some problems, Transloadit was a small
+          bootstrapped startup at the time and was gaining traction and having
+          struggles to scale.
+          <strong>Suddenly our jobs took a lot of time to process</strong>,
+          because our application's core is about uploading and sharing files so
+          our customers started complaining all of a sudden.
+          <strong>Worst of all, we couldn't do anything about it</strong>, we
+          could only pass the complaints to Transloadit and wait for them to fix
+          it.
+          <em
+            >We were at their mercy, we had no control over the situation and we
+            were losing customers because of it</em
+          >. Unfortunately this situation repeated itself many times, and in
+          many different ways, sometimes videos had the wrong color or freezed
+          in the middle, etc. It was a nightmare.
+        </p>
+        <figure>
+          <img
+            width="2762"
+            height="1108"
+            loading="lazy"
+            src="./transloadit-outages.png"
+            alt="More than half of our outage history log is related to Transloadit"
+          />
+          <figcaption>
+            More than half of our outage history log is related to Transloadit
+          </figcaption>
+        </figure>
+        <p>
+          We worked a lot in the things we could change, we tried to decouple
+          our UX as much as possible from the transcoding process. If non
+          critical tasks like thumbnail generation we just failed silently,
+          while the transcoding is taking place we allowed the user to continue
+          using the app, if the file was webcompatible we loaded the original
+          file, if the transcoding failed we let the user retry, etc. Eventually
+          we also migrated some transcoding processes to our own implementation
+          using opensource tools like: imagemagick, ffmpeg, etc.
+        </p>
 
-    <h2 id="auth0"><a href="#auth0">Auth0</a></h2>
-    <p>
-      Although this happened years ago <em>it still makes me angry</em>, I got
-      hit by an <strong>unexpected 10x price increase</strong> that forced us to
-      change our roadmap. Before we started using
-      <a href="https://auth0.com/" target="_blank">Auth0</a> we had our own
-      authentication system, but we wanted to onboard enterprise customers and
-      although we also had our own SSO implementation we didn't support as many
-      protocols as Auth0 did. We started using Auth0 for our SSO customers and
-      we were very happy with it, the pricing was fair, we paid like 50$ a month
-      so it was a no brainer.
-    </p>
-    <p>
-      Because Auth0 was working great for us I decided to move all our
-      authentication to their platform, <em>this was my first big mistake</em>.
-      Although it removed unnecessary complexity from our codebase and meant we
-      could focus on our core product it also meant we were now fully dependent
-      on Auth0. Another down side is that we had to add complexity to achieve
-      custom UX with Auth0, so in the end I didn't manage to reduce the
-      complexity of our codebase as much as I expected.
-    </p>
-    <p>
-      Over the years our usage grew and we started paying like $200 a month,
-      which still was fair. But then
-      <strong>Auth0 was acquired by Okta</strong>, Okta was a company that went
-      public and had to show their promised growth to their shareholders. They
-      introduced <strong>the most unfair pricing model I've ever seen</strong>
-      to date, if you use Auth0 for a B2B product you pay more per active user
-      than if you use it for a B2C product. Imagine you go and buy a shovel and
-      they ask you if you are going to use it to dig your garden or dig out gold
-      and depending on that they charge you more or less. This is what Auth0 did
-      and is still present in their pricing page today.
-    </p>
-    <figure>
-      <img width="2575" height="1422" loading="lazy"
-        src="./auth0-pricing-model.png"
-        alt="Higher price per active user for B2B applications"
-      />
-      <figcaption>Higher price per active user for B2B applications</figcaption>
-    </figure>
-    <p>
-      <strong
-        >This made our costs skyrocket, we were now paying like $2000 a
-        month</strong
-      >. The worst part is that it didn't stop increasing, their new pricing
-      plan didn't include unlimited SSO connections anymore so they forced us to
-      pay per different SSO provider we integrated so they got a healthy cut for
-      every enterprise customer too.
-      <strong
-        >We were now paying like $4000 a month and were locked in yearly
-        contracts</strong
-      >. <em>We had no choice but to accept it</em> but I was
-      <strong>determined to leave Auth0 as soon as possible</strong>.
-    </p>
-    <p>
-      Migrating all our users to our own authentication system wasn't easy and
-      we wanted to do it without any friction to our customers so this meant it
-      was a long running migration. Thankfully over the years enterprise
-      organizations have settled on a few SSO protocols so we only had to
-      implement those. Thanks to opensource libraries which by the way are
-      <em>exactly the ones Auth0 uses under the hood</em> we were able to
-      implement the same features easily,
-      <strong>our SSO service is currently 494 lines of code</strong>.
-    </p>
+        <h2 id="auth0"><a href="#auth0">Auth0</a></h2>
+        <p>
+          Although this happened years ago <em>it still makes me angry</em>, I
+          got hit by an <strong>unexpected 10x price increase</strong> that
+          forced us to change our roadmap. Before we started using
+          <a href="https://auth0.com/" target="_blank">Auth0</a> we had our own
+          authentication system, but we wanted to onboard enterprise customers
+          and although we also had our own SSO implementation we didn't support
+          as many protocols as Auth0 did. We started using Auth0 for our SSO
+          customers and we were very happy with it, the pricing was fair, we
+          paid like 50$ a month so it was a no brainer.
+        </p>
+        <p>
+          Because Auth0 was working great for us I decided to move all our
+          authentication to their platform,
+          <em>this was my first big mistake</em>. Although it removed
+          unnecessary complexity from our codebase and meant we could focus on
+          our core product it also meant we were now fully dependent on Auth0.
+          Another down side is that we had to add complexity to achieve custom
+          UX with Auth0, so in the end I didn't manage to reduce the complexity
+          of our codebase as much as I expected.
+        </p>
+        <p>
+          Over the years our usage grew and we started paying like $200 a month,
+          which still was fair. But then
+          <strong>Auth0 was acquired by Okta</strong>, Okta was a company that
+          went public and had to show their promised growth to their
+          shareholders. They introduced
+          <strong>the most unfair pricing model I've ever seen</strong>
+          to date, if you use Auth0 for a B2B product you pay more per active
+          user than if you use it for a B2C product. Imagine you go and buy a
+          shovel and they ask you if you are going to use it to dig your garden
+          or dig out gold and depending on that they charge you more or less.
+          This is what Auth0 did and is still present in their pricing page
+          today.
+        </p>
+        <figure>
+          <img
+            width="2575"
+            height="1422"
+            loading="lazy"
+            src="./auth0-pricing-model.png"
+            alt="Higher price per active user for B2B applications"
+          />
+          <figcaption>
+            Higher price per active user for B2B applications
+          </figcaption>
+        </figure>
+        <p>
+          <strong
+            >This made our costs skyrocket, we were now paying like $2000 a
+            month</strong
+          >. The worst part is that it didn't stop increasing, their new pricing
+          plan didn't include unlimited SSO connections anymore so they forced
+          us to pay per different SSO provider we integrated so they got a
+          healthy cut for every enterprise customer too.
+          <strong
+            >We were now paying like $4000 a month and were locked in yearly
+            contracts</strong
+          >. <em>We had no choice but to accept it</em> but I was
+          <strong>determined to leave Auth0 as soon as possible</strong>.
+        </p>
+        <p>
+          Migrating all our users to our own authentication system wasn't easy
+          and we wanted to do it without any friction to our customers so this
+          meant it was a long running migration. Thankfully over the years
+          enterprise organizations have settled on a few SSO protocols so we
+          only had to implement those. Thanks to opensource libraries which by
+          the way are
+          <em>exactly the ones Auth0 uses under the hood</em> we were able to
+          implement the same features easily,
+          <strong>our SSO service is currently 494 lines of code</strong>.
+        </p>
 
-    <h2 id="mongodb-atlas"><a href="#mongodb-atlas">MongoDB Atlas</a></h2>
-    <p>
-      Before using
-      <a href="https://www.mongodb.com" target="_blank">MongoDB Atlas</a> we
-      hosted our MongoDB database in our own EC2 instance, which meant that from
-      time to time we had to update the operating system and MongoDB versions
-      ourselves. This is challenging if you want to do it with no downtime and
-      the slowness to keep up with latest security patches adds risks. So we
-      decided to migrate to this managed solution.
-    </p>
-    <p>
-      It has served us really great during the years, we have been able to
-      easily configure auto scaling to optimize costs and leverage solutions
-      like their
-      <a
-        href="https://www.mongodb.com/products/platform/atlas-search"
-        target="_blank"
-        >Atlas Search</a
-      >
-      to provide a search feature to our customers without having to spin up a
-      separate ElasticSearch service and take care of syncing the data. Lately
-      we are also splitting customer data by region to reduce latency and comply
-      with data residency regulations and their global cluster and sharding
-      features have made this easy to achieve.
-    </p>
-    <p>
-      Because we started depending on their cloud solution unfortunately in our
-      local environments we stopped using a local MongoDB database as the
-      feature set isn't the same. This made it trickier to implement integration
-      tests and increased our vendor lock in. Fortunately they still have a fair
-      pricing and good reliability but we are always at their mercy.
-    </p>
-    <figure>
-      <img width="1458" height="348" loading="lazy"
-        src="./mongodb-atlas-admin-access.png"
-        alt="Unable to do some admin tasks on MongoDB Atlas"
-      />
-      <figcaption>Unable to do some admin tasks on MongoDB Atlas</figcaption>
-    </figure>
-    <p>
-      Another downside of PaaS is that you rely on their support to solve any
-      critical production issues.
-      <strong
-        >You can't easily restart the instance or don't have full admin access
-        to the database</strong
-      >. That is when you learn the real downside,
-      <strong
-        >their support pricing model as many other PaaS services is completely
-        unfair</strong
-      >. You have the free support which is basically useless. MongoDB Atlas is
-      mainly used by software developers so of course support questions are
-      going to be somewhat technical and they are using that as a reason to
-      redirect you to their paid support. Even once I was trying to make them
-      aware of a bug in their UI and still they insisted on their paid support,
-      a very frustrating experience.
-    </p>
-    <figure>
-      <img width="1718" height="1140" loading="lazy"
-        src="./mongodb-altas-pricing-model.png"
-        alt="Support pricing increases with your usage"
-      />
-      <figcaption>Support pricing increases with your usage</figcaption>
-    </figure>
-    <p>
-      It somehow makes sense that you pay more for support if you are using more
-      the platform because your use case is probably more complicated. But in my
-      experience <em>you are rarely using support</em> so basically
-      <strong>you are paying thousands of dollars for nothing</strong>. They
-      also know this so if you enable/disable support they force you to pay for
-      the last 3 months to reenroll, ludicrous.
-    </p>
-    <figure>
-      <img width="1174" height="702" loading="lazy"
-        src="./mongodb-atlas-support-reenable-fee.png"
-        alt="MongoDB Atlast support reenrollment fee"
-      />
-      <figcaption>MongoDB Atlast support reenrollment fee</figcaption>
-    </figure>
-    <p>
-      <strong
-        >Don't expect this expensive support to be managed by MongoDB
-        experts</strong
-      >
-      in any way, in my experience
-      <strong
-        >we've paid thousands of dollars in support for very poor quality
-        answers</strong
-      >. Once we had a back and forth for weeks trying to understand a
-      production issue and the problem was that their node.js driver doesn't
-      support multiple queries in parallel (as in
-      <code>await Promise.all</code>) when using sessions to achieve consistency
-      but in their documentation they were talking about concurrency and node.js
-      is a single threaded language so we misunderstood that. Unfortunately the
-      support person we got didn't know node.js well enough so wasn't able to
-      help us and it took weeks to finally figure it out ourselves.
-    </p>
+        <h2 id="mongodb-atlas"><a href="#mongodb-atlas">MongoDB Atlas</a></h2>
+        <p>
+          Before using
+          <a href="https://www.mongodb.com" target="_blank">MongoDB Atlas</a> we
+          hosted our MongoDB database in our own EC2 instance, which meant that
+          from time to time we had to update the operating system and MongoDB
+          versions ourselves. This is challenging if you want to do it with no
+          downtime and the slowness to keep up with latest security patches adds
+          risks. So we decided to migrate to this managed solution.
+        </p>
+        <p>
+          It has served us really great during the years, we have been able to
+          easily configure auto scaling to optimize costs and leverage solutions
+          like their
+          <a
+            href="https://www.mongodb.com/products/platform/atlas-search"
+            target="_blank"
+            >Atlas Search</a
+          >
+          to provide a search feature to our customers without having to spin up
+          a separate ElasticSearch service and take care of syncing the data.
+          Lately we are also splitting customer data by region to reduce latency
+          and comply with data residency regulations and their global cluster
+          and sharding features have made this easy to achieve.
+        </p>
+        <p>
+          Because we started depending on their cloud solution unfortunately in
+          our local environments we stopped using a local MongoDB database as
+          the feature set isn't the same. This made it trickier to implement
+          integration tests and increased our vendor lock in. Fortunately they
+          still have a fair pricing and good reliability but we are always at
+          their mercy.
+        </p>
+        <figure>
+          <img
+            width="1458"
+            height="348"
+            loading="lazy"
+            src="./mongodb-atlas-admin-access.png"
+            alt="Unable to do some admin tasks on MongoDB Atlas"
+          />
+          <figcaption>
+            Unable to do some admin tasks on MongoDB Atlas
+          </figcaption>
+        </figure>
+        <p>
+          Another downside of PaaS is that you rely on their support to solve
+          any critical production issues.
+          <strong
+            >You can't easily restart the instance or don't have full admin
+            access to the database</strong
+          >. That is when you learn the real downside,
+          <strong
+            >their support pricing model as many other PaaS services is
+            completely unfair</strong
+          >. You have the free support which is basically useless. MongoDB Atlas
+          is mainly used by software developers so of course support questions
+          are going to be somewhat technical and they are using that as a reason
+          to redirect you to their paid support. Even once I was trying to make
+          them aware of a bug in their UI and still they insisted on their paid
+          support, a very frustrating experience.
+        </p>
+        <figure>
+          <img
+            width="1718"
+            height="1140"
+            loading="lazy"
+            src="./mongodb-altas-pricing-model.png"
+            alt="Support pricing increases with your usage"
+          />
+          <figcaption>Support pricing increases with your usage</figcaption>
+        </figure>
+        <p>
+          It somehow makes sense that you pay more for support if you are using
+          more the platform because your use case is probably more complicated.
+          But in my experience <em>you are rarely using support</em> so
+          basically
+          <strong>you are paying thousands of dollars for nothing</strong>. They
+          also know this so if you enable/disable support they force you to pay
+          for the last 3 months to reenroll, ludicrous.
+        </p>
+        <figure>
+          <img
+            width="1174"
+            height="702"
+            loading="lazy"
+            src="./mongodb-atlas-support-reenable-fee.png"
+            alt="MongoDB Atlast support reenrollment fee"
+          />
+          <figcaption>MongoDB Atlast support reenrollment fee</figcaption>
+        </figure>
+        <p>
+          <strong
+            >Don't expect this expensive support to be managed by MongoDB
+            experts</strong
+          >
+          in any way, in my experience
+          <strong
+            >we've paid thousands of dollars in support for very poor quality
+            answers</strong
+          >. Once we had a back and forth for weeks trying to understand a
+          production issue and the problem was that their node.js driver doesn't
+          support multiple queries in parallel (as in
+          <code>await Promise.all</code>) when using sessions to achieve
+          consistency but in their documentation they were talking about
+          concurrency and node.js is a single threaded language so we
+          misunderstood that. Unfortunately the support person we got didn't
+          know node.js well enough so wasn't able to help us and it took weeks
+          to finally figure it out ourselves.
+        </p>
 
-    <h2 id="lessons-learned"><a href="#lessons-learned">Lessons learned</a></h2>
-    <p>
-      <strong
-        >Don't assume all third party providers will have a great
-        reliability</strong
-      >, do your research. Check customer complains, their status pages or
-      twitter accounts.
-    </p>
-    <p>
-      <strong>Beware of unfair pricing models</strong>. It is common for
-      technology to get cheaper over time but
-      <em
-        >software providers tend to get more expensive over time and arbitrarily
-        change their pricing</em
-      >.
-    </p>
-    <p>
-      <strong
-        >Understand the amount of vendor lock in you are committing to</strong
-      >. Think ahead of time how much effort would it be to migrate out:
-      <em
-        >will you have to move data? are there alternatives? will it be easy to
-        migrate without downtime?</em
-      >
-    </p>
-
+        <h2 id="lessons-learned">
+          <a href="#lessons-learned">Lessons learned</a>
+        </h2>
+        <p>
+          <strong
+            >Don't assume all third party providers will have a great
+            reliability</strong
+          >, do your research. Check customer complains, their status pages or
+          twitter accounts.
+        </p>
+        <p>
+          <strong>Beware of unfair pricing models</strong>. It is common for
+          technology to get cheaper over time but
+          <em
+            >software providers tend to get more expensive over time and
+            arbitrarily change their pricing</em
+          >.
+        </p>
+        <p>
+          <strong
+            >Understand the amount of vendor lock in you are committing
+            to</strong
+          >. Think ahead of time how much effort would it be to migrate out:
+          <em
+            >will you have to move data? are there alternatives? will it be easy
+            to migrate without downtime?</em
+          >
+        </p>
       </article>
 
       <aside class="wwm-final-cta">
-      <h2>Let's build something solid.</h2>
-      <p>
-        Stop firefighting. Start shipping with confidence. Let's talk about what
-        predictable delivery looks like for your team.
-      </p>
-      <div class="wwm-cta-group">
-        <a
-          href="https://calendar.app.google/uNTLT3EEhmUARbzo6"
-          target="_blank"
-          class="wwm-cta-primary"
-          >Book a call</a
-        >
-        <a href="mailto:me@eliocapella.com" class="wwm-cta-secondary"
-          >Email me</a
-        >
-      </div>
+        <h2>Let's build something solid.</h2>
+        <p>
+          Stop firefighting. Start shipping with confidence. Let's talk about
+          what predictable delivery looks like for your team.
+        </p>
+        <div class="wwm-cta-group">
+          <a
+            href="https://calendar.app.google/uNTLT3EEhmUARbzo6"
+            target="_blank"
+            class="wwm-cta-primary"
+            >Book a call</a
+          >
+          <a href="mailto:me@eliocapella.com" class="wwm-cta-secondary"
+            >Email me</a
+          >
+        </div>
       </aside>
     </main>
   </body>

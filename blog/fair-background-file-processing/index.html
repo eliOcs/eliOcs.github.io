@@ -7,16 +7,21 @@
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
       rel="stylesheet"
+      integrity="sha384-wFjoQjtV1y5jVHbt0p35Ui8aV8GVpEZkyF99OXWqP/eNJDU93D3Ugxkoyh6Y2I4A"
+      crossorigin="anonymous"
     />
     <link rel="stylesheet" href="/style.css" />
-    <link rel="canonical" href="https://eliocapella.com/blog/fair-background-file-processing/" />
+    <link
+      rel="canonical"
+      href="https://eliocapella.com/blog/fair-background-file-processing/"
+    />
     <link
       rel="alternate"
       type="application/atom+xml"
       title="Elio Capella Sánchez's blog"
       href="/feed.xml"
     />
-    <title>Fair background file processing — Elio Capella Sánchez</title>
+    <title>Fair background file processing - Elio Capella Sánchez</title>
     <meta
       name="description"
       content="How we moved from one shared background processing queue to fair per-user scheduling so one large upload batch could not block everyone else."
@@ -87,65 +92,72 @@
   <body>
     <main>
       <article>
-    <header class="page-header">
-      <a href="/" class="home-nav" aria-label="Back to homepage">
-        <img width="300" height="300" src="/selfie.jpg" alt="" />
-      </a>
-      <h1>Fair background file processing</h1>
-      <p class="post-date">
-        <time datetime="2026-06-06">June 6, 2026</time>
-      </p>
-    </header>
-    <p>
-      At <a href="https://www.filestage.io/" target="_blank">Filestage</a> users
-      upload files to get them reviewed, and it is common for them to upload
-      many files at once. Processing files to make them web compatible takes a
-      lot of compute, especially high quality video. That is why our background
-      processing cluster autoscales based on demand.
-    </p>
+        <header class="page-header">
+          <a href="/" class="home-nav" aria-label="Back to homepage">
+            <img width="300" height="300" src="/selfie.jpg" alt="" />
+          </a>
+          <h1>Fair background file processing</h1>
+          <p class="post-date">
+            <time datetime="2026-06-06">June 6, 2026</time>
+          </p>
+        </header>
+        <p>
+          At
+          <a href="https://www.filestage.io/" target="_blank">Filestage</a>
+          users upload files to get them reviewed, and it is common for them to
+          upload many files at once. Processing files to make them web
+          compatible takes a lot of compute, especially high quality video. That
+          is why our background processing cluster autoscales based on demand.
+        </p>
 
-    <h2 id="the-problem-was-fairness-not-raw-throughput">
-      <a href="#the-problem-was-fairness-not-raw-throughput"
-        >The problem was fairness, not raw throughput</a
-      >
-    </h2>
+        <h2 id="the-problem-was-fairness-not-raw-throughput">
+          <a href="#the-problem-was-fairness-not-raw-throughput"
+            >The problem was fairness, not raw throughput</a
+          >
+        </h2>
 
-    <p>
-      From time to time, users complained that files were taking too long to be
-      processed. We had spikes in queue wait time. Our setup was pretty simple.
-      Every time a user uploaded a file, we pushed the job into an
-      <a href="https://aws.amazon.com/sqs/" target="_blank">AWS SQS</a> queue.
-      Our background processing cluster autoscaled based on the queue size. So
-      if there were too few workers, we would provision more, which gave us an
-      efficient use of resources. The problem is that it takes several minutes
-      for the autoscaling to notice we need more jobs, provision them, and have
-      them ready to process jobs.
-    </p>
+        <p>
+          From time to time, users complained that files were taking too long to
+          be processed. We had spikes in queue wait time. Our setup was pretty
+          simple. Every time a user uploaded a file, we pushed the job into an
+          <a href="https://aws.amazon.com/sqs/" target="_blank">AWS SQS</a>
+          queue. Our background processing cluster autoscaled based on the queue
+          size. So if there were too few workers, we would provision more, which
+          gave us an efficient use of resources. The problem is that it takes
+          several minutes for the autoscaling to notice we need more jobs,
+          provision them, and have them ready to process jobs.
+        </p>
 
-    <p>
-      We started looking carefully at the episodes in which our queue wait
-      alarms triggered and correlated them with our logs. We identified that
-      sometimes users uploaded thousands of files at once. With one shared
-      queue, the system behaved like a
-      <strong>global first-come-first-served backlog</strong>: one large upload
-      batch could monopolize worker attention, and other customers who uploaded
-      a few seconds later would wait far too long for a single file to be
-      processed.
-    </p>
+        <p>
+          We started looking carefully at the episodes in which our queue wait
+          alarms triggered and correlated them with our logs. We identified that
+          sometimes users uploaded thousands of files at once. With one shared
+          queue, the system behaved like a
+          <strong>global first-come-first-served backlog</strong>: one large
+          upload batch could monopolize worker attention, and other customers
+          who uploaded a few seconds later would wait far too long for a single
+          file to be processed.
+        </p>
 
-    <img width="860" height="542" loading="lazy" src="./queue-monopoly.svg" alt="User monopolizing the queue" />
+        <img
+          width="860"
+          height="542"
+          loading="lazy"
+          src="./queue-monopoly.svg"
+          alt="User monopolizing the queue"
+        />
 
-    <h2 id="simple-queue-implementation">
-      <a href="#simple-queue-implementation">Simple queue implementation</a>
-    </h2>
+        <h2 id="simple-queue-implementation">
+          <a href="#simple-queue-implementation">Simple queue implementation</a>
+        </h2>
 
-    <p>
-      We started with a pretty simple approach, the API pushes the job into the
-      SQS queue. Workers receive one message, run the handler, report metrics,
-      delete the message, and wait for the next one.
-    </p>
+        <p>
+          We started with a pretty simple approach, the API pushes the job into
+          the SQS queue. Workers receive one message, run the handler, report
+          metrics, delete the message, and wait for the next one.
+        </p>
 
-    <pre><code class="language-js">const sqsClient = new SQSClient({});
+        <pre><code class="language-js">const sqsClient = new SQSClient({});
 
 let isPolling = false;
 
@@ -236,96 +248,107 @@ exports.stop = function () {
   logger.info(TAG, "stopping job processing");
 };</code></pre>
 
-    <p>
-      There is a lot to like about this. The code is short. SQS is reliable.
-      <a href="https://aws.amazon.com/ecs/" target="_blank">AWS ECS</a> Fargate
-      workers are easy to scale horizontally based on the SQS queue size.
-    </p>
+        <p>
+          There is a lot to like about this. The code is short. SQS is reliable.
+          <a href="https://aws.amazon.com/ecs/" target="_blank">AWS ECS</a>
+          Fargate workers are easy to scale horizontally based on the SQS queue
+          size.
+        </p>
 
-    <h2 id="fair-turns-per-user">
-      <a href="#fair-turns-per-user">Fair turns per user</a>
-    </h2>
+        <h2 id="fair-turns-per-user">
+          <a href="#fair-turns-per-user">Fair turns per user</a>
+        </h2>
 
-    <p>
-      We thought of different ways to fix this problem. First we looked into
-      optimizing our infrastructure to make provisioning of new workers faster,
-      but if we were still going to rely on AWS ECS Fargate it wasn't realistic
-      to get that down to a few seconds. Then we thought of overprovisioning our
-      background processing cluster or using machine learning to predict the
-      usage pattern. This would make our cluster resources more closely match
-      demand, but still would not properly deal with sudden spikes, which was
-      the problem we were actually facing.
-    </p>
+        <p>
+          We thought of different ways to fix this problem. First we looked into
+          optimizing our infrastructure to make provisioning of new workers
+          faster, but if we were still going to rely on AWS ECS Fargate it
+          wasn't realistic to get that down to a few seconds. Then we thought of
+          overprovisioning our background processing cluster or using machine
+          learning to predict the usage pattern. This would make our cluster
+          resources more closely match demand, but still would not properly deal
+          with sudden spikes, which was the problem we were actually facing.
+        </p>
 
-    <p>
-      Then I put myself in the shoes of the actual user of our app. When you
-      upload thousands of files, you do not expect all of them to be processed
-      immediately. So I took advantage of that. If we grouped jobs per user,
-      users who uploaded thousands of files at once would have to wait longer,
-      but in return the rest of the users of the application would not notice
-      the performance drop.
-    </p>
+        <p>
+          Then I put myself in the shoes of the actual user of our app. When you
+          upload thousands of files, you do not expect all of them to be
+          processed immediately. So I took advantage of that. If we grouped jobs
+          per user, users who uploaded thousands of files at once would have to
+          wait longer, but in return the rest of the users of the application
+          would not notice the performance drop.
+        </p>
 
-    <img width="952" height="699" loading="lazy" src="./queueing-per-user.svg" alt="Queueing per user" />
+        <img
+          width="952"
+          height="699"
+          loading="lazy"
+          src="./queueing-per-user.svg"
+          alt="Queueing per user"
+        />
 
-    <h2 id="per-user-queue-implementation">
-      <a href="#per-user-queue-implementation">Per user queue implementation</a>
-    </h2>
+        <h2 id="per-user-queue-implementation">
+          <a href="#per-user-queue-implementation"
+            >Per user queue implementation</a
+          >
+        </h2>
 
-    <p>
-      SQS stands for <em>Simple</em> Queue Service, and at the time it did not
-      give us the per-user scheduling behavior we wanted out of the box.
-      Ironically AWS introduced
-      <a
-        href="https://aws.amazon.com/about-aws/whats-new/2025/07/amazon-sqs-introduces-fair/"
-        target="_blank"
-        >SQS fair queues</a
-      >
-      after I implemented my custom solution. If I faced the same problem today,
-      I would probably go ahead and give it a try.
-    </p>
+        <p>
+          SQS stands for <em>Simple</em> Queue Service, and at the time it did
+          not give us the per-user scheduling behavior we wanted out of the box.
+          Ironically AWS introduced
+          <a
+            href="https://aws.amazon.com/about-aws/whats-new/2025/07/amazon-sqs-introduces-fair/"
+            target="_blank"
+            >SQS fair queues</a
+          >
+          after I implemented my custom solution. If I faced the same problem
+          today, I would probably go ahead and give it a try.
+        </p>
 
-    <p>
-      At the time I looked into other more advanced queues like
-      <a href="https://www.rabbitmq.com/" target="_blank">RabbitMQ</a> but to
-      keep the infrastructure overhead low I decided to start with our already
-      existing
-      <a href="https://www.mongodb.com/" target="_blank">MongoDB</a> database.
-    </p>
+        <p>
+          At the time I looked into other more advanced queues like
+          <a href="https://www.rabbitmq.com/" target="_blank">RabbitMQ</a> but
+          to keep the infrastructure overhead low I decided to start with our
+          already existing
+          <a href="https://www.mongodb.com/" target="_blank">MongoDB</a>
+          database.
+        </p>
 
-    <p>
-      I designed a custom queue in MongoDB. Instead of treating the backlog as
-      one flat list of jobs, every job carried a <code>userId</code>. Workers
-      would pick jobs in a round-robin style across users.
-    </p>
+        <p>
+          I designed a custom queue in MongoDB. Instead of treating the backlog
+          as one flat list of jobs, every job carried a <code>userId</code>.
+          Workers would pick jobs in a round-robin style across users.
+        </p>
 
-    <p>The goal was simple:</p>
+        <p>The goal was simple:</p>
 
-    <ul>
-      <li>
-        If one user uploads thousands of files, they should still get processed.
-      </li>
-      <li>
-        If another user uploads one file during that spike, they should not wait
-        behind the entire batch.
-      </li>
-      <li>
-        If only one user has work left, the system should use all available
-        worker capacity for that user.
-      </li>
-    </ul>
+        <ul>
+          <li>
+            If one user uploads thousands of files, they should still get
+            processed.
+          </li>
+          <li>
+            If another user uploads one file during that spike, they should not
+            wait behind the entire batch.
+          </li>
+          <li>
+            If only one user has work left, the system should use all available
+            worker capacity for that user.
+          </li>
+        </ul>
 
-    <p>
-      That last point is important.
-      <strong
-        >Fairness should not mean artificially slowing the pipeline down when
-        there is no contention.</strong
-      >
-    </p>
+        <p>
+          That last point is important.
+          <strong
+            >Fairness should not mean artificially slowing the pipeline down
+            when there is no contention.</strong
+          >
+        </p>
 
-    <p>In practice, each background job had this shape:</p>
+        <p>In practice, each background job had this shape:</p>
 
-    <pre><code class="language-typescript">type JobBase = {
+        <pre><code class="language-typescript">type JobBase = {
   _id: ObjectId;
   userId: ObjectId;
   handler: string;
@@ -349,14 +372,15 @@ type Job =
       error: Error | ErrorFromSerialized;
     });</code></pre>
 
-    <p>
-      The implementation was similar. The API inserts a document in the MongoDB
-      collection. Workers fetch the next document to process, update it to
-      <code>PROCESSING</code>, run the handler, report metrics, update it to
-      <code>COMPLETED</code>, and wait for the next one.
-    </p>
+        <p>
+          The implementation was similar. The API inserts a document in the
+          MongoDB collection. Workers fetch the next document to process, update
+          it to
+          <code>PROCESSING</code>, run the handler, report metrics, update it to
+          <code>COMPLETED</code>, and wait for the next one.
+        </p>
 
-    <pre><code class="language-js">let isPolling = false;
+        <pre><code class="language-js">let isPolling = false;
 let processing;
 let jobsCollection;
 
@@ -451,13 +475,13 @@ exports.stop = async function () {
   await processing;
 };</code></pre>
 
-    <p>
-      When a worker asks for the next job, it does not simply take the oldest
-      pending job globally. It first finds the oldest pending job per user, then
-      chooses the user whose last started job is oldest.
-    </p>
+        <p>
+          When a worker asks for the next job, it does not simply take the
+          oldest pending job globally. It first finds the oldest pending job per
+          user, then chooses the user whose last started job is oldest.
+        </p>
 
-    <pre><code class="language-js">async function fetchNextPendingJob() {
+        <pre><code class="language-js">async function fetchNextPendingJob() {
   const cursor = jobsCollection.aggregate([
     // Fetch oldest pending job per user
     {
@@ -518,15 +542,15 @@ exports.stop = async function () {
   return cursor.next();
 }</code></pre>
 
-    <p>
-      Then we have to make sure we avoid race conditions. For that, we try to
-      update the next job only if it is still <code>PENDING</code>. Two workers
-      may race and select the same pending job, but only one of them can
-      successfully move it from <code>PENDING</code> to <code>PROCESSING</code>.
-      The loser simply tries again.
-    </p>
+        <p>
+          Then we have to make sure we avoid race conditions. For that, we try
+          to update the next job only if it is still <code>PENDING</code>. Two
+          workers may race and select the same pending job, but only one of them
+          can successfully move it from <code>PENDING</code> to
+          <code>PROCESSING</code>. The loser simply tries again.
+        </p>
 
-    <pre><code class="language-js">/**
+        <pre><code class="language-js">/**
  * Fetches the next job to process from the queue.
  * @returns {Promise&lt;Job | undefined&gt;}
  */
@@ -555,167 +579,185 @@ async function nextJob() {
   logger.debug(TAG, "job already claimed by another worker", { nextJob });
 }</code></pre>
 
-    <h2 id="what-changed-in-the-user-experience">
-      <a href="#what-changed-in-the-user-experience"
-        >What changed in the user experience</a
-      >
-    </h2>
+        <h2 id="what-changed-in-the-user-experience">
+          <a href="#what-changed-in-the-user-experience"
+            >What changed in the user experience</a
+          >
+        </h2>
 
-    <p>
-      The difference was immediate because the pipeline stopped being dominated
-      by the largest batches of uploads from single users.
-    </p>
+        <p>
+          The difference was immediate because the pipeline stopped being
+          dominated by the largest batches of uploads from single users.
+        </p>
 
-    <img width="1221" height="921" loading="lazy"
-      src="./background-queue-alarm-metrics.png"
-      alt="Our background processing alarm getting triggered"
-    />
+        <img
+          width="1221"
+          height="921"
+          loading="lazy"
+          src="./background-queue-alarm-metrics.png"
+          alt="Our background processing alarm getting triggered"
+        />
 
-    <p>
-      With the old queue, we could see wait time spikes when a big customer
-      batch landed at the wrong moment. The overall p99 did not magically become
-      perfect. It still tends to sit around 3 seconds because large files and
-      large batches still exist.
-      <strong
-        >The important change was that one customer flooding the queue no longer
-        made everyone else feel the pain.</strong
-      >
-      Other users could continue to upload a small number of files and see low
-      queue wait time, so the complaints stopped.
-    </p>
+        <p>
+          With the old queue, we could see wait time spikes when a big customer
+          batch landed at the wrong moment. The overall p99 did not magically
+          become perfect. It still tends to sit around 3 seconds because large
+          files and large batches still exist.
+          <strong
+            >The important change was that one customer flooding the queue no
+            longer made everyone else feel the pain.</strong
+          >
+          Other users could continue to upload a small number of files and see
+          low queue wait time, so the complaints stopped.
+        </p>
 
-    <p>
-      Today, this pipeline processes roughly 800,000 file uploads and 6TB of
-      storage per month.
-    </p>
+        <p>
+          Today, this pipeline processes roughly 800,000 file uploads and 6TB of
+          storage per month.
+        </p>
 
-    <h2 id="queue-observability">
-      <a href="#queue-observability">Queue observability</a>
-    </h2>
+        <h2 id="queue-observability">
+          <a href="#queue-observability">Queue observability</a>
+        </h2>
 
-    <p>
-      If jobs eventually finish, it can look healthy from the outside, even if
-      users are waiting too long. That is why we tracked separate metrics.
-    </p>
+        <p>
+          If jobs eventually finish, it can look healthy from the outside, even
+          if users are waiting too long. That is why we tracked separate
+          metrics.
+        </p>
 
-    <p>
-      If <code>ProcessTime</code> is high, the handler is expensive. Maybe video
-      transcoding is slow, maybe a converter is misbehaving, or maybe the file
-      is just huge. If <code>WaitTime</code> is high, the queueing policy or
-      worker capacity is the problem. Splitting those two concepts kept the
-      debugging concrete: <em>processing time</em> told us about the work
-      itself, while <em>wait time</em> told us about the scheduling experience.
-    </p>
+        <p>
+          If <code>ProcessTime</code> is high, the handler is expensive. Maybe
+          video transcoding is slow, maybe a converter is misbehaving, or maybe
+          the file is just huge. If <code>WaitTime</code> is high, the queueing
+          policy or worker capacity is the problem. Splitting those two concepts
+          kept the debugging concrete: <em>processing time</em> told us about
+          the work itself, while <em>wait time</em> told us about the scheduling
+          experience.
+        </p>
 
-    <p>
-      Speaking of debugging, a nice advantage of using MongoDB is that the
-      history and status of the queue are easy to inspect. That allows us to
-      check and modify the queue in case of problems.
-    </p>
+        <p>
+          Speaking of debugging, a nice advantage of using MongoDB is that the
+          history and status of the queue are easy to inspect. That allows us to
+          check and modify the queue in case of problems.
+        </p>
 
-    <h2 id="why-not-just-use-priority-queues">
-      <a href="#why-not-just-use-priority-queues"
-        >Why not just use priority queues?</a
-      >
-    </h2>
+        <h2 id="why-not-just-use-priority-queues">
+          <a href="#why-not-just-use-priority-queues"
+            >Why not just use priority queues?</a
+          >
+        </h2>
 
-    <p>
-      Priority queues can help, but they were not the main shape of the problem.
-    </p>
+        <p>
+          Priority queues can help, but they were not the main shape of the
+          problem.
+        </p>
 
-    <p>
-      We did not want to say that some customers were always more important than
-      others. We wanted to prevent any single customer from consuming the whole
-      pipeline during bursts.
-    </p>
+        <p>
+          We did not want to say that some customers were always more important
+          than others. We wanted to prevent any single customer from consuming
+          the whole pipeline during bursts.
+        </p>
 
-    <p>
-      A priority system can also become a political problem very quickly: Which
-      customer gets priority? Which file type? Which plan? What happens when a
-      large enterprise customer uploads a huge batch while another large
-      enterprise customer uploads one urgent file?
-    </p>
+        <p>
+          A priority system can also become a political problem very quickly:
+          Which customer gets priority? Which file type? Which plan? What
+          happens when a large enterprise customer uploads a huge batch while
+          another large enterprise customer uploads one urgent file?
+        </p>
 
-    <p>
-      Fair scheduling was a cleaner default. It encoded a product principle
-      directly into the system:
-      <strong
-        >under contention, every active customer should keep making
-        progress.</strong
-      >
-    </p>
+        <p>
+          Fair scheduling was a cleaner default. It encoded a product principle
+          directly into the system:
+          <strong
+            >under contention, every active customer should keep making
+            progress.</strong
+          >
+        </p>
 
-    <h2 id="why-mongodb-was-good-enough-here">
-      <a href="#why-mongodb-was-good-enough-here"
-        >Why MongoDB was good enough here</a
-      >
-    </h2>
+        <h2 id="why-mongodb-was-good-enough-here">
+          <a href="#why-mongodb-was-good-enough-here"
+            >Why MongoDB was good enough here</a
+          >
+        </h2>
 
-    <p>
-      I'm not encouraging you to build your own queues on top of your database,
-      but in our case the amount of messages meant it wouldn't add any
-      significant load to our database and we already used MongoDB heavily.
-    </p>
+        <p>
+          I'm not encouraging you to build your own queues on top of your
+          database, but in our case the amount of messages meant it wouldn't add
+          any significant load to our database and we already used MongoDB
+          heavily.
+        </p>
 
-    <p>
-      The job documents were easy to inspect. The scheduler logic could be
-      expressed within the database using an aggregation pipeline without having
-      to spin up a scheduler service. Atomic updates were enough to claim jobs
-      safely across workers. We could keep the operational model simple while
-      adding the scheduling behavior we actually needed.
-    </p>
+        <p>
+          The job documents were easy to inspect. The scheduler logic could be
+          expressed within the database using an aggregation pipeline without
+          having to spin up a scheduler service. Atomic updates were enough to
+          claim jobs safely across workers. We could keep the operational model
+          simple while adding the scheduling behavior we actually needed.
+        </p>
 
-    <h2 id="what-i-would-keep-in-mind-next-time">
-      <a href="#what-i-would-keep-in-mind-next-time"
-        >What I would keep in mind next time</a
-      >
-    </h2>
+        <h2 id="what-i-would-keep-in-mind-next-time">
+          <a href="#what-i-would-keep-in-mind-next-time"
+            >What I would keep in mind next time</a
+          >
+        </h2>
 
-    <p>
-      The biggest lesson is that scalability problems are often product
-      experience problems in disguise.
-    </p>
+        <p>
+          The biggest lesson is that scalability problems are often product
+          experience problems in disguise.
+        </p>
 
-    <p>
-      From an infrastructure perspective, a queue with a growing backlog is
-      normal. From a user's perspective, uploading one file and waiting minutes
-      because someone else uploaded thousands feels broken.
-    </p>
+        <p>
+          From an infrastructure perspective, a queue with a growing backlog is
+          normal. From a user's perspective, uploading one file and waiting
+          minutes because someone else uploaded thousands feels broken.
+        </p>
 
-    <p>
-      I would also watch fairness earlier. A system can have plenty of total
-      capacity and still feel unreliable if the work is scheduled poorly.
-      Average wait time can look fine while p99 is painful.
-      <em
-        >Total throughput can improve while individual users still get stuck
-        behind noisy neighbors.</em
-      >
-    </p>
-
+        <p>
+          I would also watch fairness earlier. A system can have plenty of total
+          capacity and still feel unreliable if the work is scheduled poorly.
+          Average wait time can look fine while p99 is painful.
+          <em
+            >Total throughput can improve while individual users still get stuck
+            behind noisy neighbors.</em
+          >
+        </p>
       </article>
 
       <aside class="wwm-final-cta">
-      <h2>Let's build something solid.</h2>
-      <p>
-        Stop firefighting. Start shipping with confidence. Let's talk about what
-        predictable delivery looks like for your team.
-      </p>
-      <div class="wwm-cta-group">
-        <a
-          href="https://calendar.app.google/uNTLT3EEhmUARbzo6"
-          target="_blank"
-          class="wwm-cta-primary"
-          >Book a call</a
-        >
-        <a href="mailto:me@eliocapella.com" class="wwm-cta-secondary"
-          >Email me</a
-        >
-      </div>
+        <h2>Let's build something solid.</h2>
+        <p>
+          Stop firefighting. Start shipping with confidence. Let's talk about
+          what predictable delivery looks like for your team.
+        </p>
+        <div class="wwm-cta-group">
+          <a
+            href="https://calendar.app.google/uNTLT3EEhmUARbzo6"
+            target="_blank"
+            class="wwm-cta-primary"
+            >Book a call</a
+          >
+          <a href="mailto:me@eliocapella.com" class="wwm-cta-secondary"
+            >Email me</a
+          >
+        </div>
       </aside>
     </main>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"
+      integrity="sha384-06z5D//U/xpvxZHuUz92xBvq3DqBBFi7Up53HRrbV7Jlv7Yvh/MZ7oenfUe9iCEt"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"
+      integrity="sha384-D44bgYYKvaiDh4cOGlj1dbSDpSctn2FSUj118HZGmZEShZcO2v//Q5vvhNy206pp"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"
+      integrity="sha384-PeOqKNW/piETaCg8rqKFy+Pm6KEk7e36/5YZE5XO/OaFdO+/Aw3O8qZ9qDPKVUgx"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>

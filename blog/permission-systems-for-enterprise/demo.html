@@ -5,7 +5,7 @@
   This is a self-contained demo that mimics a frontend/backend system in a
   single HTML file for demonstration purposes. All data is stored in-memory
   using sql.js (SQLite compiled to WebAssembly) and there is no network
-  connection—everything runs entirely in the browser.
+  connection - everything runs entirely in the browser.
 
   The demo illustrates:
   - Data models: users, resources (folders/files), shares, and permissions
@@ -19,7 +19,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Interactive permission system demo — Elio Capella Sánchez</title>
+    <title>Interactive permission system demo - Elio Capella Sánchez</title>
     <meta
       name="description"
       content="Interactive comparison of naive read-time permission checks and write-time RBAC permission precomputation."
@@ -475,10 +475,14 @@
       <div class="status-bar" id="statusBar">
         <span id="statOperation">Ready</span>
         <div class="stat">
-          <span class="stat-label-full">reads:</span><span class="stat-label-short">r:</span> <span class="stat-value" id="statReads">0</span>
+          <span class="stat-label-full">reads:</span
+          ><span class="stat-label-short">r:</span>
+          <span class="stat-value" id="statReads">0</span>
         </div>
         <div class="stat">
-          <span class="stat-label-full">writes:</span><span class="stat-label-short">w:</span> <span class="stat-value" id="statWrites">0</span>
+          <span class="stat-label-full">writes:</span
+          ><span class="stat-label-short">w:</span>
+          <span class="stat-value" id="statWrites">0</span>
         </div>
         <div class="impl-toggle">
           <label>
@@ -494,12 +498,26 @@
           href="https://github.com/eliOcs/eliOcs.github.io/blob/main/blog/permission-systems-for-enterprise/demo.html"
           target="_blank"
           class="source-link"
-          ><span class="source-label">source </span><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 256 256"><path d="M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z"></path></svg></a
-        >
+          ><span class="source-label">source </span
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="12"
+            height="12"
+            fill="currentColor"
+            viewBox="0 0 256 256"
+          >
+            <path
+              d="M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z"
+            ></path></svg
+        ></a>
       </div>
     </main>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.13.0/sql-wasm.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.13.0/sql-wasm.min.js"
+      integrity="sha384-666zzSs4ww6001MxYRNfvlFGHQAn+2hSCyPUSDg/MW9J2QZw+f+ow9MAIwhXktuy"
+      crossorigin="anonymous"
+    ></script>
     <script>
       // ============================================================
       // SQL MODULE - Database operations

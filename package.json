@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "serve .",
-    "test": "playwright test",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "lint:html": "html-validate \"**/*.html\"",
+    "test": "npm run format:check && npm run lint:html && playwright test",
     "test:visual": "playwright test tests/visual.spec.js",
     "test:visual:update": "playwright test tests/visual.spec.js --update-snapshots"
   },
@@ -13,6 +16,7 @@
   "license": "ISC",
   "devDependencies": {
     "@playwright/test": "1.62.1",
+    "html-validate": "11.6.2",
     "prettier": "3.9.6",
     "serve": "14.2.6"
   }
