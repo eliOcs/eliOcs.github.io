@@ -162,3 +162,53 @@ test("crawler discovery files cover every indexable page and blog post", async (
     );
   }
 });
+
+test("structured data identifies the site owner and every blog post", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const profileData = JSON.parse(
+    await page.locator('script[type="application/ld+json"]').textContent(),
+  );
+  expect(profileData["@graph"].map((item) => item["@type"])).toEqual([
+    "WebSite",
+    "ProfilePage",
+    "Person",
+  ]);
+  expect(profileData["@graph"][2]).toMatchObject({
+    "@id": "https://eliocapella.com/#person",
+    name: "Elio Capella Sánchez",
+    url: "https://eliocapella.com/",
+  });
+
+  for (const path of BLOG_POSTS) {
+    await page.goto(path);
+
+    const data = JSON.parse(
+      await page.locator('script[type="application/ld+json"]').textContent(),
+    );
+    const canonical = await page
+      .locator('link[rel="canonical"]')
+      .getAttribute("href");
+    const description = await page
+      .locator('meta[name="description"]')
+      .getAttribute("content");
+    const publishedTime = await page
+      .locator('meta[property="article:published_time"]')
+      .getAttribute("content");
+
+    expect(data).toMatchObject({
+      "@type": "BlogPosting",
+      "@id": `${canonical}#article`,
+      headline: await page.locator("article h1").textContent(),
+      description,
+      datePublished: publishedTime,
+      dateModified: publishedTime,
+      author: {
+        "@id": "https://eliocapella.com/#person",
+        name: "Elio Capella Sánchez",
+      },
+      mainEntityOfPage: { "@id": canonical },
+    });
+  }
+});

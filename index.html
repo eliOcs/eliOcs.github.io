@@ -47,6 +47,51 @@
       property="twitter:image"
       content="https://eliocapella.com/selfie.jpg"
     />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://eliocapella.com/#website",
+            "url": "https://eliocapella.com/",
+            "name": "Elio Capella Sánchez",
+            "author": {
+              "@id": "https://eliocapella.com/#person"
+            }
+          },
+          {
+            "@type": "ProfilePage",
+            "@id": "https://eliocapella.com/#profile",
+            "url": "https://eliocapella.com/",
+            "name": "Elio Capella Sánchez",
+            "isPartOf": {
+              "@id": "https://eliocapella.com/#website"
+            },
+            "mainEntity": {
+              "@id": "https://eliocapella.com/#person"
+            }
+          },
+          {
+            "@type": "Person",
+            "@id": "https://eliocapella.com/#person",
+            "name": "Elio Capella Sánchez",
+            "url": "https://eliocapella.com/",
+            "image": "https://eliocapella.com/selfie.jpg",
+            "jobTitle": "Head of Engineering",
+            "worksFor": {
+              "@type": "Organization",
+              "name": "Filestage",
+              "url": "https://filestage.io/"
+            },
+            "sameAs": [
+              "https://www.linkedin.com/in/eliocapella/",
+              "https://github.com/eliOcs"
+            ]
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <main>
