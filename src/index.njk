@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="canonical" href="https://eliocapella.com/" />
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="Elio Capella Sánchez's blog"
+      href="/feed.xml"
+    />
+    <title>Elio Capella Sánchez</title>
+    <meta
+      name="description"
+      content="Head of Engineering at Filestage.io. Technology leader and Computer Science Engineer with over 17 years of experience in software development and startup environments."
+    />
+    <meta name="author" content="Elio Capella Sánchez" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://eliocapella.com/" />
+    <meta property="og:title" content="Elio Capella Sánchez" />
+    <meta
+      property="og:description"
+      content="Head of Engineering at Filestage.io. Technology leader and Computer Science Engineer with over 17 years of experience in software development and startup environments."
+    />
+    <meta property="og:image" content="https://eliocapella.com/selfie.jpg" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://eliocapella.com/" />
+    <meta name="twitter:title" content="Elio Capella Sánchez" />
+    <meta
+      name="twitter:description"
+      content="Head of Engineering at Filestage.io. Technology leader and Computer Science Engineer with over 17 years of experience in software development and startup environments."
+    />
+    <meta name="twitter:image" content="https://eliocapella.com/selfie.jpg" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://eliocapella.com/#website",
+            "url": "https://eliocapella.com/",
+            "name": "Elio Capella Sánchez",
+            "author": {
+              "@id": "https://eliocapella.com/#person"
+            }
+          },
+          {
+            "@type": "ProfilePage",
+            "@id": "https://eliocapella.com/#profile",
+            "url": "https://eliocapella.com/",
+            "name": "Elio Capella Sánchez",
+            "isPartOf": {
+              "@id": "https://eliocapella.com/#website"
+            },
+            "mainEntity": {
+              "@id": "https://eliocapella.com/#person"
+            }
+          },
+          {
+            "@type": "Person",
+            "@id": "https://eliocapella.com/#person",
+            "name": "Elio Capella Sánchez",
+            "url": "https://eliocapella.com/",
+            "image": "https://eliocapella.com/selfie.jpg",
+            "jobTitle": "Head of Engineering",
+            "worksFor": {
+              "@type": "Organization",
+              "name": "Filestage",
+              "url": "https://filestage.io/"
+            },
+            "sameAs": [
+              "https://www.linkedin.com/in/eliocapella/",
+              "https://github.com/eliOcs"
+            ]
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <main>
+      <h1>Elio Capella Sánchez</h1>
+      <img
+        width="300"
+        height="300"
+        src="/selfie.jpg"
+        alt="Elio Capella Sánchez"
+        class="selfie"
+      />
+      <p>
+        I'm currently the Head of Engineering at
+        <a href="https://filestage.io" target="_blank">Filestage.io</a>. I'm a
+        technology leader and Computer Science Engineer with over 17 years of
+        hands-on experience, consistently coding while guiding software
+        development in startup environments. Passionate about building
+        high-performing teams and leveraging technology to delight customers.
+      </p>
+      <p>
+        If you want to know more about my work check out my
+        <a href="/resume/">full resume</a> and
+        <a href="/projects/">side projects</a>. If your startup needs an
+        experienced engineering leader to stabilize your platform and ship with
+        confidence, <a href="/work-with-me/">let's work together</a>.
+      </p>
+      <section aria-labelledby="latest-posts">
+        <h2 id="latest-posts" class="visually-hidden">Latest blog posts</h2>
+        <p>I invite you to read my latest blog posts:</p>
+        <ol class="blog-post-list">
+{% for post in collections.blogPosts %}
+            <li>
+              <article class="blog-post-preview">
+                <h2><a href="{{ post.url }}">{{ post.data.title }}</a></h2>
+                <p class="preview-date">
+                  <time datetime="{{ post.data.published | dateOnly }}">{{ post.data.published | readableDate }}</time>
+                </p>
+                <p>{{ post.data.preview | safe }}</p>
+              </article>
+            </li>
+{% endfor %}
+        </ol>
+      </section>
+    </main>
+  </body>
+</html>

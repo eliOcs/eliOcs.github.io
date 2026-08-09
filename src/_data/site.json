@@ -1,0 +1,7 @@
+{
+  "author": "Elio Capella Sánchez",
+  "description": "Practical engineering lessons from building software and teams.",
+  "staticPages": ["/", "/projects/", "/resume/", "/work-with-me/"],
+  "title": "Elio Capella Sánchez's blog",
+  "url": "https://eliocapella.com"
+}

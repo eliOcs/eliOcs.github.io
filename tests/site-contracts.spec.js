@@ -140,6 +140,23 @@ test("crawler discovery files cover every indexable page and blog post", async (
   }
   expect(sitemap).not.toContain("demo.html");
 
+  for (const path of BLOG_POSTS) {
+    const pageResponse = await request.get(path);
+    const html = await pageResponse.text();
+    const publishedDate = html.match(
+      /<meta property="article:published_time" content="(\d{4}-\d{2}-\d{2})/,
+    )[1];
+    const sitemapEntry = sitemap.match(
+      new RegExp(
+        `<url>\\s*<loc>${new URL(path, "https://eliocapella.com").href}</loc>\\s*<lastmod>([^<]+)</lastmod>`,
+      ),
+    );
+    expect(
+      sitemapEntry?.[1],
+      `${path} should use its blog date as lastmod`,
+    ).toBe(publishedDate);
+  }
+
   const feed = await (await request.get("/feed.xml")).text();
   expect(feed.match(/<entry>/g)).toHaveLength(BLOG_POSTS.length);
   for (const path of BLOG_POSTS) {
