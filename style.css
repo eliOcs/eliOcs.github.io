@@ -327,10 +327,6 @@ figure img {
   margin: 0 auto 0.5rem auto;
 }
 
-.image-narrow {
-  width: 60%;
-}
-
 figcaption {
   font-size: 0.9rem;
   color: var(--base04);
