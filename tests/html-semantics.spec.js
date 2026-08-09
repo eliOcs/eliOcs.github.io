@@ -118,3 +118,18 @@ test("indexable pages declare a self-referencing canonical URL", async ({
     );
   }
 });
+
+test("homepage exposes its posts as a semantic ordered article index", async ({
+  page,
+}) => {
+  await page.goto("/");
+
+  const postList = page.locator('section[aria-labelledby="latest-posts"] > ol');
+  await expect(postList.locator(":scope > li > article")).toHaveCount(
+    BLOG_POSTS.length,
+  );
+  await expect(postList.locator("article > h2 > a")).toHaveCount(
+    BLOG_POSTS.length,
+  );
+  await expect(postList.locator("article > a")).toHaveCount(0);
+});
