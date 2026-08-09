@@ -330,7 +330,7 @@ function addItem(item) {
     </p>
     <pre><code class="language-js">const numbers = [1, 2, 3, 4, 5];
 const squaresOfEvens = [];
-for (let i = 0; i < numbers.length; i++) {
+for (let i = 0; i &lt; numbers.length; i++) {
   const num = numbers[i];
   if (num % 2 === 0) {
     squaresOfEvens.push(num * num);
@@ -359,7 +359,7 @@ console.log(squaresOfEvens); // [4, 16]
     <pre><code class="language-js">function addProjectCollaborator(project, collaborator, user, subscription) {
   if (project.collaborators.includes(user)) {
     if (project.status === "active") {
-      if (project.collaborators.length < subscription.limits.numberOfProjectCollaborators) {
+      if (project.collaborators.length &lt; subscription.limits.numberOfProjectCollaborators) {
         project.collaborators.push(collaborator);
       } else if (subscription.status === "paid" || subscription.status === "trialing" ) {
          throw new Error("Reached the subscription limit, please upgrade");
@@ -390,7 +390,7 @@ function isProjectActive({ project }) {
   return project.status === "active";
 }
 function isWithinSubscriptionLimits({ project, subscription }) {
-  return project.collaborators.length < subscription.limits.numberOfProjectCollaborators;
+  return project.collaborators.length &lt; subscription.limits.numberOfProjectCollaborators;
 }
 function isSubscriptionValid({ subscription }) {
   return subscription.status === "paid" || subscription.status === "trialing";
@@ -507,7 +507,7 @@ import knex from 'knex'({
  * @property {number} age
  * @property {string} name
  *
- * @returns {Knex.QueryBuilder<User, {}>}
+ * @returns {Knex.QueryBuilder&lt;User, {}&gt;}
  */
 const Users = () => knex('Users');
 
@@ -539,7 +539,7 @@ const users = await Users().where('age', '>', 18);
     </p>
     <pre><code class="language-js">async function transferFunds(fromAccount, toAccount, amount) {
   const fromBalance = await getAccountBalance(fromAccount);
-  if (fromBalance < amount) {
+  if (fromBalance &lt; amount) {
     throw new Error('Insufficient funds');
   }
   await deductFromAccount(fromAccount, amount);
