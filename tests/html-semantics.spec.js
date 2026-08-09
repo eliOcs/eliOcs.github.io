@@ -116,6 +116,10 @@ test("indexable pages declare a self-referencing canonical URL", async ({
       "href",
       new URL(path, "https://eliocapella.com").href,
     );
+    await expect(
+      page.locator('link[rel="alternate"][type="application/atom+xml"]'),
+      `${path} should advertise the Atom feed`,
+    ).toHaveAttribute("href", "/feed.xml");
   }
 });
 
@@ -132,4 +136,29 @@ test("homepage exposes its posts as a semantic ordered article index", async ({
     BLOG_POSTS.length,
   );
   await expect(postList.locator("article > a")).toHaveCount(0);
+});
+
+test("crawler discovery files cover every indexable page and blog post", async ({
+  request,
+}) => {
+  const robots = await (await request.get("/robots.txt")).text();
+  expect(robots).toContain("User-agent: *");
+  expect(robots).toContain("Sitemap: https://eliocapella.com/sitemap.xml");
+
+  const sitemap = await (await request.get("/sitemap.xml")).text();
+  expect(sitemap.match(/<url>/g)).toHaveLength(INDEXABLE_PAGES.length);
+  for (const path of INDEXABLE_PAGES) {
+    expect(sitemap).toContain(
+      `<loc>${new URL(path, "https://eliocapella.com").href}</loc>`,
+    );
+  }
+  expect(sitemap).not.toContain("demo.html");
+
+  const feed = await (await request.get("/feed.xml")).text();
+  expect(feed.match(/<entry>/g)).toHaveLength(BLOG_POSTS.length);
+  for (const path of BLOG_POSTS) {
+    expect(feed).toContain(
+      `<id>${new URL(path, "https://eliocapella.com").href}</id>`,
+    );
+  }
 });

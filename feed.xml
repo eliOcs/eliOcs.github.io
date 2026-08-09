@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Elio Capella Sánchez's blog</title>
+  <subtitle>Practical engineering lessons from building software and teams.</subtitle>
+  <id>https://eliocapella.com/</id>
+  <link href="https://eliocapella.com/" />
+  <link rel="self" type="application/atom+xml" href="https://eliocapella.com/feed.xml" />
+  <updated>2026-08-09T00:00:00+02:00</updated>
+  <author>
+    <name>Elio Capella Sánchez</name>
+    <uri>https://eliocapella.com/</uri>
+  </author>
+  <entry>
+    <title>From One Engineering Team to Autonomous Squads</title>
+    <id>https://eliocapella.com/blog/scaling-engineering-squads/</id>
+    <link href="https://eliocapella.com/blog/scaling-engineering-squads/" />
+    <published>2026-07-21T00:00:00+02:00</published>
+    <updated>2026-07-21T00:00:00+02:00</updated>
+    <summary>How we scaled Filestage engineering from one team into autonomous squads with clear ownership and safe technical foundations.</summary>
+  </entry>
+  <entry>
+    <title>Communicating Bad News With Clarity</title>
+    <id>https://eliocapella.com/blog/communication-in-hard-times/</id>
+    <link href="https://eliocapella.com/blog/communication-in-hard-times/" />
+    <published>2026-06-12T00:00:00+02:00</published>
+    <updated>2026-06-12T00:00:00+02:00</updated>
+    <summary>Practical lessons for communicating layoffs and other bad news with honesty, clarity, and respect.</summary>
+  </entry>
+  <entry>
+    <title>Fair background file processing</title>
+    <id>https://eliocapella.com/blog/fair-background-file-processing/</id>
+    <link href="https://eliocapella.com/blog/fair-background-file-processing/" />
+    <published>2026-06-06T00:00:00+02:00</published>
+    <updated>2026-06-06T00:00:00+02:00</updated>
+    <summary>How fair per-user scheduling stopped large upload batches from monopolizing a shared processing queue.</summary>
+  </entry>
+  <entry>
+    <title>AI Slop Proof</title>
+    <id>https://eliocapella.com/blog/ai-slop-proof/</id>
+    <link href="https://eliocapella.com/blog/ai-slop-proof/" />
+    <published>2026-03-12T00:00:00+01:00</published>
+    <updated>2026-03-12T00:00:00+01:00</updated>
+    <summary>Guardrails for keeping AI-generated code readable, reliable, performant, observable, and safe to ship.</summary>
+  </entry>
+  <entry>
+    <title>Writing Good Unit Tests</title>
+    <id>https://eliocapella.com/blog/writing-good-unit-tests/</id>
+    <link href="https://eliocapella.com/blog/writing-good-unit-tests/" />
+    <published>2026-01-23T00:00:00+01:00</published>
+    <updated>2026-01-23T00:00:00+01:00</updated>
+    <summary>Test behaviors instead of implementation details, and mock only at system boundaries.</summary>
+  </entry>
+  <entry>
+    <title>How We Built AI-Powered Review at Filestage</title>
+    <id>https://eliocapella.com/blog/ai-powered-review-filestage/</id>
+    <link href="https://eliocapella.com/blog/ai-powered-review-filestage/" />
+    <published>2026-01-09T00:00:00Z</published>
+    <updated>2026-01-09T00:00:00Z</updated>
+    <summary>How we shipped AI-powered text and image review in under a month without custom models, GPUs, or new infrastructure.</summary>
+  </entry>
+  <entry>
+    <title>Permission Systems for Enterprise that Scale</title>
+    <id>https://eliocapella.com/blog/permission-systems-for-enterprise/</id>
+    <link href="https://eliocapella.com/blog/permission-systems-for-enterprise/" />
+    <published>2025-12-12T00:00:00+01:00</published>
+    <updated>2025-12-12T00:00:00+01:00</updated>
+    <summary>How write-time permission precomputation makes complex enterprise authorization fast at read time.</summary>
+  </entry>
+  <entry>
+    <title>Migrating 6000 React tests using AI Agents and ASTs</title>
+    <id>https://eliocapella.com/blog/ai-library-migration-guide/</id>
+    <link href="https://eliocapella.com/blog/ai-library-migration-guide/" />
+    <published>2025-11-21T00:00:00Z</published>
+    <updated>2025-11-21T00:00:00Z</updated>
+    <summary>How AI agents, codemods, and a careful migration guide moved 6000 React tests to a new library version.</summary>
+  </entry>
+  <entry>
+    <title>Simple JavaScript Toolkit</title>
+    <id>https://eliocapella.com/blog/simple-js-toolkit/</id>
+    <link href="https://eliocapella.com/blog/simple-js-toolkit/" />
+    <published>2025-11-14T00:00:00+01:00</published>
+    <updated>2025-11-14T00:00:00+01:00</updated>
+    <summary>Applying simple-system principles to JavaScript through values, data, controlled state, and explicit rules.</summary>
+  </entry>
+  <entry>
+    <title>How I Build Engineering Culture</title>
+    <id>https://eliocapella.com/blog/engineering-culture/</id>
+    <link href="https://eliocapella.com/blog/engineering-culture/" />
+    <published>2025-10-10T00:00:00+02:00</published>
+    <updated>2025-10-10T00:00:00+02:00</updated>
+    <summary>How kindness, pragmatism, reliability, transparency, and simple architecture shape a productive engineering culture.</summary>
+  </entry>
+  <entry>
+    <title>Vendor lock in nightmares</title>
+    <id>https://eliocapella.com/blog/vendor-lock-in-nightmares/</id>
+    <link href="https://eliocapella.com/blog/vendor-lock-in-nightmares/" />
+    <published>2025-08-22T00:00:00+02:00</published>
+    <updated>2025-08-22T00:00:00+02:00</updated>
+    <summary>Lessons from painful vendor migrations involving Transloadit, Auth0, and MongoDB Atlas.</summary>
+  </entry>
+  <entry>
+    <title>Fighting free trial abuse</title>
+    <id>https://eliocapella.com/blog/fighting-free-trial-abuse/</id>
+    <link href="https://eliocapella.com/blog/fighting-free-trial-abuse/" />
+    <published>2025-07-22T00:00:00+02:00</published>
+    <updated>2025-07-22T00:00:00+02:00</updated>
+    <summary>What worked and failed while protecting an open SaaS trial from spam and misuse.</summary>
+  </entry>
+  <entry>
+    <title>Measure what matters</title>
+    <id>https://eliocapella.com/blog/measure-what-matters/</id>
+    <link href="https://eliocapella.com/blog/measure-what-matters/" />
+    <published>2025-07-13T00:00:00+02:00</published>
+    <updated>2025-07-13T00:00:00+02:00</updated>
+    <summary>How satisfaction, merged pull requests, technical tickets, and impact metrics reveal engineering-team bottlenecks.</summary>
+  </entry>
+</feed>
