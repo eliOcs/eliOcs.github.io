@@ -193,16 +193,17 @@
     </style>
   </head>
   <body>
-    <div class="split-layout">
+    <main class="split-layout">
       <div class="blog-content">
         <div class="blog-content-inner">
-          <div class="page-header">
+          <article>
+          <header class="page-header">
             <a href="/" class="home-nav">
               <img src="/selfie.jpg" alt="Go to home page" />
             </a>
             <h1>Permission Systems for Enterprise that Scale</h1>
             <p class="post-date">December 12, 2025</p>
-          </div>
+          </header>
 
           <p>
             Many startups eventually gravitate towards enterprise customers for
@@ -716,7 +717,9 @@ await sqlRun(
             all permissions from the source of truth. You'll use it more than
             you expect.
           </p>
-          <section class="wwm-final-cta">
+          </article>
+
+          <aside class="wwm-final-cta">
             <h2>Let's build something solid.</h2>
             <p>
               Stop firefighting. Start shipping with confidence. Let's talk
@@ -733,7 +736,7 @@ await sqlRun(
                 >Email me</a
               >
             </div>
-          </section>
+          </aside>
         </div>
       </div>
       <div class="demo-panel" id="demoPanel">
@@ -754,7 +757,7 @@ await sqlRun(
           <polyline points="6,9 12,15 18,9" />
         </svg>
       </div>
-    </div>
+    </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
