@@ -66,32 +66,6 @@ body {
   position: relative;
 }
 
-.site-header {
-  margin-bottom: 2rem;
-}
-
-.site-nav ul {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem 1.25rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.site-nav a {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 0.875rem;
-  text-underline-offset: 4px;
-}
-
-.site-nav a[aria-current="page"] {
-  color: var(--base05);
-  text-decoration-color: var(--base08);
-  text-decoration-thickness: 2px;
-}
-
 /* Page header container */
 .page-header {
   position: relative;
@@ -1213,8 +1187,7 @@ a:hover h3 {
 
   /* Hide navigation elements */
   .home-nav,
-  .download-nav,
-  .site-header {
+  .download-nav {
     display: none !important;
   }
 
