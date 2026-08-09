@@ -234,3 +234,24 @@ test("indexable pages expose a consistent primary navigation", async ({
     ]);
   }
 });
+
+test("interactive demo provides static context without competing for indexing", async ({
+  page,
+}) => {
+  await page.goto("/blog/permission-systems-for-enterprise/demo.html");
+
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+    "content",
+    "noindex,follow",
+  );
+  await expect(
+    page.getByRole("heading", {
+      level: 1,
+      name: "Interactive permission system demo",
+    }),
+  ).toHaveCount(1);
+  await expect(
+    page.locator('main a[href="./"]'),
+    "the demo should point agents back to its explanatory article",
+  ).toHaveCount(1);
+});
