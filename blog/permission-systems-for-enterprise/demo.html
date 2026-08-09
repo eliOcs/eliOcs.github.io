@@ -25,13 +25,23 @@
       content="Interactive comparison of naive read-time permission checks and write-time RBAC permission precomputation."
     />
     <meta name="robots" content="noindex,follow" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&amp;display=swap"
-      rel="stylesheet"
-    />
     <style>
+      @font-face {
+        font-family: "JetBrains Mono";
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url("/fonts/jetbrains-mono-latin.woff2") format("woff2");
+      }
+
+      @font-face {
+        font-family: "JetBrains Mono";
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+        src: url("/fonts/jetbrains-mono-latin.woff2") format("woff2");
+      }
+
       :root {
         --base00: #181818;
         --base01: #282828;
@@ -119,7 +129,7 @@
         color: var(--base04);
         font-family: "JetBrains Mono", monospace;
         font-size: 0.9rem;
-        font-weight: 600;
+        font-weight: 700;
         cursor: pointer;
         border-bottom: 2px solid transparent;
         white-space: nowrap;
@@ -200,7 +210,7 @@
         color: var(--base07);
         font-family: "JetBrains Mono", monospace;
         font-size: 0.85rem;
-        font-weight: 600;
+        font-weight: 700;
         cursor: pointer;
         transition: border-color 0.2s ease;
       }

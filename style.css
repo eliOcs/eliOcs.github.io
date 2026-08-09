@@ -1,3 +1,27 @@
+@font-face {
+  font-family: "Literata";
+  font-style: normal;
+  font-weight: 300 500;
+  font-display: swap;
+  src: url("/fonts/literata-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/jetbrains-mono-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/jetbrains-mono-latin.woff2") format("woff2");
+}
+
 :root {
   --base00: #181818;
   --base01: #282828;
@@ -166,7 +190,7 @@ h1 {
 h2 {
   font-family: "JetBrains Mono", monospace;
   font-size: 1.5rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--base05);
   margin: 2rem 0 1rem 0;
   text-decoration: underline;
@@ -304,6 +328,7 @@ em {
 
 code {
   font-family: "JetBrains Mono", monospace;
+  font-weight: 400;
   font-size: 0.9em;
   background-color: var(--base01);
   padding: 0.1em 0.3em;
@@ -391,6 +416,7 @@ code[class*="language-"] {
 
 .source-code-link {
   font-family: "JetBrains Mono", monospace;
+  font-weight: 400;
   font-size: 0.95rem;
 }
 
@@ -499,7 +525,7 @@ code[class*="language-"] {
 h3 {
   font-family: "JetBrains Mono", monospace;
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--base05);
   margin: 1.5rem 0 0.5rem 0;
   text-decoration: underline;
@@ -829,6 +855,7 @@ a:hover h3 {
   gap: 1rem;
   margin: 1.5rem 0;
   font-family: "JetBrains Mono", monospace;
+  font-weight: 400;
   font-size: var(--wwm-text-size);
 }
 
@@ -861,7 +888,7 @@ a:hover h3 {
   border: 1px solid var(--base00);
   border-radius: 3px;
   font-family: "JetBrains Mono", monospace;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 1rem;
   text-decoration: none;
   box-shadow:
@@ -1009,6 +1036,7 @@ a:hover h3 {
   position: absolute;
   left: 0;
   font-family: "JetBrains Mono", monospace;
+  font-weight: 400;
   color: var(--base0D);
 }
 
@@ -1087,7 +1115,7 @@ a:hover h3 {
   text-align: right;
   color: var(--base0D);
   font-family: "JetBrains Mono", monospace;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .wwm-metrics-grid {
@@ -1104,6 +1132,7 @@ a:hover h3 {
 .wwm-metric strong {
   display: block;
   font-family: "JetBrains Mono", monospace;
+  font-weight: 700;
   font-size: 1rem;
   color: var(--base0B);
   margin-bottom: 0.25rem;
