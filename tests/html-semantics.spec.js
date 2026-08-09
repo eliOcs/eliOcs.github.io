@@ -71,3 +71,30 @@ test("blog posts separate article content from the consulting CTA", async ({
     await expect(page.locator("main aside.wwm-final-cta")).toHaveCount(1);
   }
 });
+
+test("blog dates expose machine-readable publication dates", async ({
+  page,
+}) => {
+  for (const path of BLOG_POSTS) {
+    await page.goto(path);
+
+    const publishedTime = await page
+      .locator('meta[property="article:published_time"]')
+      .getAttribute("content");
+    const visibleDate = page.locator("article time[datetime]");
+
+    await expect(
+      visibleDate,
+      `${path} should expose its visible date`,
+    ).toHaveCount(1);
+    await expect(visibleDate).toHaveAttribute(
+      "datetime",
+      publishedTime.slice(0, 10),
+    );
+  }
+
+  await page.goto("/");
+  await expect(page.locator(".blog-post-preview time[datetime]")).toHaveCount(
+    BLOG_POSTS.length,
+  );
+});
