@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "serve .",
-    "test": "playwright test"
+    "test": "playwright test",
+    "test:visual": "playwright test tests/visual.spec.js",
+    "test:visual:update": "playwright test tests/visual.spec.js --update-snapshots"
   },
   "author": "",
   "license": "ISC",
