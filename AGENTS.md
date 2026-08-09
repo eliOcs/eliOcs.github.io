@@ -6,6 +6,8 @@
   browser compatibility workarounds.
 - Local development: `npm start`
 - Production build: `npm run build`
+- On non-Linux hosts, run Playwright tests with `npm run test:docker` so visual
+  screenshots are compared in the Linux environment used by the baselines.
 - Shared styles live in `/src/style.css`.
 - Pages use directory-based `index.html` output. Blog post sources live in
   `/src/blog/<slug>/index.njk`; keep post images in the same folder.

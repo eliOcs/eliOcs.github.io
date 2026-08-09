@@ -90,6 +90,29 @@ body {
   position: relative;
 }
 
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+  display: block;
+}
+
+figure {
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+figure img {
+  margin: 0 auto 0.5rem auto;
+}
+
+figcaption {
+  font-size: 0.9rem;
+  color: var(--base04);
+  font-style: italic;
+}
+
 /* Page header container */
 .page-header {
   position: relative;
@@ -198,63 +221,6 @@ h2 {
   text-underline-offset: 4px;
 }
 
-/* Anchor links for headers */
-h2[id] {
-  position: relative;
-}
-
-h2[id] a {
-  color: inherit;
-  text-decoration: inherit;
-}
-
-h2[id] a:hover {
-  color: inherit;
-  text-decoration: inherit;
-}
-
-h2[id] a::before {
-  content: "#";
-  position: absolute;
-  left: -1.25rem;
-  color: var(--base03);
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-h2[id]:hover a::before,
-h2[id] a:focus::before {
-  opacity: 1;
-}
-
-h3[id] {
-  position: relative;
-}
-
-h3[id] a {
-  color: inherit;
-  text-decoration: inherit;
-}
-
-h3[id] a:hover {
-  color: inherit;
-  text-decoration: inherit;
-}
-
-h3[id] a::before {
-  content: "#";
-  position: absolute;
-  left: -1.1rem;
-  color: var(--base03);
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-h3[id]:hover a::before,
-h3[id] a:focus::before {
-  opacity: 1;
-}
-
 p {
   margin-bottom: var(--spacing-medium);
   font-size: var(--font-size-large);
@@ -272,13 +238,21 @@ a:hover {
   text-decoration: underline;
 }
 
-a:focus {
+a:focus-visible {
   outline: 2px solid var(--base0D);
   outline-offset: 2px;
 }
 
-a:focus:not(:focus-visible) {
-  outline: none;
+ul,
+ol {
+  font-size: var(--font-size-large);
+  padding-left: var(--spacing-xlarge);
+  margin: var(--spacing-medium) 0 var(--spacing-xlarge) 0;
+}
+
+li {
+  margin-bottom: var(--spacing-small);
+  line-height: 1.6;
 }
 
 sup {
@@ -335,29 +309,6 @@ code {
   border-radius: 3px;
 }
 
-img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
-  margin: 1.5rem 0;
-  display: block;
-}
-
-figure {
-  margin: 1.5rem 0;
-  text-align: center;
-}
-
-figure img {
-  margin: 0 auto 0.5rem auto;
-}
-
-figcaption {
-  font-size: 0.9rem;
-  color: var(--base04);
-  font-style: italic;
-}
-
 /* Code block styles */
 pre {
   border-radius: 8px;
@@ -365,9 +316,9 @@ pre {
   overflow-x: auto;
 }
 
+code[class*="language-"],
 pre code,
-pre code[class*="language-"],
-code[class*="language-"] {
+pre code[class*="language-"] {
   border-radius: 8px;
   font-size: 0.95rem !important;
 }
@@ -452,6 +403,63 @@ code[class*="language-"] {
   text-decoration-color: var(--base08);
 }
 
+/* Anchor links for headers */
+h3[id] {
+  position: relative;
+}
+
+h3[id] a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+h3[id] a::before {
+  content: "#";
+  position: absolute;
+  left: -1.1rem;
+  color: var(--base03);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+h2[id] {
+  position: relative;
+}
+
+h2[id] a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+h2[id] a::before {
+  content: "#";
+  position: absolute;
+  left: -1.25rem;
+  color: var(--base03);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+h3[id] a:hover {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+h2[id] a:hover {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+h3[id]:hover a::before,
+h3[id] a:focus::before {
+  opacity: 1;
+}
+
+h2[id]:hover a::before,
+h2[id] a:focus::before {
+  opacity: 1;
+}
+
 .preview-date {
   color: var(--base03);
 }
@@ -504,9 +512,9 @@ code[class*="language-"] {
     text-align: justify;
   }
 
+  code[class*="language-"],
   pre code,
-  pre code[class*="language-"],
-  code[class*="language-"] {
+  pre code[class*="language-"] {
     font-size: 0.8rem !important;
   }
 
@@ -533,31 +541,6 @@ h3 {
   text-underline-offset: 3px;
 }
 
-ul,
-ol {
-  font-size: var(--font-size-large);
-  padding-left: var(--spacing-xlarge);
-  margin: var(--spacing-medium) 0 var(--spacing-xlarge) 0;
-}
-
-li {
-  margin-bottom: var(--spacing-small);
-  line-height: 1.6;
-}
-
-a h3 {
-  color: var(--base05);
-  text-decoration: underline;
-  text-decoration-color: var(--base09);
-  text-underline-offset: 3px;
-}
-
-a:hover h3 {
-  color: var(--base05);
-  text-decoration: underline;
-  text-decoration-color: var(--base09);
-}
-
 .job-header {
   display: flex;
   align-items: center;
@@ -576,7 +559,7 @@ a:hover h3 {
   text-decoration: underline;
 }
 
-.job-header-link:focus {
+.job-header-link:focus-visible {
   outline: 2px solid var(--base0D);
   outline-offset: 2px;
   border-radius: 4px;
@@ -619,6 +602,13 @@ a:hover h3 {
 .job-title-company {
   flex: 1 1 0;
   min-width: 0;
+}
+
+:where(.job-title-company > a) h3 {
+  color: var(--base05);
+  text-decoration: underline;
+  text-decoration-color: var(--base09);
+  text-underline-offset: 3px;
 }
 
 .job-title-company h3 {
@@ -666,16 +656,6 @@ a:hover h3 {
   border-radius: 4px;
 }
 
-.image-gallery img:hover {
-  transform: scale(1.05);
-  opacity: 0.8;
-}
-
-.image-gallery img:focus {
-  outline: 2px solid var(--base0D);
-  outline-offset: 2px;
-}
-
 /* Modal styles for full-size images */
 .modal {
   display: none;
@@ -710,6 +690,14 @@ a:hover h3 {
   max-height: 90vh;
 }
 
+.modal img {
+  width: 100%;
+  height: auto;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
 .modal-content figure img {
   margin: 0 0 0.5rem 0;
   flex: 1;
@@ -728,12 +716,14 @@ a:hover h3 {
   flex-shrink: 0;
 }
 
-.modal img {
-  width: 100%;
-  height: auto;
-  max-height: 90vh;
-  object-fit: contain;
-  border-radius: 8px;
+.image-gallery img:hover {
+  transform: scale(1.05);
+  opacity: 0.8;
+}
+
+.image-gallery img:focus {
+  outline: 2px solid var(--base0D);
+  outline-offset: 2px;
 }
 
 .close {
@@ -842,10 +832,6 @@ a:hover h3 {
 .wwm .wwm-hero {
   text-align: center;
   margin-bottom: 2rem;
-}
-
-.wwm .wwm-hero > p:first-child {
-  text-align: center;
 }
 
 .wwm-pain-outcome {
@@ -1021,25 +1007,6 @@ a:hover h3 {
   margin-top: -2px;
 }
 
-.wwm ul:not(.wwm-pain-list):not(.wwm-checklist) {
-  list-style: none;
-  padding-left: 1.5rem;
-}
-
-.wwm ul:not(.wwm-pain-list):not(.wwm-checklist) li {
-  position: relative;
-  padding-left: 1rem;
-}
-
-.wwm ul:not(.wwm-pain-list):not(.wwm-checklist) li::before {
-  content: "*";
-  position: absolute;
-  left: 0;
-  font-family: "JetBrains Mono", monospace;
-  font-weight: 400;
-  color: var(--base0D);
-}
-
 .wwm-tenets {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1118,6 +1085,25 @@ a:hover h3 {
   font-weight: 700;
 }
 
+.wwm ul:not(.wwm-pain-list):not(.wwm-checklist) {
+  list-style: none;
+  padding-left: 1.5rem;
+}
+
+.wwm ul:not(.wwm-pain-list):not(.wwm-checklist) li {
+  position: relative;
+  padding-left: 1rem;
+}
+
+.wwm ul:not(.wwm-pain-list):not(.wwm-checklist) li::before {
+  content: "*";
+  position: absolute;
+  left: 0;
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 400;
+  color: var(--base0D);
+}
+
 .wwm-metrics-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1151,6 +1137,10 @@ a:hover h3 {
 }
 
 .wwm-final-cta p {
+  text-align: center;
+}
+
+.wwm .wwm-hero > p:first-child {
   text-align: center;
 }
 
@@ -1231,7 +1221,7 @@ a:hover h3 {
     margin: 0 0 0.08in 0;
     padding: 0;
     text-align: center;
-    page-break-after: avoid;
+    break-after: avoid;
     color: #000000;
     text-underline-offset: 0.2rem;
     text-decoration-thickness: 0.125rem;
@@ -1240,7 +1230,7 @@ a:hover h3 {
   h2 {
     font-size: 12pt;
     margin: 0.25in 0 0 0;
-    page-break-after: avoid;
+    break-after: avoid;
     color: #000000;
     text-underline-offset: 0.15rem;
     text-decoration-thickness: 0.125rem;
@@ -1249,7 +1239,7 @@ a:hover h3 {
   h3 {
     font-size: 10pt;
     margin: 0.15in 0 0 0;
-    page-break-after: avoid;
+    break-after: avoid;
     color: #000000;
     text-underline-offset: 0.15rem;
     text-decoration-thickness: 0.1rem;
@@ -1285,12 +1275,12 @@ a:hover h3 {
     margin-bottom: 0.03in;
     line-height: 1.3;
     font-weight: var(--font-weight-normal);
-    page-break-inside: avoid;
+    break-inside: avoid;
   }
 
   .job-header-container {
     margin: 0.18in 0 0 0;
-    page-break-inside: avoid;
+    break-inside: avoid;
     flex-direction: row;
     gap: 2rem;
     align-items: flex-start;
@@ -1326,7 +1316,7 @@ a:hover h3 {
 
   /* Keep job sections together */
   .job-header-container + ul {
-    page-break-before: avoid;
+    break-before: avoid;
   }
 
   /* Links should be visible in print */

@@ -9,6 +9,7 @@
     "serve": "serve _site",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
+    "lint:css": "stylelint \"src/**/*.css\"",
     "lint:html": "html-validate \"_site/**/*.html\"",
     "test": "npm run format:check && npm run build && npm run lint:html && playwright test",
     "test:docker": "docker build -t eliocapella-tests . && docker run --rm eliocapella-tests",
@@ -23,6 +24,11 @@
     "@playwright/test": "1.62.1",
     "html-validate": "11.6.2",
     "prettier": "3.9.6",
-    "serve": "14.2.6"
+    "serve": "14.2.6",
+    "stylelint": "17.14.1",
+    "stylelint-config-recommended": "18.0.0"
+  },
+  "stylelint": {
+    "extends": "stylelint-config-recommended"
   }
 }
