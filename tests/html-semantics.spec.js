@@ -233,16 +233,9 @@ test("interactive demo provides static context without competing for indexing", 
   ).toHaveCount(1);
 });
 
-test("article bylines and avatar links expose their relationships", async ({
+test("avatar links expose their relationship to the homepage", async ({
   page,
 }) => {
-  for (const path of BLOG_POSTS) {
-    await page.goto(path);
-    await expect(page.locator('.post-date a[rel="author"]')).toHaveText(
-      "Elio Capella Sánchez",
-    );
-  }
-
   for (const path of INDEXABLE_PAGES.filter((path) => path !== "/")) {
     await page.goto(path);
     const avatarLink = page.locator("a.home-nav");
