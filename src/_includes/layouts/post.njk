@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {% include "post-head.njk" %}
+  </head>
+  <body>
+    <main>
+      <article>
+        {% include "post-header.njk" %}
+        {{ content | safe }}
+      </article>
+
+      {% include "consulting-cta.njk" %}
+    </main>
+{% if postScripts %}
+{% include postScripts %}
+{% endif %}
+  </body>
+</html>

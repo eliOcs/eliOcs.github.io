@@ -7,10 +7,10 @@
 - add drawings with: https://excalidraw.com/
 - vertical slices
 - How to get a team to embrace ai
-- "Scaling an engineering team from 6 to 22 — what I'd do differently" — your
+- "Scaling an engineering team from 6 to 22 - what I'd do differently" - your
   most distinctive story. Specific, opinionated, full of concrete decisions.
   Ship by week 8.
-- "Reliability transformation at a B2B SaaS — a 9-year case study" — pairs
+- "Reliability transformation at a B2B SaaS - a 9-year case study" - pairs
   perfectly with HoE positioning. Ship by week 12.
 - Realibility mesures that work: monitoring, alerts, health metrics, reduce
   noise with SLO (advanced). Root cause analysis.

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {% include "post-head.njk" %}
+  </head>
+  <body>
+    <main class="split-layout">
+      <div class="blog-content">
+        <div class="blog-content-inner">
+          <article>
+            {% include "post-header.njk" %}
+            {{ content | safe }}
+          </article>
+
+          {% include "consulting-cta.njk" %}
+        </div>
+      </div>
+      <div class="demo-panel" id="demoPanel">
+        <iframe src="./demo.html" title="Permission System Demo"></iframe>
+      </div>
+      <button
+        class="demo-toggle"
+        id="demoToggle"
+        type="button"
+        aria-label="Toggle permission system demo"
+        aria-controls="demoPanel"
+        aria-expanded="true"
+      >
+        <svg
+          class="demo-toggle-icon"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <polyline points="6,9 12,15 18,9" />
+        </svg>
+      </button>
+    </main>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"
+      integrity="sha384-06z5D//U/xpvxZHuUz92xBvq3DqBBFi7Up53HRrbV7Jlv7Yvh/MZ7oenfUe9iCEt"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"
+      integrity="sha384-D44bgYYKvaiDh4cOGlj1dbSDpSctn2FSUj118HZGmZEShZcO2v//Q5vvhNy206pp"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"
+      integrity="sha384-WJdEkJKrbsqw0evQ4GB6mlsKe5cGTxBOw4KAEIa52ZLB7DDpliGkwdme/HMa5n1m"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"
+      integrity="sha384-/MKWdycCDliku23mP5sYXbZNuXrzgmQO/jsVxwPFn99dVOaXRyKsqDjarqpueGAp"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      const demoToggle = document.getElementById("demoToggle");
+      const demoPanel = document.getElementById("demoPanel");
+      demoToggle.addEventListener("click", () => {
+        const collapsed = demoPanel.classList.toggle("hidden");
+        demoToggle.classList.toggle("demo-collapsed", collapsed);
+        demoToggle.setAttribute("aria-expanded", String(!collapsed));
+      });
+    </script>
+  </body>
+</html>

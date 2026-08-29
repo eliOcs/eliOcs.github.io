@@ -1,0 +1,611 @@
+---
+layout: layouts/post.njk
+tags: blogPosts
+title: "From One Engineering Team to Autonomous Squads"
+metaTitle: "From One Team to Autonomous Squads"
+description: "How we grew Filestage engineering from 6 to 22 people by defining product domains, assigning clear squad ownership, growing managers, and building the technical foundations for autonomy."
+published: "2026-07-21T00:00:00+02:00"
+permalink: "/blog/scaling-engineering-squads/"
+preview: |-
+  When Filestage engineering grew from 6 to 22 people,
+  coordinating everyone as one team would not scale. We mapped the
+  product domains, assigned clear squad ownership, grew managers
+  from within, and built the technical foundations for teams to
+  ship independently.
+  <em>We scaled ownership, not coordination</em>...
+feedSummary: "How we scaled Filestage engineering from one team into autonomous squads with clear ownership and safe technical foundations."
+image: "https://eliocapella.com/blog/scaling-engineering-squads/development-output.png"
+ctaDescription: "I help startup leaders replace firefighting and coordination overhead with clear ownership, reliable delivery, and teams that can ship with confidence."
+ctaTitle: "Scaling your engineering team?"
+---
+<p>
+          In early 2021, Filestage raised a
+          <a
+            href="https://nordic9.com/news/filestage-announced-raising-a-2-8-million-series-a-round-led-by-newion-and-including-htgf-and-seed-s-news5102018822/"
+            target="_blank"
+            >€2.8 million Series A</a
+          >. We started hiring engineers in early summer. Over the following
+          nine months, the development department grew from six engineers to
+          twenty-two people.
+        </p>
+        <p>
+          At six engineers, one team worked well. We knew which features
+          everyone was changing, where conflicts might appear, and who held the
+          context needed to fix a production issue.
+          <strong
+            >This setup relied on everyone keeping most of the product in their
+            head, but this wouldn't scale.</strong
+          >
+        </p>
+        <p>
+          My goal was to apply an approach that had already worked at other
+          companies, mainly
+          <a
+            href="https://aws.amazon.com/executive-insights/content/amazon-two-pizza-team/"
+            target="_blank"
+            >Amazon's two-pizza team model</a
+          >: small, autonomous teams with single-threaded ownership of a
+          customer problem. I wanted several teams that could make progress
+          independently, while preserving the speed we had when we were six.
+        </p>
+        <p>
+          The model that worked for us was simple: define the product domains,
+          assign a squad to each customer outcome, mirror those boundaries in
+          the code, and build enough technical safety for teams to deploy
+          without waiting on me.
+          <strong>We scaled ownership, not coordination.</strong>
+        </p>
+
+        <h2 id="start-with-the-product">
+          <a href="#start-with-the-product"
+            >Start with the product, not an org chart</a
+          >
+        </h2>
+        <p>
+          I was a Tech Lead at the time, while our CTO led the department.
+          Before proposing a team structure, I mapped the product using ideas
+          from
+          <strong>Domain-Driven Design</strong>. I compared several ways of
+          dividing the code: technical layers, frontend and backend, entities,
+          user types, and business domains.
+        </p>
+        <p>
+          In my experience, technical layers are the default, but they make a
+          poor team boundary. Nearly every customer feature required frontend
+          and backend work, so separate teams would create a handoff for almost
+          every change. Organizing around database entities had a similar
+          problem: one user workflow often crossed several entities, while large
+          entities accumulated unrelated behavior over time.
+        </p>
+        <p>
+          Product domains gave us a better unit of ownership and autonomy. Our
+          initial map separated the product into:
+        </p>
+        <figure>
+          <img
+            width="1363"
+            height="838"
+            loading="lazy"
+            decoding="async"
+            src="./DDD-map.png"
+            alt="Domain map classifying Review Workflow and File Commenting as core; Notifications, Demo Content, User, Subscriptions, Daily Digest, Team, Public API, and Customer Support as supporting; and Billing, Authentication, File Storage, Transcoding, Analytics, Logger, Mail, Internationalization, and Permissions as generic"
+          />
+          <figcaption>
+            Our initial Domain-Driven Design map grouped product capabilities
+            into core, supporting, and generic domains
+          </figcaption>
+        </figure>
+        <p>
+          This was not yet an organization design. It was a way to understand
+          what changed together, what language our customers used, and which
+          knowledge an engineer needed to work safely. Only then did we turn the
+          domains into teams.
+        </p>
+
+        <h2 id="define-squads-around-jobs">
+          <a href="#define-squads-around-jobs"
+            >Define squads around customer jobs</a
+          >
+        </h2>
+        <p>
+          I brought the domain map and the popular
+          <a
+            href="https://blog.crisp.se/wp-content/uploads/2012/11/SpotifyScaling.pdf"
+            target="_blank"
+            >Scaling Agile at Spotify</a
+          >
+          article to the CTO and CPO. The word <em>squad</em> was useful because
+          it described the small, cross-functional, autonomous teams we wanted.
+          We took what made sense and adapted it to our context. Even the
+          original Spotify article describes its model as a snapshot of an
+          evolving company, not a finished framework.
+        </p>
+        <p>
+          The CPO and I created a document that remains our source of truth
+          today. For every squad it names a primary persona, the job that person
+          is trying to do, a summary of the squad's purpose, a detailed feature
+          list, and the people responsible. Those fields made an abstract
+          structure operational.
+        </p>
+        <p>We started with three squads:</p>
+        <ul>
+          <li>
+            <strong>Workflow</strong> helped project managers create and run a
+            consistent review process. It owned projects, reviewers, files,
+            versions, due dates, and the work needed to move a review forward.
+          </li>
+          <li>
+            <strong>Feedback</strong> helped creators and reviewers exchange
+            clear, actionable feedback. It owned file viewers, comments,
+            annotations, review decisions, comparisons, and reports.
+          </li>
+          <li>
+            <strong>Supporting</strong> owned the capabilities every SaaS
+            product needs but which were not our competitive advantage:
+            accounts, teams, permissions, authentication, billing,
+            notifications, security, and file processing.
+          </li>
+        </ul>
+        <p>
+          Integrations began with only one engineer. Later, it became more
+          strategically important, so we hired two more engineers and grew it
+          into a fourth squad.
+        </p>
+        <p>
+          The feature list kept ownership crystal clear. Customer Support could
+          select the affected feature from a dropdown, and tickets were
+          automatically routed to the correct squad. Other departments could
+          look up the PM or Engineering Manager instead of asking around in
+          Slack.
+        </p>
+
+        <h2 id="draw-boundaries-with-contracts">
+          <a href="#draw-boundaries-with-contracts"
+            >Draw boundaries with clear contracts</a
+          >
+        </h2>
+        <p>
+          Workflow, Feedback, and Integrations boundaries were clear because
+          much of their work lived on different product pages. Supporting was
+          harder. It risked becoming the squad responsible for everything that
+          did not fit elsewhere.
+        </p>
+        <p>
+          We resolved that ambiguity by separating the reusable mechanism from
+          the product behavior:
+        </p>
+        <ul>
+          <li>
+            Supporting provided the email delivery mechanism and notification
+            settings. The squad that needed an email owned its content and the
+            event that triggered it.
+          </li>
+          <li>
+            Supporting built the permission system. Every other squad was still
+            responsible for enforcing the correct permissions in its API routes.
+          </li>
+          <li>
+            Supporting provided reusable transcoding for thumbnails, avatars,
+            and web-compatible videos. Workflow owned requesting the correct
+            outputs when a customer uploaded a file.
+          </li>
+          <li>
+            Supporting built the in-app notification schema, list, and alerting
+            mechanism. A squad adding a feature also added its notification to
+            that system.
+          </li>
+        </ul>
+        <p>
+          <strong
+            >Supporting owned the reusable capabilities, but the core product
+            squads owned the customer outcomes.</strong
+          >
+          This preserved the core squads' autonomy.
+        </p>
+        <p>
+          We also never prohibited one squad from changing another squad's code.
+          Hard barriers would have replaced coordination with waiting. Engineers
+          could make the change themselves, but the relevant code owners
+          reviewed it. That kept work moving without letting domain decisions
+          drift.
+        </p>
+
+        <h2 id="make-the-code-match">
+          <a href="#make-the-code-match"
+            >Make the code match the organization</a
+          >
+        </h2>
+        <p>
+          We gradually moved feature code until the directory structure
+          reflected the squad structure, updating imports as we went. Then we
+          added code owners for each area. When someone opened a pull request,
+          the people with the right domain context were automatically asked to
+          review it.
+        </p>
+        <p>
+          We kept the application as a monolith. We had experimented with
+          microservices before and had already felt the operational and
+          development complexity they introduced. Twenty-two people did not
+          justify turning every team boundary into a network boundary. A
+          <strong>well-structured monolith with explicit ownership</strong> gave
+          us most of the organizational benefit without distributed-system
+          overhead.
+        </p>
+        <p>
+          Squad autonomy did not mean four ways of solving the same technical
+          problem. We wanted one frontend framework, consistent data-loading and
+          caching patterns, and clear backend helpers for common operations such
+          as database access. Representatives met around the pillars of
+          operational excellence, reliability, performance, security, and cost,
+          following the
+          <a
+            href="https://aws.amazon.com/architecture/well-architected/"
+            target="_blank"
+            >AWS Well-Architected Framework</a
+          >.
+        </p>
+        <p>
+          We created technical chapters across the squad structure for backend,
+          frontend, and infrastructure. Engineers who were more interested in
+          technical topics had the opportunity to become Tech Leads. They
+          defined shared best practices and kept each technical layer moving in
+          one direction, independent of which squad was changing it.
+        </p>
+        <figure>
+          <img
+            width="1344"
+            height="605"
+            loading="lazy"
+            decoding="async"
+            src="./engineering-team-structure.png"
+            alt="Engineering organization with four vertical product squads intersected by Product, Engineering Manager, Software Engineer, and Tech Lead chapter responsibilities"
+          />
+          <figcaption>
+            Product squads owned customer outcomes while chapters aligned
+            technical practices across backend, frontend, and infrastructure
+          </figcaption>
+        </figure>
+        <p>
+          That was our version of aligned autonomy: squads owned decisions and
+          delivery inside their product domains, while the engineering
+          organization maintained a small set of shared technical paths.
+        </p>
+
+        <h2 id="build-the-safety-rails">
+          <a href="#build-the-safety-rails"
+            >Build the safety rails before you scale</a
+          >
+        </h2>
+        <p>
+          In hindsight, this is where I made the biggest mistake. Under pressure
+          to deliver the Series A roadmap, I continued pushing new features
+          while poor reliability kept us firefighting. The original engineers
+          were already interviewing candidates and coaching new hires.
+          Production incidents pulled them back into the code because the new
+          people did not yet know enough to diagnose the system.
+        </p>
+        <p>
+          Adding people temporarily made the situation harder: more changes
+          entered a fragile system while the few people who could fix it
+          suffered even more context switching. I knew in my gut that some
+          trade-offs were wrong, but I did not push hard enough to fix the
+          foundation first.
+        </p>
+        <p>
+          If I repeated the transition, I would prioritize these investments:
+        </p>
+        <ol>
+          <li>
+            <strong>Automate deployments.</strong> We moved from a manual
+            process that released roughly twice a week to deploying every merged
+            pull request. Every squad could then ship without competing for a
+            release window.
+          </li>
+          <li>
+            <strong>Protect critical behavior with E2E tests.</strong> More
+            people touching a legacy codebase means more ways to break behavior
+            they do not know exists. We hired a QA Engineer to expand coverage
+            of the most important customer paths.
+          </li>
+          <li>
+            <strong>Assign code owners.</strong> Autonomy still needs a clear
+            review path when a change crosses a domain boundary.
+          </li>
+        </ol>
+        <p>
+          We also hired a DevOps Engineer to define our infrastructure as code
+          and improve the delivery system. This was a key enabler for automated
+          deployments. Infrastructure could no longer live inside my head and an
+          AWS account; clear definitions made deployment changes repeatable and
+          helped us create test environments for different teams. QA and DevOps
+          were specialists serving the wider department, while the squads
+          consisted mainly of full-stack engineers. Our JavaScript stack made it
+          practical for engineers to own a feature end to end and move
+          temporarily between squads when an initiative needed help.
+        </p>
+
+        <h2 id="grow-leaders-from-within">
+          <a href="#grow-leaders-from-within"
+            >Grow leaders before filling teams</a
+          >
+        </h2>
+        <p>
+          We promoted three engineers into Engineering Manager roles at the
+          start. I chose them mainly for proactiveness and attitude. They were
+          already eager to take responsibility beyond their assigned tickets,
+          and they knew the codebase, the people, and the product direction.
+          Their existing context made them well prepared to onboard new
+          engineers.
+        </p>
+        <p>
+          At Filestage, Engineering Managers still contribute code and lead
+          technical work by example. Their individual throughput expectations
+          were lower because
+          <strong
+            >their main responsibility was helping their engineers succeed, not
+            maximizing their own coding output</strong
+          >. Keeping a technical track record helped them earn credibility, but
+          they also had to learn that their job was no longer to personally
+          solve every difficult problem.
+        </p>
+        <p>
+          I coached them through real situations using ideas from
+          <a href="https://www.juliezhuo.com/book/manager.html" target="_blank"
+            >The Making of a Manager</a
+          >,
+          <a
+            href="https://www.simonandschuster.com/books/How-to-Win-Friends-and-Influence-People/Dale-Carnegie/9781982171452"
+            target="_blank"
+            >How to Win Friends and Influence People</a
+          >, and
+          <a href="https://www.radicalcandor.com/the-book" target="_blank"
+            >Radical Candor</a
+          >. I should have reserved more time for this. The better they became
+          at coaching their teams, the more leverage I had to grow the
+          department. By the end of the transition I had become Head of
+          Engineering, while the CTO also took responsibility for operations.
+        </p>
+
+        <h2 id="roll-out-gradually">
+          <a href="#roll-out-gradually">Roll out the structure gradually</a>
+        </h2>
+        <p>
+          We did not wait until twenty-two people had joined and announce a
+          sudden reorganization. After aligning with the CTO and CPO, we
+          assigned roadmap features to the future squads with the people we
+          already had. During hiring, we matched candidates' interests to the
+          domain where possible. Someone excited about frontend interaction
+          could join Feedback and work on media viewers and annotations. Someone
+          drawn to foundational systems could work on permissions,
+          authentication, or file processing in Supporting.
+        </p>
+        <p>
+          Each squad had an Engineering Manager and engineers. We shared one
+          Product Manager and one Product Designer between two squads. I
+          explained the transition in an all-hands meeting and spoke directly
+          with the departments most affected. Customer Support needed fast
+          answers, so leaving ownership ambiguous for them would have defeated
+          the point.
+        </p>
+        <p>
+          The transition took about nine months, mostly because hiring was slow.
+          It was an unusually competitive market, and even hiring remotely
+          around the world required enormous effort. The best technical signal
+          we found was a take-home exercise that resembled the candidate's
+          day-to-day work. We also discussed values and ways of working early,
+          because hiring so many people quickly could easily change the culture
+          by accident.
+        </p>
+
+        <h2 id="coordinate-the-exceptions">
+          <a href="#coordinate-the-exceptions"
+            >Coordinate the exceptions, not every task</a
+          >
+        </h2>
+        <p>
+          The squads were autonomous, not isolated. I met weekly with the
+          Engineering Managers to review the roadmap and identify work that
+          might cross boundaries. I held skip-level conversations with engineers
+          to hear what slowed them down. Squads ran their own retrospectives,
+          the whole development team held a monthly retrospective, and I met
+          with the CPO to resolve friction between Engineering and Product.
+        </p>
+        <p>
+          We started with very little process: Product created one feature
+          concept document, Engineering extended it with a technical concept,
+          colleagues reviewed it, and we shipped. Our feature process became
+          more detailed over the years, but each addition came from friction
+          observed in a retrospective. We did not begin by copying a large
+          checklist into every squad.
+        </p>
+        <p>
+          Boundaries were stable, but not sacred. We eventually moved SSO from
+          Integrations to Supporting because it fit better with authentication
+          and account administration. Much later,
+          <a href="/blog/ai-powered-review-filestage/">AI Review Agents</a>
+          justified deliberate work across multiple squads so we could move
+          faster. The map served the product; the product did not serve the map.
+        </p>
+
+        <h2 id="measure-the-system">
+          <a href="#measure-the-system"
+            >Measure whether the system is working</a
+          >
+        </h2>
+        <p>
+          I knew the transition was working when three things improved together:
+          total throughput went up, customer-reported defects went down, and
+          team satisfaction stayed high. None of these metrics proves that
+          squads alone caused the result. During the same period we hired
+          people, automated deployments, expanded tests, and improved
+          infrastructure. That is the point:
+          <strong
+            >the organization and its technical system had to scale
+            together</strong
+          >.
+        </p>
+        <figure>
+          <img
+            width="1066"
+            height="766"
+            loading="lazy"
+            decoding="async"
+            src="./development-output.png"
+            alt="Monthly merged pull requests rising from around 80 in early 2021 to more than 250 in early 2022"
+          />
+          <figcaption>
+            Although it may seem natural for output to rise with headcount, it
+            often does not: broken processes and coordination overhead can make
+            a larger team deliver less
+          </figcaption>
+        </figure>
+        <p>
+          Each merged PR represented a production release. The increase showed
+          that growing the team increased finished work instead of collapsing
+          delivery under coordination overhead.
+        </p>
+        <figure>
+          <img
+            width="1384"
+            height="788"
+            loading="lazy"
+            decoding="async"
+            src="./defect-rate.png"
+            alt="Defect rate chart showing customer-reported bugs per released pull request trending down toward 20 percent"
+          />
+          <figcaption>
+            We tracked customer-reported issues over the previous 30 days and
+            compared them with released PRs
+          </figcaption>
+        </figure>
+        <p>
+          Shipping more would not have been a success if customers received more
+          bugs. The later reduction in defect rate gave us confidence that the
+          investments in QA, reliability, and continuous delivery were working.
+          Our satisfaction survey history began after the original transition,
+          so it is not proof of the reorganization, but it showed that the
+          system remained healthy as it matured.
+        </p>
+        <figure>
+          <img
+            width="696"
+            height="590"
+            loading="lazy"
+            decoding="async"
+            src="./engineering-satisfaction.png"
+            alt="Engineering satisfaction remaining mostly between 85 and 95 percent from 2022 through 2025"
+          />
+          <figcaption>
+            Engineering satisfaction remained high in the years after the
+            transition
+          </figcaption>
+        </figure>
+        <p>
+          I explain the metrics and their limitations in more detail in
+          <a href="/blog/measure-what-matters/">Measure what matters</a>.
+        </p>
+
+        <h2 id="when-to-split">
+          <a href="#when-to-split">When should you split one team?</a>
+        </h2>
+        <p>
+          Six people is not a law, but it has become a useful warning threshold
+          for me. Once a manager has more than six direct reports, it becomes
+          harder to give everyone enough attention. Once more than six engineers
+          regularly change the same product, it becomes harder for each person
+          to understand what everyone else is doing.
+        </p>
+        <p>Consider splitting when several of these symptoms appear:</p>
+        <ul>
+          <li>
+            The important features and edge cases no longer fit in one head.
+          </li>
+          <li>Engineers repeatedly collide in the same areas of the code.</li>
+          <li>
+            Other departments do not know who owns a feature or customer issue.
+          </li>
+          <li>A manager cannot properly coach all their direct reports.</li>
+          <li>
+            Teams cannot ship without waiting for another team or release
+            window.
+          </li>
+        </ul>
+        <p>
+          If those problems do not exist, keep one team. Squads introduce
+          management and product coordination costs of their own. Creating names
+          and boxes before you have distinct areas of ownership is organization
+          theater.
+        </p>
+
+        <h2 id="a-practical-playbook">
+          <a href="#a-practical-playbook">A practical playbook</a>
+        </h2>
+        <ol>
+          <li>
+            Map the product's jobs to be done and the domains that change
+            together.
+          </li>
+          <li>
+            Give every squad a persona, customer outcome, summary, and explicit
+            feature list.
+          </li>
+          <li>
+            Define contracts for shared capabilities so an enabling team does
+            not become responsible for every feature using them.
+          </li>
+          <li>
+            Promote proactive internal leaders early and coach them before their
+            squads fill up.
+          </li>
+          <li>
+            Automate deployments, protect critical behavior with E2E tests, and
+            assign code owners.
+          </li>
+          <li>
+            Gradually mirror product ownership in the codebase. Do not assume
+            team boundaries require microservices.
+          </li>
+          <li>
+            Communicate the map to the whole company and design support-routing
+            and planning workflows around it.
+          </li>
+          <li>
+            Use a small coordination cadence and add process only when real
+            friction gives you a reason.
+          </li>
+          <li>
+            Track delivery, quality, and satisfaction together. Optimizing only
+            one will hide the damage done to the others.
+          </li>
+        </ol>
+
+        <h2 id="conclusion">
+          <a href="#conclusion">Clarity creates autonomy</a>
+        </h2>
+        <p>
+          By the end of those nine months, I was leading a twenty-two-person
+          development department that could build several substantial features
+          in parallel. Cross-squad work still happened, but it was the
+          exception. Most of the time, engineers held a smaller and deeper
+          context, knew why their code would change, and knew exactly whom to
+          ask when they crossed a boundary.
+        </p>
+        <figure>
+          <img
+            width="780"
+            height="487"
+            loading="lazy"
+            decoding="async"
+            src="./aligned-autonomy.avif"
+            alt="Matrix comparing alignment and autonomy: aligned autonomous teams agree that they need to cross a river while deciding for themselves how to do it"
+          />
+          <figcaption>
+            Aligned autonomy: agree on the destination, then let the team decide
+            how to get there
+          </figcaption>
+        </figure>
+        <p>
+          <strong>Autonomy is not the absence of alignment.</strong> It is what
+          becomes possible when ownership is clear and the foundations are safe
+          enough for people to act on it.
+        </p>

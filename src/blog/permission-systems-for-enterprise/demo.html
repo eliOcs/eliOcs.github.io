@@ -1,0 +1,1363 @@
+<!doctype html>
+<!--
+  Permission Systems Demo
+
+  This is a self-contained demo that mimics a frontend/backend system in a
+  single HTML file for demonstration purposes. All data is stored in-memory
+  using sql.js (SQLite compiled to WebAssembly) and there is no network
+  connection - everything runs entirely in the browser.
+
+  The demo illustrates:
+  - Data models: users, resources (folders/files), shares, and permissions
+  - Naive approach: read-time permission queries with recursive CTEs
+  - RBAC approach: write-time pre-computed permissions for O(1) reads
+
+  Toggle between "Naive" and "RBAC" modes to see how the number of database
+  reads changes for the same operations.
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive permission system demo - Elio Capella Sánchez</title>
+    <meta
+      name="description"
+      content="Interactive comparison of naive read-time permission checks and write-time RBAC permission precomputation."
+    />
+    <meta name="robots" content="noindex,follow" />
+    <style>
+      @font-face {
+        font-family: "JetBrains Mono";
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url("/fonts/jetbrains-mono-latin.woff2") format("woff2");
+      }
+
+      @font-face {
+        font-family: "JetBrains Mono";
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+        src: url("/fonts/jetbrains-mono-latin.woff2") format("woff2");
+      }
+
+      :root {
+        --base00: #181818;
+        --base01: #282828;
+        --base02: #383838;
+        --base03: #585858;
+        --base04: #b8b8b8;
+        --base05: #d8d8d8;
+        --base06: #e8e8e8;
+        --base07: #f8f8f8;
+        --base08: #ab4642;
+        --base09: #dc9656;
+        --base0A: #f7ca88;
+        --base0B: #a1b56c;
+        --base0C: #86c1b9;
+        --base0D: #7cafc2;
+        --base0E: #ba8baf;
+        --base0F: #a16946;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      .demo-fallback {
+        margin: auto;
+        padding: 2rem;
+        text-align: center;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 400;
+        line-height: 1.6;
+        color: var(--base05);
+        background-color: var(--base00);
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .demo-container {
+        max-width: 800px;
+        width: 100%;
+        margin: 0 auto;
+        border: 1px solid var(--base02);
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+      }
+
+      /* Tabs */
+      .tabs {
+        display: flex;
+        background-color: var(--base01);
+        border-bottom: 1px solid var(--base02);
+        overflow-x: auto;
+      }
+
+      .tab {
+        padding: 0.75rem 1.25rem;
+        background: none;
+        border: none;
+        color: var(--base04);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        white-space: nowrap;
+        transition:
+          color 0.2s ease,
+          border-color 0.2s ease;
+      }
+
+      .tab:hover {
+        color: var(--base05);
+      }
+
+      .tab.active {
+        color: var(--base08);
+        border-bottom-color: var(--base08);
+      }
+
+      .tab.add-user {
+        color: var(--base0D);
+        margin-left: auto;
+      }
+
+      .tab.add-user:hover {
+        color: var(--base0C);
+      }
+
+      /* Controls */
+      .controls {
+        padding: 1rem;
+        background-color: var(--base01);
+        border-bottom: 1px solid var(--base02);
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .admin-toggle {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        font-size: 0.85rem;
+      }
+
+      .admin-toggle input[type="checkbox"] {
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--base03);
+        border-radius: 4px;
+        cursor: pointer;
+        position: relative;
+      }
+
+      .admin-toggle input[type="checkbox"]:checked {
+        border-color: var(--base0D);
+        background-color: var(--base0D);
+      }
+
+      .admin-toggle input[type="checkbox"]:checked::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 5px;
+        height: 9px;
+        border: solid var(--base00);
+        border-width: 0 2px 2px 0;
+        transform: translate(-50%, -60%) rotate(45deg);
+      }
+
+      .btn {
+        padding: 0.5rem 1rem;
+        background-color: var(--base01);
+        border: 2px solid var(--base03);
+        border-radius: 4px;
+        color: var(--base07);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.85rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: border-color 0.2s ease;
+      }
+
+      .btn:hover:not(:disabled) {
+        border-color: var(--base0D);
+      }
+
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      /* Share dropdown */
+      .share-container {
+        position: relative;
+        display: inline-block;
+      }
+
+      .share-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        margin-top: 0.25rem;
+        background-color: var(--base01);
+        border: 1px solid var(--base03);
+        border-radius: 4px;
+        min-width: 150px;
+        z-index: 100;
+        display: none;
+      }
+
+      .share-dropdown.open {
+        display: block;
+      }
+
+      .share-option {
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: background-color 0.2s ease;
+      }
+
+      .share-option:hover {
+        background-color: var(--base02);
+      }
+
+      .share-option.new-user {
+        border-top: 1px solid var(--base02);
+        color: var(--base0D);
+      }
+
+      /* Tree */
+      .tree {
+        padding: 1rem;
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        background-color: var(--base00);
+      }
+
+      .tree-item {
+        padding: 0.4rem 0.75rem;
+        cursor: pointer;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+        transition: background-color 0.2s ease;
+        user-select: none;
+      }
+
+      .tree-item:hover {
+        background-color: var(--base01);
+      }
+
+      .tree-item.selected {
+        background-color: var(--base02);
+      }
+
+      .tree-item .icon {
+        flex-shrink: 0;
+      }
+
+      .tree-item .name {
+        flex: 1;
+      }
+
+      .tree-item .shared-badge {
+        font-size: 0.75rem;
+        color: var(--base0B);
+        background-color: var(--base01);
+        padding: 0.1rem 0.4rem;
+        border-radius: 3px;
+      }
+
+      .tree-children {
+        margin-left: 1.25rem;
+      }
+
+      .empty-message {
+        color: var(--base03);
+        font-style: italic;
+        padding: 1rem;
+        text-align: center;
+      }
+
+      /* Status bar */
+      .status-bar {
+        display: flex;
+        gap: 1rem;
+        padding: 0.5rem 1rem;
+        background-color: var(--base01);
+        border-top: 1px solid var(--base02);
+        font-size: 0.75rem;
+        color: var(--base04);
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .status-bar .stat {
+        display: flex;
+        gap: 0.25rem;
+      }
+
+      .status-bar #statOperation {
+        color: var(--base07);
+      }
+
+      .status-bar .stat-value {
+        color: var(--base0D);
+      }
+
+      .status-bar .stat-label-short {
+        display: none;
+      }
+
+      .status-bar .stat-label-full {
+        display: inline;
+      }
+
+      .impl-toggle {
+        margin-left: auto;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+
+      .impl-toggle label {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        cursor: pointer;
+      }
+
+      .impl-toggle input[type="radio"] {
+        appearance: none;
+        width: 12px;
+        height: 12px;
+        border: 2px solid var(--base03);
+        border-radius: 50%;
+        cursor: pointer;
+        position: relative;
+      }
+
+      .impl-toggle input[type="radio"]:checked {
+        border-color: var(--base0D);
+      }
+
+      .impl-toggle input[type="radio"]:checked::after {
+        content: "";
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        width: 6px;
+        height: 6px;
+        background-color: var(--base0D);
+        border-radius: 50%;
+      }
+
+      .source-link {
+        margin-left: 0.5rem;
+        color: var(--base04);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.25rem;
+      }
+
+      .source-link:hover {
+        color: var(--base0D);
+      }
+
+      @media (max-width: 500px) {
+        body {
+          padding: 0.5rem;
+        }
+
+        .tab {
+          padding: 0.6rem 1rem;
+          font-size: 0.85rem;
+        }
+
+        .controls {
+          padding: 0.75rem;
+        }
+
+        .btn {
+          padding: 0.4rem 0.75rem;
+          font-size: 0.8rem;
+        }
+
+        .status-bar .stat-label-short {
+          display: inline;
+        }
+
+        .status-bar .stat-label-full {
+          display: none;
+        }
+
+        .btn .btn-label-full {
+          display: none;
+        }
+
+        .source-link .source-label {
+          display: none;
+        }
+      }
+
+      @media (max-width: 350px) {
+        .status-bar {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.5rem;
+        }
+
+        .impl-toggle {
+          margin-left: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="demo-container">
+      <h1 class="visually-hidden">Interactive permission system demo</h1>
+      <p class="visually-hidden">
+        Companion demo for
+        <a href="./">Permission Systems for Enterprise that Scale</a>.
+      </p>
+      <noscript>
+        <p class="demo-fallback">
+          This interactive demo requires JavaScript. Read
+          <a href="./">Permission Systems for Enterprise that Scale</a>
+          for the complete explanation and SQL examples.
+        </p>
+      </noscript>
+      <div class="tabs" id="tabs"></div>
+      <div class="controls" id="controls"></div>
+      <div class="tree" id="tree"></div>
+      <div class="status-bar" id="statusBar">
+        <span id="statOperation">Ready</span>
+        <div class="stat">
+          <span class="stat-label-full">reads:</span
+          ><span class="stat-label-short">r:</span>
+          <span class="stat-value" id="statReads">0</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label-full">writes:</span
+          ><span class="stat-label-short">w:</span>
+          <span class="stat-value" id="statWrites">0</span>
+        </div>
+        <div class="impl-toggle">
+          <label>
+            <input type="radio" name="impl" value="naive" checked />
+            Naive
+          </label>
+          <label>
+            <input type="radio" name="impl" value="rbac" />
+            RBAC
+          </label>
+        </div>
+        <a
+          href="https://github.com/eliOcs/eliOcs.github.io/blob/main/blog/permission-systems-for-enterprise/demo.html"
+          target="_blank"
+          class="source-link"
+          ><span class="source-label">source </span
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="12"
+            height="12"
+            fill="currentColor"
+            viewBox="0 0 256 256"
+          >
+            <path
+              d="M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z"
+            ></path></svg
+        ></a>
+      </div>
+    </main>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.13.0/sql-wasm.min.js"
+      integrity="sha384-666zzSs4ww6001MxYRNfvlFGHQAn+2hSCyPUSDg/MW9J2QZw+f+ow9MAIwhXktuy"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      // ============================================================
+      // SQL MODULE - Database operations
+      // ============================================================
+      const Sql = (() => {
+        let db = null;
+        let onRead = () => {};
+        let onWrite = () => {};
+
+        const init = async () => {
+          const SQL = await initSqlJs({
+            locateFile: (file) =>
+              `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.13.0/${file}`,
+          });
+          db = new SQL.Database();
+        };
+
+        const query = async (sql, params = []) => {
+          onRead();
+          const result = db.exec(sql, params);
+          if (result.length === 0) return [];
+
+          const columns = result[0].columns;
+          const rows = result[0].values.map((row) => {
+            const obj = {};
+            columns.forEach((col, i) => (obj[col] = row[i]));
+            return obj;
+          });
+
+          return rows;
+        };
+
+        const run = async (sql, params = []) => {
+          onWrite();
+          db.run(sql, params);
+        };
+
+        const setCallbacks = ({ onReadCb, onWriteCb }) => {
+          onRead = onReadCb || onRead;
+          onWrite = onWriteCb || onWrite;
+        };
+
+        return { init, query, run, setCallbacks };
+      })();
+
+      // ============================================================
+      // ANALYTICS MODULE - Stats tracking and display
+      // ============================================================
+      const Analytics = (() => {
+        let operation = { name: "", reads: 0, writes: 0 };
+
+        const recordRead = () => {
+          operation.reads++;
+        };
+
+        const recordWrite = () => {
+          operation.writes++;
+        };
+
+        const startOperation = (name) => {
+          operation = { name, reads: 0, writes: 0 };
+        };
+
+        const endOperation = () => {
+          document.getElementById("statOperation").textContent = operation.name;
+          document.getElementById("statReads").textContent = operation.reads;
+          document.getElementById("statWrites").textContent = operation.writes;
+        };
+
+        return { recordRead, recordWrite, startOperation, endOperation };
+      })();
+
+      // ============================================================
+      // BACKEND MODULE - Shared logic for counters and data operations
+      // ============================================================
+      const Backend = (() => {
+        const init = async () => {
+          await Sql.run(`
+            CREATE TABLE users (
+              id INTEGER PRIMARY KEY,
+              name TEXT NOT NULL,
+              type TEXT NOT NULL DEFAULT 'standard'
+            )
+          `);
+
+          await Sql.run(`
+            CREATE TABLE resources (
+              id INTEGER PRIMARY KEY,
+              type TEXT NOT NULL,
+              name TEXT NOT NULL,
+              parent_id INTEGER,
+              owner_id INTEGER NOT NULL,
+              FOREIGN KEY (parent_id) REFERENCES resources(id),
+              FOREIGN KEY (owner_id) REFERENCES users(id)
+            )
+          `);
+
+          await Sql.run(`
+            CREATE TABLE shares (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              resource_id INTEGER NOT NULL,
+              user_id INTEGER NOT NULL,
+              FOREIGN KEY (resource_id) REFERENCES resources(id),
+              FOREIGN KEY (user_id) REFERENCES users(id),
+              UNIQUE(resource_id, user_id)
+            )
+          `);
+
+          await Sql.run(`
+            CREATE TABLE counters (
+              id TEXT PRIMARY KEY,
+              folder_count INTEGER DEFAULT 1,
+              file_count INTEGER DEFAULT 0,
+              user_count INTEGER DEFAULT 1,
+              resource_count INTEGER DEFAULT 1
+            )
+          `);
+
+          await Sql.run(
+            `CREATE INDEX idx_resources_parent ON resources(parent_id)`,
+          );
+          await Sql.run(
+            `CREATE INDEX idx_resources_owner ON resources(owner_id)`,
+          );
+          await Sql.run(
+            `CREATE INDEX idx_shares_resource ON shares(resource_id)`,
+          );
+          await Sql.run(`CREATE INDEX idx_shares_user ON shares(user_id)`);
+
+          // Create initial user with root folder
+          await Sql.run(
+            `INSERT INTO counters (id, folder_count, file_count, user_count, resource_count) VALUES ('main', 1, 0, 0, 0)`,
+          );
+          await createUser("User 1");
+          await createRootFolder(1, "User 1's Root Folder");
+        };
+
+        const getCounters = async () => {
+          let [counters] = await Sql.query(
+            `SELECT * FROM counters WHERE id = 'main'`,
+          );
+          if (!counters) {
+            await Sql.run(
+              `INSERT INTO counters (id, folder_count, file_count, user_count, resource_count) VALUES ('main', 1, 0, 1, 1)`,
+            );
+            counters = {
+              folder_count: 1,
+              file_count: 0,
+              user_count: 1,
+              resource_count: 1,
+            };
+          }
+          return {
+            folder: counters.folder_count,
+            file: counters.file_count,
+            user: counters.user_count,
+            resource: counters.resource_count,
+          };
+        };
+
+        const updateCounters = async (counters) => {
+          await Sql.run(
+            `UPDATE counters SET folder_count = ?, file_count = ?, user_count = ?, resource_count = ? WHERE id = 'main'`,
+            [counters.folder, counters.file, counters.user, counters.resource],
+          );
+        };
+
+        const createUser = async (name, type = "standard") => {
+          const counters = await getCounters();
+          counters.user++;
+          const userId = counters.user;
+          await Sql.run(`INSERT INTO users (id, name, type) VALUES (?, ?, ?)`, [
+            userId,
+            name,
+            type,
+          ]);
+          await updateCounters(counters);
+          return userId;
+        };
+
+        const createRootFolder = async (userId, name) => {
+          const counters = await getCounters();
+          counters.resource++;
+          const folderId = counters.resource;
+          await Sql.run(
+            `INSERT INTO resources (id, type, name, parent_id, owner_id) VALUES (?, 'folder', ?, NULL, ?)`,
+            [folderId, name, userId],
+          );
+          await updateCounters(counters);
+          return folderId;
+        };
+
+        const createResource = async (type, name, parentId, ownerId) => {
+          const counters = await getCounters();
+          counters[type]++;
+          counters.resource++;
+          const resourceId = counters.resource;
+          await Sql.run(
+            `INSERT INTO resources (id, type, name, parent_id, owner_id) VALUES (?, ?, ?, ?, ?)`,
+            [resourceId, type, name, parentId, ownerId],
+          );
+          await updateCounters(counters);
+          return resourceId;
+        };
+
+        const createShare = async (resourceId, userId) => {
+          await Sql.run(
+            `INSERT INTO shares (resource_id, user_id) VALUES (?, ?)`,
+            [resourceId, userId],
+          );
+        };
+
+        return {
+          init,
+          getCounters,
+          updateCounters,
+          createUser,
+          createRootFolder,
+          createResource,
+          createShare,
+        };
+      })();
+
+      // ============================================================
+      // NAIVE BACKEND MODULE - Read-time permission queries
+      // ============================================================
+      const NaiveBackend = {
+        getVisibleData: async (userId) => {
+          const [user] = await Sql.query(`SELECT * FROM users WHERE id = ?`, [
+            userId,
+          ]);
+
+          if (user.type === "admin") {
+            const resources = await Sql.query(`SELECT * FROM resources`);
+            const shares = await Sql.query(`SELECT * FROM shares`);
+            return { resources, shares };
+          }
+
+          const resourceMap = new Map();
+
+          // Get owned resources
+          const ownedResources = await Sql.query(
+            `SELECT * FROM resources WHERE owner_id = ?`,
+            [userId],
+          );
+
+          // N+1: For each owned resource, fetch descendants
+          for (const resource of ownedResources) {
+            resourceMap.set(resource.id, resource);
+            const descendants = await Sql.query(
+              `WITH RECURSIVE tree AS (
+                SELECT id FROM resources WHERE parent_id = ?
+                UNION ALL
+                SELECT r.id FROM resources r JOIN tree t ON r.parent_id = t.id
+              )
+              SELECT r.* FROM resources r JOIN tree t ON r.id = t.id`,
+              [resource.id],
+            );
+            descendants.forEach((r) => resourceMap.set(r.id, r));
+          }
+
+          // Get shared resources
+          const sharedResources = await Sql.query(
+            `SELECT r.* FROM shares s JOIN resources r ON s.resource_id = r.id WHERE s.user_id = ?`,
+            [userId],
+          );
+
+          // N+1: For each shared resource, fetch ancestors AND descendants
+          for (const resource of sharedResources) {
+            resourceMap.set(resource.id, resource);
+
+            const ancestors = await Sql.query(
+              `WITH RECURSIVE ancestors AS (
+                SELECT parent_id FROM resources WHERE id = ?
+                UNION ALL
+                SELECT r.parent_id FROM resources r JOIN ancestors a ON r.id = a.parent_id
+                WHERE r.parent_id IS NOT NULL
+              )
+              SELECT r.* FROM resources r JOIN ancestors a ON r.id = a.parent_id`,
+              [resource.id],
+            );
+            ancestors.forEach((r) => resourceMap.set(r.id, r));
+
+            const descendants = await Sql.query(
+              `WITH RECURSIVE tree AS (
+                SELECT id FROM resources WHERE parent_id = ?
+                UNION ALL
+                SELECT r.id FROM resources r JOIN tree t ON r.parent_id = t.id
+              )
+              SELECT r.* FROM resources r JOIN tree t ON r.id = t.id`,
+              [resource.id],
+            );
+            descendants.forEach((r) => resourceMap.set(r.id, r));
+          }
+
+          const resources = Array.from(resourceMap.values());
+          if (resources.length === 0) return { resources: [], shares: [] };
+
+          const resourceIds = resources.map((r) => r.id);
+          const shares = await Sql.query(
+            `SELECT * FROM shares WHERE resource_id IN (${resourceIds.join(",")})`,
+          );
+          return { resources, shares };
+        },
+
+        canModify: (resource, userId) => resource.owner_id === userId,
+      };
+
+      // ============================================================
+      // RBAC BACKEND MODULE - Write-time permission queries
+      // ============================================================
+      const RbacBackend = {
+        init: async () => {
+          await Sql.run(`
+            CREATE TABLE permissions (
+              user_id INTEGER NOT NULL,
+              resource_id INTEGER NOT NULL,
+              access_type TEXT NOT NULL DEFAULT 'path_only',
+              PRIMARY KEY (user_id, resource_id),
+              FOREIGN KEY (user_id) REFERENCES users(id),
+              FOREIGN KEY (resource_id) REFERENCES resources(id)
+            )
+          `);
+
+          await Sql.run(
+            `CREATE INDEX idx_permissions_user ON permissions(user_id)`,
+          );
+
+          // Grant initial user permission to their root folder
+          await Sql.run(
+            `INSERT INTO permissions (user_id, resource_id, access_type) VALUES (1, 1, 'owner')`,
+          );
+        },
+
+        getVisibleData: async (userId) => {
+          const resources = await Sql.query(
+            `SELECT r.* FROM resources r
+             JOIN permissions p ON r.id = p.resource_id
+             WHERE p.user_id = ?`,
+            [userId],
+          );
+
+          const resourceIds = resources.map((r) => r.id);
+          const shares =
+            resourceIds.length > 0
+              ? await Sql.query(
+                  `SELECT * FROM shares WHERE resource_id IN (${resourceIds.join(",")})`,
+                )
+              : [];
+
+          return { resources, shares };
+        },
+
+        getPermissions: async (userId) => {
+          const perms = await Sql.query(
+            `SELECT resource_id, access_type FROM permissions WHERE user_id = ?`,
+            [userId],
+          );
+          const permMap = {};
+          for (const p of perms) {
+            permMap[p.resource_id] = p.access_type;
+          }
+          return permMap;
+        },
+
+        grantOnCreate: async (resourceId, ownerId) => {
+          await Sql.run(
+            `INSERT OR IGNORE INTO permissions (user_id, resource_id, access_type) VALUES (?, ?, 'owner')`,
+            [ownerId, resourceId],
+          );
+        },
+
+        grantOnShare: async (resourceId, userId) => {
+          await Sql.run(
+            `INSERT OR IGNORE INTO permissions (user_id, resource_id, access_type) VALUES (?, ?, 'shared')`,
+            [userId, resourceId],
+          );
+
+          // Ancestors get path_only
+          const ancestors = await Sql.query(
+            `WITH RECURSIVE ancestors AS (
+              SELECT parent_id FROM resources WHERE id = ?
+              UNION ALL
+              SELECT r.parent_id FROM resources r JOIN ancestors a ON r.id = a.parent_id
+              WHERE r.parent_id IS NOT NULL
+            )
+            SELECT parent_id as id FROM ancestors WHERE parent_id IS NOT NULL`,
+            [resourceId],
+          );
+          for (const a of ancestors) {
+            await Sql.run(
+              `INSERT OR IGNORE INTO permissions (user_id, resource_id, access_type) VALUES (?, ?, 'path_only')`,
+              [userId, a.id],
+            );
+          }
+
+          // Descendants get shared
+          const descendants = await Sql.query(
+            `WITH RECURSIVE tree AS (
+              SELECT id FROM resources WHERE parent_id = ?
+              UNION ALL
+              SELECT r.id FROM resources r JOIN tree t ON r.parent_id = t.id
+            )
+            SELECT id FROM tree`,
+            [resourceId],
+          );
+          for (const d of descendants) {
+            await Sql.run(
+              `INSERT OR IGNORE INTO permissions (user_id, resource_id, access_type) VALUES (?, ?, 'shared')`,
+              [userId, d.id],
+            );
+          }
+        },
+
+        rebuildForUser: async (userId) => {
+          await Sql.run(`DELETE FROM permissions WHERE user_id = ?`, [userId]);
+
+          const [user] = await Sql.query(`SELECT * FROM users WHERE id = ?`, [
+            userId,
+          ]);
+
+          if (user.type === "admin") {
+            await Sql.run(
+              `INSERT INTO permissions (user_id, resource_id, access_type) SELECT ?, id, 'owner' FROM resources`,
+              [userId],
+            );
+            return;
+          }
+
+          // Owned resources + descendants
+          const owned = await Sql.query(
+            `WITH RECURSIVE owned_tree AS (
+              SELECT id FROM resources WHERE owner_id = ?
+              UNION ALL
+              SELECT r.id FROM resources r JOIN owned_tree ot ON r.parent_id = ot.id
+            )
+            SELECT id FROM owned_tree`,
+            [userId],
+          );
+          for (const r of owned) {
+            await Sql.run(
+              `INSERT OR IGNORE INTO permissions (user_id, resource_id, access_type) VALUES (?, ?, 'owner')`,
+              [userId, r.id],
+            );
+          }
+
+          // Shared resources
+          const shared = await Sql.query(
+            `SELECT r.id FROM shares s JOIN resources r ON s.resource_id = r.id WHERE s.user_id = ?`,
+            [userId],
+          );
+          for (const resource of shared) {
+            await RbacBackend.grantOnShare(resource.id, userId);
+          }
+        },
+
+        rebuildAll: async () => {
+          await Sql.run(`DELETE FROM permissions`);
+          const users = await Sql.query(`SELECT id FROM users`);
+          for (const user of users) {
+            await RbacBackend.rebuildForUser(user.id);
+          }
+        },
+
+        canModify: (permissions, resourceId) =>
+          permissions[resourceId] === "owner",
+      };
+
+      // ============================================================
+      // FRONTEND MODULE - UI state and rendering
+      // ============================================================
+      const Frontend = (() => {
+        // Controlled state
+        let state = {
+          mode: "naive",
+          activeUserId: 1,
+          selectedResourceId: 1,
+          users: [],
+          resources: [],
+          shares: [],
+          permissions: {},
+        };
+
+        const getState = () => structuredClone(state);
+
+        const setState = (updater) => {
+          updater(state);
+        };
+
+        // DOM elements
+        const elements = {
+          tabs: document.getElementById("tabs"),
+          controls: document.getElementById("controls"),
+          tree: document.getElementById("tree"),
+        };
+
+        // Data operations
+        const refreshCache = async () => {
+          state.users = await Sql.query(`SELECT * FROM users`);
+
+          const backend = state.mode === "rbac" ? RbacBackend : NaiveBackend;
+          const { resources, shares } = await backend.getVisibleData(
+            state.activeUserId,
+          );
+          state.resources = resources;
+          state.shares = shares;
+
+          if (state.mode === "rbac") {
+            state.permissions = await RbacBackend.getPermissions(
+              state.activeUserId,
+            );
+          } else {
+            state.permissions = {};
+          }
+        };
+
+        const createUserWithRootFolder = async () => {
+          const counters = await Backend.getCounters();
+          const userName = `User ${counters.user + 1}`;
+
+          const userId = await Backend.createUser(userName);
+          const folderId = await Backend.createRootFolder(
+            userId,
+            `${userName}'s Root Folder`,
+          );
+
+          if (state.mode === "rbac") {
+            await RbacBackend.grantOnCreate(folderId, userId);
+          }
+
+          return { userId, folderId };
+        };
+
+        const createResource = async (type, parentId) => {
+          const counters = await Backend.getCounters();
+          const name =
+            type === "folder"
+              ? `Folder ${counters.folder + 1}`
+              : `File ${counters.file + 1}`;
+
+          const resourceId = await Backend.createResource(
+            type,
+            name,
+            parentId,
+            state.activeUserId,
+          );
+
+          if (state.mode === "rbac") {
+            await RbacBackend.grantOnCreate(resourceId, state.activeUserId);
+          }
+        };
+
+        // Render functions
+        const renderTabs = () => {
+          const { users } = state;
+
+          elements.tabs.innerHTML =
+            users
+              .map(
+                (user) => `
+                <button class="tab ${user.id === state.activeUserId ? "active" : ""}" data-user-id="${user.id}">
+                  ${user.name}
+                </button>
+              `,
+              )
+              .join("") + `<button class="tab add-user">+ Add User</button>`;
+
+          elements.tabs
+            .querySelectorAll(".tab[data-user-id]")
+            .forEach((tab) => {
+              tab.addEventListener("click", async () => {
+                Analytics.startOperation("Switched user");
+                state.activeUserId = parseInt(tab.dataset.userId);
+                await refreshCache();
+                if (state.resources.length > 0) {
+                  state.selectedResourceId = state.resources[0].id;
+                }
+                render();
+                Analytics.endOperation();
+              });
+            });
+
+          elements.tabs
+            .querySelector(".tab.add-user")
+            .addEventListener("click", async () => {
+              Analytics.startOperation("Created user");
+              const { userId, folderId } = await createUserWithRootFolder();
+              state.activeUserId = userId;
+              state.selectedResourceId = folderId;
+              await refreshCache();
+              render();
+              Analytics.endOperation();
+            });
+        };
+
+        const renderControls = () => {
+          const user = state.users.find((u) => u.id === state.activeUserId);
+          const selected = state.resources.find(
+            (r) => r.id === state.selectedResourceId,
+          );
+
+          let canCreate = false;
+          let canShare = false;
+          let parentId = null;
+
+          if (selected) {
+            const isFolder = selected.type === "folder";
+            parentId = isFolder ? selected.id : selected.parent_id;
+
+            if (state.mode === "rbac") {
+              const isOwner = RbacBackend.canModify(
+                state.permissions,
+                selected.id,
+              );
+              canCreate = isOwner;
+              canShare = isOwner;
+            } else {
+              const isOwner = NaiveBackend.canModify(
+                selected,
+                state.activeUserId,
+              );
+              canCreate = isOwner;
+              canShare = isOwner;
+            }
+          }
+
+          elements.controls.innerHTML = `
+            <label class="admin-toggle">
+              <input type="checkbox" id="adminCheckbox" ${user.type === "admin" ? "checked" : ""}>
+              Admin
+            </label>
+            <button class="btn" id="addFolderBtn" ${!canCreate ? "disabled" : ""}>+ <span class="btn-label-full">Add </span>Folder</button>
+            <button class="btn" id="addFileBtn" ${!canCreate ? "disabled" : ""}>+ <span class="btn-label-full">Add </span>File</button>
+            <div class="share-container">
+              <button class="btn" id="shareBtn" ${!canShare ? "disabled" : ""}>Share</button>
+              <div class="share-dropdown" id="shareDropdown"></div>
+            </div>
+          `;
+
+          document
+            .getElementById("adminCheckbox")
+            .addEventListener("change", async (e) => {
+              const newType = e.target.checked ? "admin" : "standard";
+              Analytics.startOperation(`Set ${newType}`);
+              await Sql.run(`UPDATE users SET type = ? WHERE id = ?`, [
+                newType,
+                state.activeUserId,
+              ]);
+              if (state.mode === "rbac") {
+                await RbacBackend.rebuildForUser(state.activeUserId);
+              }
+              await refreshCache();
+              render();
+              Analytics.endOperation();
+            });
+
+          document
+            .getElementById("addFolderBtn")
+            .addEventListener("click", async () => {
+              if (!canCreate) return;
+              Analytics.startOperation("Created folder");
+              await createResource("folder", parentId);
+              await refreshCache();
+              render();
+              Analytics.endOperation();
+            });
+
+          document
+            .getElementById("addFileBtn")
+            .addEventListener("click", async () => {
+              if (!canCreate) return;
+              Analytics.startOperation("Created file");
+              await createResource("file", parentId);
+              await refreshCache();
+              render();
+              Analytics.endOperation();
+            });
+
+          const shareBtn = document.getElementById("shareBtn");
+          const shareDropdown = document.getElementById("shareDropdown");
+
+          shareBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const isOpen = shareDropdown.classList.contains("open");
+            shareDropdown.classList.toggle("open", !isOpen);
+
+            if (!isOpen) {
+              const otherUsers = state.users.filter(
+                (u) => u.id !== selected.owner_id,
+              );
+
+              shareDropdown.innerHTML =
+                otherUsers
+                  .map(
+                    (u) =>
+                      `<div class="share-option" data-user-id="${u.id}">${u.name}</div>`,
+                  )
+                  .join("") +
+                `<div class="share-option new-user" data-new-user="true">+ New User</div>`;
+
+              shareDropdown.querySelectorAll(".share-option").forEach((opt) => {
+                opt.addEventListener("click", async (e) => {
+                  e.stopPropagation();
+                  Analytics.startOperation("Shared resource");
+                  const targetUserId = opt.dataset.newUser
+                    ? (await createUserWithRootFolder()).userId
+                    : parseInt(opt.dataset.userId);
+
+                  if (
+                    !state.shares.some(
+                      (s) =>
+                        s.resource_id === selected.id &&
+                        s.user_id === targetUserId,
+                    )
+                  ) {
+                    await Backend.createShare(selected.id, targetUserId);
+                    if (state.mode === "rbac") {
+                      await RbacBackend.grantOnShare(selected.id, targetUserId);
+                    }
+                  }
+
+                  shareDropdown.classList.remove("open");
+                  await refreshCache();
+                  render();
+                  Analytics.endOperation();
+                });
+              });
+            }
+          });
+
+          document.addEventListener("click", () =>
+            shareDropdown.classList.remove("open"),
+          );
+        };
+
+        const renderTree = () => {
+          if (state.resources.length === 0) {
+            elements.tree.innerHTML =
+              '<div class="empty-message">No files or folders to display</div>';
+            return;
+          }
+
+          const renderNode = (parentId) => {
+            const children = state.resources.filter(
+              (r) => r.parent_id === parentId,
+            );
+            if (children.length === 0) return "";
+
+            return children
+              .map((resource) => {
+                const isSelected = resource.id === state.selectedResourceId;
+                const sharedWithUsers = state.shares
+                  .filter((s) => s.resource_id === resource.id)
+                  .map((s) => state.users.find((u) => u.id === s.user_id))
+                  .filter(Boolean);
+                const icon = resource.type === "folder" ? "📁" : "📄";
+                const isOwner = resource.owner_id === state.activeUserId;
+
+                let sharedBadge = "";
+                if (sharedWithUsers.length > 0) {
+                  sharedBadge = isOwner
+                    ? `<span class="shared-badge">shared with: ${sharedWithUsers.map((u) => u.name).join(", ")}</span>`
+                    : `<span class="shared-badge">shared</span>`;
+                }
+
+                const childrenHtml = renderNode(resource.id);
+                return `
+                  <div class="tree-item ${isSelected ? "selected" : ""}" data-resource-id="${resource.id}">
+                    <span class="icon">${icon}</span>
+                    <span class="name">${resource.name}</span>
+                    ${sharedBadge}
+                  </div>
+                  ${childrenHtml ? `<div class="tree-children">${childrenHtml}</div>` : ""}
+                `;
+              })
+              .join("");
+          };
+
+          elements.tree.innerHTML = renderNode(null);
+
+          elements.tree.querySelectorAll(".tree-item").forEach((item) => {
+            item.addEventListener("click", () => {
+              state.selectedResourceId = parseInt(item.dataset.resourceId);
+              render();
+            });
+          });
+        };
+
+        const render = () => {
+          renderTabs();
+          renderControls();
+          renderTree();
+        };
+
+        const init = async () => {
+          Analytics.startOperation("Initialized");
+
+          document.querySelectorAll('input[name="impl"]').forEach((radio) => {
+            radio.addEventListener("change", () => setMode(radio.value));
+          });
+
+          await refreshCache();
+          render();
+          Analytics.endOperation();
+        };
+
+        const setMode = async (mode) => {
+          const modeName = mode === "rbac" ? "RBAC" : "Naive";
+          Analytics.startOperation(`Switched to ${modeName}`);
+          state.mode = mode;
+
+          if (mode === "rbac") {
+            await RbacBackend.rebuildAll();
+          }
+
+          await refreshCache();
+          render();
+          Analytics.endOperation();
+        };
+
+        return { init, render, setMode, getState, setState, refreshCache };
+      })();
+
+      // ============================================================
+      // MAIN - Wire up modules
+      // ============================================================
+      async function init() {
+        await Sql.init();
+        await Backend.init();
+        await RbacBackend.init();
+
+        Sql.setCallbacks({
+          onReadCb: Analytics.recordRead,
+          onWriteCb: Analytics.recordWrite,
+        });
+
+        await Frontend.init();
+      }
+
+      init();
+    </script>
+  </body>
+</html>
