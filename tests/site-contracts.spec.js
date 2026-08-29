@@ -6,7 +6,6 @@ const PAGES = [
   "/",
   "/projects/",
   "/resume/",
-  "/work-with-me/",
   "/blog/ai-library-migration-guide/",
   "/blog/ai-powered-review-filestage/",
   "/blog/ai-slop-proof/",
@@ -39,9 +38,7 @@ test("pages expose one main content landmark", async ({ page }) => {
   }
 });
 
-test("blog posts separate article content from the consulting CTA", async ({
-  page,
-}) => {
+test("blog posts expose their article content", async ({ page }) => {
   for (const path of BLOG_POSTS) {
     await page.goto(path);
     await expect(
@@ -52,12 +49,14 @@ test("blog posts separate article content from the consulting CTA", async ({
       page.locator("article header.page-header"),
       `${path} should identify its article header`,
     ).toHaveCount(1);
-    await expect(
-      page.locator("article .wwm-final-cta"),
-      `${path} should keep its CTA outside the article`,
-    ).toHaveCount(0);
-    await expect(page.locator("main aside.wwm-final-cta")).toHaveCount(1);
   }
+});
+
+test("homepage provides a direct email link", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator('a[href="mailto:me@eliocapella.com"]')).toHaveCount(
+    1,
+  );
 });
 
 test("blog dates expose machine-readable publication dates", async ({

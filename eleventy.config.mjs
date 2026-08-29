@@ -10,7 +10,6 @@ export default function (eleventyConfig) {
     "src/selfie.jpg": "selfie.jpg",
     "src/selfie_circled.png": "selfie_circled.png",
     "src/style.css": "style.css",
-    "src/work-with-me": "work-with-me",
   });
   eleventyConfig.addPassthroughCopy(
     "src/blog/**/*.{avif,excalidraw,html,jpeg,jpg,png,svg}",
