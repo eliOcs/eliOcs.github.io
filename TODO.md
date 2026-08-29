@@ -17,7 +17,7 @@
 - Default to action, product minded
 - Pen tests in startups
 - Moving up to enterprise customers: SSO, compliance, security, audits
-- Hiring remotely
+- Hiring remotely: https://app.tellent.com/ats/offers/senior-js-fullstack-engineer/pipeline?view=qualified&candidate=28370098&offerId=714778&tab=interviews&ts_org_guid=33nno
 - Way of work: https://addyosmani.com/blog/21-lessons/
 
 # Resume
