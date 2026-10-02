@@ -1,0 +1,160 @@
+---
+layout: layouts/post.njk
+tags: blogPosts
+title: "Writing code by hand is over, forever"
+metaTitle: "Writing code by hand is over, forever"
+description: "After 18 years of writing code every day, I stopped. Our team is shipping more, bug reports haven't increased, and I'm wondering what programming could become next."
+published: "2026-10-02T00:00:00+02:00"
+permalink: "/blog/writing-code-by-hand-is-over/"
+preview: |-
+  After <strong>18 years of writing code by hand every day</strong>,
+  I stopped almost overnight. Our team is shipping more without an
+  increase in bug reports. But the part that excites me most is
+  <em>what programming could become next</em>.
+feedSummary: "A personal reflection on giving up handwritten code, the guardrails making AI useful, and the possibility of a more visual way to build software."
+image: "https://eliocapella.com/blog/writing-code-by-hand-is-over/teachers-protest-calculators-1986.jpg"
+---
+<p>
+  I wrote code by hand every day for 18 years. Then, almost from one day to the
+  next, I stopped.
+</p>
+<p>
+  Last year, AI gradually worked its way into my routine. Paste some code into a
+  web chat for a second opinion. Describe a query in English. Ask for a regular
+  expression instead of remembering the syntax. Useful little shortcuts.
+</p>
+<p>
+  Then <a href="https://www.anthropic.com/news/claude-opus-4-5">Opus 4.5</a> in
+  Claude Code crossed a threshold for me. Explaining what I wanted was faster than
+  writing it myself. Just like that, a daily habit of nearly two decades was gone.
+  Several months later, I feel less and less tempted to touch the code by hand.
+  <strong>I can't imagine going back.</strong>
+</p>
+<p>
+  I understand why this feels unsettling. When you've spent years getting good at
+  something, watching a machine do it is a lot to process. But the feeling I keep
+  coming back to is liberation. So many improvements I would have put off now
+  start with a prompt. Being able to build so much of what I can imagine is
+  breathtaking.
+</p>
+<figure>
+  <img
+    src="./teachers-protest-calculators-1986.jpg"
+    width="1202"
+    height="1466"
+    loading="lazy"
+    alt="1986 newspaper clipping headed Math teachers protest against calculator use. A teacher holds a sign saying OFF until upper grades."
+  />
+  <figcaption>
+    Teachers protesting early calculator use in elementary school. The Daily Item,
+    April 5, 1986. AP photo.
+    <a href="https://www.reddit.com/r/ChatGPT/comments/122d545/1988_math_teachers_protest_against_calculator_use/">Via Reddit</a>.
+  </figcaption>
+</figure>
+
+<h2 id="more-shipped-same-guardrails">
+  <a href="#more-shipped-same-guardrails">More shipped, same guardrails</a>
+</h2>
+<p>
+  At Filestage, we've gone from around <strong>200 to 300 merged PRs a month</strong>
+  without an increase in bug reports. That's roughly 50% more, with a $20 monthly
+  AI subscription per developer. Everyone chooses their own tool: some use Codex,
+  some Claude Code, some Cursor. PR counts only tell part of the story. We're also
+  tackling bigger changes across the product in less time and with more confidence.
+</p>
+<figure>
+  <img
+    src="./monthly-merged-prs.png"
+    width="600"
+    height="371"
+    loading="lazy"
+    alt="Monthly merged PRs from 2024 through 2026, with the smoothed trend rising from around 150 to 200 early on to around 300 near the end."
+  />
+  <figcaption>Monthly merged PRs across the team.</figcaption>
+</figure>
+<figure>
+  <img
+    src="./monthly-incoming-bugs.png"
+    width="600"
+    height="371"
+    loading="lazy"
+    alt="Monthly incoming bugs over the same period fluctuate without a sustained increase as merged PRs rise."
+  />
+  <figcaption>Incoming bug reports over the same period.</figcaption>
+</figure>
+<p>
+  The agents keep improving, and our investment in
+  <a href="/blog/ai-slop-proof/">CI guardrails</a> is paying off: linting, type
+  checking, duplication checks, 100% test coverage, and end-to-end tests. The
+  feedback is there every time an agent makes a change.
+</p>
+<p>
+  Seeing that makes me wonder: <em>could we be going even faster?</em> Models have
+  become good enough that I now consider it irresponsible to merge without an AI
+  code review. Could passing our checks and getting an AI review's approval
+  eventually be enough to merge a PR? I haven't settled that question, but it no
+  longer sounds far-fetched.
+</p>
+<p>
+  The extra throughput has already exposed bottlenecks in our CI. We hit
+  Cloudflare's free tunnel limits because our end-to-end test instances need to
+  receive webhooks from third parties. CI started breaking for our engineers. We
+  also had to give our shared development database more resources to handle the
+  connections.
+</p>
+<p>
+  Using our infrastructure as code setup and open source
+  <a href="https://github.com/fatedier/frp">FRP tunnels</a>, I quickly vibe coded a
+  solution to the problem. The tools creating the extra load also helped remove
+  the bottleneck. A colleague made me laugh with this meme he generated:
+</p>
+<figure>
+  <img
+    src="./ill-do-it-myself.jpg"
+    width="1024"
+    height="1020"
+    loading="lazy"
+    alt="An engineer's meme puts my face on Thanos, with the caption: Fine. I'll do it myself."
+  />
+  <figcaption>When the tunnel limit breaks CI and you build your own.</figcaption>
+</figure>
+
+<h2 id="what-comes-after-text-files">
+  <a href="#what-comes-after-text-files">What comes after text files?</a>
+</h2>
+<p>
+  I've always been frustrated with how we build software. Bret Victor's
+  <a href="https://worrydream.com/dbx/">The Future of Programming</a> captured that
+  feeling beautifully: look at the possibilities explored decades ago, then look
+  at what we settled for.
+</p>
+<p>
+  Years matching parentheses and quotes. Debating tabs and spaces. Searching
+  hundreds of files to reconstruct how something works. Formatters and linters
+  helped, but I still had to hold the system in my head while staring at little
+  pieces of it.
+</p>
+<p>
+  If agents can handle the code, could we finally work directly with the logic,
+  interfaces, and data models we want? Could
+  <a href="https://en.wikipedia.org/wiki/Unified_Modeling_Language">UML</a> and
+  <a href="https://en.wikipedia.org/wiki/Entity%E2%80%93relationship_model"
+    >entity relationship diagrams</a
+  >
+  become useful everyday interfaces to a living system, kept in sync as we change
+  it?
+</p>
+<p>
+  I want to see a use case and zoom into its logic, all the way down to the code
+  when I need to. See how data moves through it. Bring production context into
+  that view: which paths people actually use, where requests get stuck, which
+  branches never run.
+</p>
+<p>
+  I don't know what that environment will look like. But for the first time in
+  years, it feels within reach.
+</p>
+<p>
+  After 18 years of typing code, I thought I knew what programming felt like.
+  <strong>I'm excited to find out what it feels like next.</strong>
+</p>

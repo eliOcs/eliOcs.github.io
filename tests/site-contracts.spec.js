@@ -19,6 +19,7 @@ const PAGES = [
   "/blog/scaling-engineering-squads/",
   "/blog/simple-js-toolkit/",
   "/blog/vendor-lock-in-nightmares/",
+  "/blog/writing-code-by-hand-is-over/",
   "/blog/writing-good-unit-tests/",
 ];
 
