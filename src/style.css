@@ -100,6 +100,13 @@ figure img {
   margin: 0 auto 0.5rem auto;
 }
 
+article > img,
+article figure img {
+  width: auto;
+  max-height: min(600px, 70svh);
+  margin-inline: auto;
+}
+
 figcaption {
   font-size: 0.9rem;
   color: var(--base04);
