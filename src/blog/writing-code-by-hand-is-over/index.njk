@@ -119,6 +119,69 @@ image: "https://eliocapella.com/blog/writing-code-by-hand-is-over/teachers-prote
   <figcaption>When the tunnel limit breaks CI and you build your own.</figcaption>
 </figure>
 
+<h2 id="abstractions-still-matter">
+  <a href="#abstractions-still-matter">Abstractions still matter</a>
+</h2>
+<p>
+  I agreed with a lot of DHH's
+  <a href="https://www.youtube.com/watch?v=vDjW_dRyKXY">Rails World keynote</a>
+  about the end of writing code by hand. But his
+  <a href="https://x.com/dhh/status/2103451962717229257">prediction that agents
+  will move from Rust and C++ to assembly and eventually microcode</a> goes too
+  far for me.
+</p>
+<figure>
+  <a href="https://x.com/dhh/status/2103451962717229257">
+    <img
+      src="./dhh-prompt-compilation.png"
+      width="1292"
+      height="554"
+      loading="lazy"
+      alt="DHH argues that Rust and C++ are temporary prompt compilation targets, predicting that agents will eventually generate assembly and microcode."
+    />
+  </a>
+  <figcaption>DHH on how far down the stack coding agents might go.</figcaption>
+</figure>
+<p>
+  I see the attraction of getting an agent to write a faster implementation in a
+  language I wouldn't choose to write myself. But high-level representations are
+  useful to the agent too. Given how today's LLMs generate code, I see several
+  reasons to keep them:
+</p>
+<ul>
+  <li>
+    <strong>More output means more details to get right.</strong> Generating
+    assembly means predicting registers, offsets, and calling-convention details
+    that a compiler would otherwise handle.
+  </li>
+  <li>
+    <strong>Compact code preserves context.</strong>
+    <code>users.filter(u =&gt; u.active)</code> expresses an operation in a few
+    tokens that can take many assembly instructions. Understanding a repository
+    that already fills 200,000 tokens is hard enough before expanding it into
+    lower-level instructions.
+  </li>
+  <li>
+    <strong>Abstractions help reasoning.</strong> Types, functions, modules,
+    ownership, and data structures expose intent and constraints. Lowering
+    everything to assembly makes much of that information harder to recover.
+  </li>
+</ul>
+<p>
+  We also already have tools such as
+  <a href="https://clang.llvm.org/docs/UsersManual.html">Clang</a> to turn source
+  code into native machine code. Why spend probabilistic inference reproducing
+  routine translation that a deterministic compiler already handles efficiently?
+  Targeted assembly optimization may be worthwhile, but I wouldn't make it the
+  default representation for a whole system.
+</p>
+<p>
+  My bet remains: <strong>LLM → high-level representation → deterministic
+  compiler → machine code</strong>. The representation may change. I expect
+  useful abstractions to become even more valuable as agents take on larger
+  systems.
+</p>
+
 <h2 id="what-comes-after-text-files">
   <a href="#what-comes-after-text-files">What comes after text files?</a>
 </h2>
